@@ -294,7 +294,7 @@ Las banderas son los ítems que deben capturar los jugadores. Cada estación tie
 
 Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
 
-![Casas](./Imágenes/Casas.jpeg)
+![Casas](./Imágenes/Casa.jpeg)
 
 
 ## 5.6. Interfaz de usuario
