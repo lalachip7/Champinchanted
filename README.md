@@ -31,7 +31,7 @@ Laura Blázquez Pelaz
 [4. Música](#musica)   
 [5. Arte y estilo visual](#arte-y-estilo-visual)   
 
-# Introducción: Definición del juego
+# 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
 Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico.   
 
