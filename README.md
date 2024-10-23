@@ -1,3 +1,4 @@
+![Logo de Lunar Engine](./imagenes/Logo.png)
 # GDD Champinchanted
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
@@ -24,7 +25,11 @@ Laura Blázquez Pelaz
 
 
 # Índice
-[Ir a la Introducción](#introduccion-definicion-del-juego)
+[1. Introducción](#introduccion-definicion-del-juego)   
+[2. Historia y narrativa](#historia-y-narrativa)   
+[3. Mecánicas del juego](#mecanicas-del-juego)   
+[4. Música](#musica)   
+[5. Arte y estilo visual](#arte-y-estilo-visual)   
 
 # 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
@@ -175,7 +180,8 @@ En el modo en línea, cada jugador utiliza su propio ordenador, por lo que los c
 
 El jugador podrá utilizar las teclas ‘A’ o (←) para desplazarse a la izquierda, las teclas ‘D’ o (→) para desplazarse a la derecha; las teclas ‘W’ o (↑) para saltar; y la barra espaciadora o la tecla ‘E’ para lanzar un hechizo.
 
-Figura 1: Teclas para los controles del jugador
+![Teclas para los controles del jugador](./images/logo.png)
+
 
 ## 3.3. Acciones del jugador
 El jugador puede moverse horizontalmente por el mapa y saltar para superar obstáculos y ascender sobre las plataformas.
