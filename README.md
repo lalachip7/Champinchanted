@@ -263,10 +263,15 @@ Las paletas de colores de los objetos van en consonancia con las ya antes mencio
 
 **Monster**: Al emplearse el jugador que la utilice recibirá una mejora en velocidad, la mejora aumentará un 15% la velocidad base del jugador y durará 12s.
 
-### 5.5.2. Banderas
+### 5.5.2. Banderas y casas
 Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación se muestran los cuatro diseños.
 		
 Figura 14: Banderas
+
+Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
+
+Figura 15: Casas
+
 
 ## 5.6. Interfaz de usuario
 
