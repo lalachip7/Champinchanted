@@ -3,6 +3,9 @@ Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de
 
 ## Equipo de desarrollo
 Ángela Sánchez Díaz - a.sanchezdi.2022@alumnos.urjc.es -
+\n
 Garazi Blanco Jauregi - g.blancoj.2022@alumnos.urjc.es -
+\n
 Alberto López García de Ceca - a.lopezgar.2022@alumnos.urjc.es -
+\n
 Laura Blázquez Pelaz - l.blazquez.2022@alumnos.urjc.es - lalachip7
