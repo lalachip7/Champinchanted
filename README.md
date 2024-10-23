@@ -1,4 +1,4 @@
-![Logo de Lunar Engine](./imagenes/Logo.png)
+![Logo de Lunar Engine](./Imágenes/Logo.png)
 # GDD Champinchanted
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
@@ -180,7 +180,7 @@ En el modo en línea, cada jugador utiliza su propio ordenador, por lo que los c
 
 El jugador podrá utilizar las teclas ‘A’ o (←) para desplazarse a la izquierda, las teclas ‘D’ o (→) para desplazarse a la derecha; las teclas ‘W’ o (↑) para saltar; y la barra espaciadora o la tecla ‘E’ para lanzar un hechizo.
 
-![Teclas para los controles del jugador](./images/logo.png)
+![Teclas para los controles del jugador](./Imágenes/Teclas_controles.png)
 
 
 ## 3.3. Acciones del jugador
@@ -195,7 +195,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-Figura 2: Diagrama de estados
+![Diagrama de estados](./Imágenes/Diagrama_de_estados.png)
 
 
 # 4. Música
@@ -223,9 +223,9 @@ Los mapas se encuentran ensombrecidos por los elementos del bosque, e iluminados
 ## 5.2. Referencias visuales
 Tiene un toque inspirado en la naturaleza fantástica, similar a juegos como *Ori and the Blind Forest* o *Trine*.
 
-Figura 3: Ori and theBlind Forest referencia
-Figura 4: Referencia 1 de Trine
-Figura 5: Referencia 2 de Trine
+![Referencia *Ori and the Blind Forest*](./Imágenes/Referencia_Ori.png)
+![Referencia 1 de *Trine*](./Imágenes/Referencia_Trine_1.png)
+![Referencia 2 de *Trine*](./Imágenes/Referencia_Trine_2.png)
 
 ## 5.3. Diseño de personajes
 Los personajes principales tienen un diseño único, inspirado en diferentes tipos de setas. Las paletas de colores que siguen son únicas y temáticas para cada personaje, pero manteniendo una coherencia común.  
@@ -233,38 +233,38 @@ Los personajes principales tienen un diseño único, inspirado en diferentes tip
 **Perretxiko**
 El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
 
-Figura 6: Sprites de Perretxiko
+![Sprites de Perretxiko](./Imágenes/Perretxiko.png)
 
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-Figura 7: Sprites de Champichip
+![Sprites de Champichip](./Imágenes/Champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-Figura 8: Sprites de Mariñón
+![Sprites de Mariñón](./Imágenes/Mariñón.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-Figura 9: Sprites de Champistar
+![Sprites de Champistar](./Imágenes/Champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-Figura 10: Sprites de Biblioseta
+![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
 Hay 4 tipos diferentes de mapas, cada uno inspirado en una estación. Todos los mapas representan paisajes de bosques densos y húmedos, con árboles gigantes cubiertos de musgo y mucha naturaleza. Encontramos más tipos de champiñones, setas luminosas y hongos. Y también se pueden observar colinas cubiertas por capas de moho, y cielos cubiertos de neblina.
 
-Figura 11: Boceto del mapa de otoño
-Figura 12: Fondo de otoño
+![Boceto del mapa de otoño](./Imágenes/Boceto_mapa_otoño.png)
+![Mapa otoño](./Imágenes/Mapa_otoño.png)
 
 ### 5.4.2. Diseño de niveles
 Las plataformas principales del juego son una combinación de troncos de árboles caídos y champiñones y setas gigantes. 
-Figura 13: Nivel de otoño
+![Nivel de otoño](./Imágenes/Nivel_otoño.png)
 
 ## 5.5. Diseño de ítems
 Las paletas de colores de los objetos van en consonancia con las ya antes mencionadas y la estética general del videojuego.  
