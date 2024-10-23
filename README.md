@@ -1,16 +1,31 @@
-# Champinchanted
+# GDD Champinchanted
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
 ## Equipo de desarrollo
-Ángela Sánchez Díaz - a.sanchezdi.2022@alumnos.urjc.es - angelasdiaz  
-Garazi Blanco Jauregi - g.blancoj.2022@alumnos.urjc.es - Gara03  
-Alberto López García de Ceca - a.lopezgar.2022@alumnos.urjc.es - ratamolinera777  
-José Ramón Hernández-Franch Pérez del Hierro - jor.hernandezfr.2022@alumnos.urjc.es -  
-Laura Blázquez Pelaz - l.blazquez.2022@alumnos.urjc.es - lalachip7  
+Ángela Sánchez Díaz 
+* a.sanchezdi.2022@alumnos.urjc.es   
+* Github: angelasdiaz    
+
+Garazi Blanco Jauregi   
+* g.blancoj.2022@alumnos.urjc.es  
+* Github: Gara03   
+
+Alberto López García de Ceca   
+* a.lopezgar.2022@alumnos.urjc.es   
+* Github: ratamolinera777  
+
+José Ramón Hernández-Franch Pérez del Hierro  
+* jor.hernandezfr.2022@alumnos.urjc.es  
+* Github:  
+
+Laura Blázquez Pelaz   
+* l.blazquez.2022@alumnos.urjc.es   
+* lalachip7   
 
 
+# Índice
+[Ir a la Introducción](#introduccion-definicion-del-juego)
 
-# GDD
 # 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
 Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico.   
