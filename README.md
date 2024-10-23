@@ -287,11 +287,14 @@ Las paletas de colores de los objetos van en consonancia con las ya antes mencio
 ### 5.5.2. Banderas y casas
 Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación se muestran los cuatro diseños.
 		
-Figura 14: Banderas
+![Bandera de verano](./Imágenes/Bandera_verano.jpeg)
+![Bandera de otoño](./Imágenes/Bandera_otoño.jpeg)
+![Bandera de primavera](./Imágenes/Bandera_primavera.jpeg)
+![Bandera de invierno](./Imágenes/Bandera_invierno.jpeg)
 
 Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
 
-Figura 15: Casas
+![Casas](./Imágenes/Casas.jpeg)
 
 
 ## 5.6. Interfaz de usuario
