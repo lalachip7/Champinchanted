@@ -260,11 +260,11 @@ La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común h
 Hay 4 tipos diferentes de mapas, cada uno inspirado en una estación. Todos los mapas representan paisajes de bosques densos y húmedos, con árboles gigantes cubiertos de musgo y mucha naturaleza. Encontramos más tipos de champiñones, setas luminosas y hongos. Y también se pueden observar colinas cubiertas por capas de moho, y cielos cubiertos de neblina.
 
 ![Boceto del mapa de otoño](./Imágenes/Boceto_mapa_otoño.png)
-![Mapa otoño](./Imágenes/Mapa_otoño.png)
+![Mapa otoño](./Imágenes/Mapa_de_otoño.png)
 
 ### 5.4.2. Diseño de niveles
 Las plataformas principales del juego son una combinación de troncos de árboles caídos y champiñones y setas gigantes. 
-![Nivel de otoño](./Imágenes/Nivel_otoño.png)
+![Nivel de otoño](./Imágenes/Nivel_otoño.jpeg)
 
 ## 5.5. Diseño de ítems
 Las paletas de colores de los objetos van en consonancia con las ya antes mencionadas y la estética general del videojuego.  
