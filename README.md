@@ -95,7 +95,7 @@ Cada partida está dividida en hasta 3 rondas. Estas son cortas, de aproximadame
 
 Inicialmente ofrecerá un único modo de juego, basado en enfrentamientos directos para capturar la bandera y ganar más rondas que el oponente. Sin embargo, los jugadores podrán ajustar reglas básicas como la cantidad de rondas o la aparición de hechizos.
 
-La versión inicial contará con 6 personajes para elegir, cada uno con un diseño único y 4 mapas distintos, con diseños y plataformas completamente diferentes.
+La versión inicial contará con 5 personajes para elegir, cada uno con un diseño único y 4 mapas distintos, con diseños y plataformas completamente diferentes.
 
 El juego estará disponible para PC, y se podrá jugar tanto de manera local como en línea.
 
