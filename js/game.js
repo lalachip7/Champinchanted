@@ -11,6 +11,9 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         // carga los assets
+        this.load.image('player1', 'assets/player1.png');
+        this.load.image('player2', 'assets/player2.png');
+        this.load.image('ground', 'assets/ground.png');
         
     }
 
