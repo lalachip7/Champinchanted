@@ -28,7 +28,7 @@ class IntroGame extends Phaser.Scene {
             .on('pointerdown', () => {
                 this.sound.play("Wandering Stars");
                 this.scene.stop("IntroScene");
-                this.scene.start("GameScene");
+                this.scene.start("PersonajesGame");
         });
         
         const options_button = this.add.image(990, 600, "options_button")
