@@ -3,8 +3,10 @@ class PersonajesGame extends Phaser.Scene {
         super({ key: 'PersonajesGame' });
     }
 
-    preload() {
-        // Cargar las imágenes de los personajes y el botón de "ready"
+    preload() { // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
+		this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
+        
+        // Cargar las imágenes de los personajes y el botón de "listo"
         this.load.image('character1', 'assets/personajesgame/character1.png');
         this.load.image('character2', 'assets/personajesgame/character2.png');
         this.load.image('character3', 'assets/personajesgame/character3.png');
@@ -13,12 +15,12 @@ class PersonajesGame extends Phaser.Scene {
         this.load.image("ready_button", "assets/personajesgame/ready_button.png");
     }
 
-    create() {
-        const ready_button = this.add.image(990, 300, "ready_button")
+    create() {      // AÑADE LOS OBJETOS A LA ESCENA ----------------------------------------------------------------------------
+        const ready_button = this.add.image(990, 300, "ready_button")   // Botón "listo"
             .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.stop("PersonajesGame");
-                this.scene.start("MapaGame", {
+            .on('pointerdown', () => {              // Al pulsar el botón
+                this.scene.stop("PersonajesGame");  // Para la escena
+                this.scene.start("MapaGame", {      // Ejecuta la escena de elección de mapa
                     p1: {
                         number: 1
                     },

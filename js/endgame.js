@@ -3,9 +3,9 @@ class EndGame extends Phaser.Scene {
         super({ key: 'EndScene' });
     }
 
-    preload() {}
+    preload() {}    // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
 
-    create(data) {
+    create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
         const remaining_bricks = data.remaining_bricks;
 
         const message = remaining_bricks == 0? "You win!": "You loose :(";
@@ -22,6 +22,6 @@ class EndGame extends Phaser.Scene {
 
     }
 
-    update() {}
+    update() {} // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------------------
 
 }

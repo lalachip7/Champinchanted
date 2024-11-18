@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">           
 <head>
+    <meta charset="UTF-8">  
+    <title>Champinchanted</title>
+
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.86.0/phaser.min.js"></script> 
     <script src="js/intro.js"></script>
     <script src="js/game.js"></script>
@@ -10,33 +14,39 @@
     <script src="js/mapagame.js"></script>
 </head>
 <body>
-    <div id="game-canvas"></div>
+    <div id="game-canvas"></div>        <!-- Canvas del juego controlado por Phaser -->
     <script>
-        // Game configuration
+        // Configuración de Phaser -----------------------------------------------------------------------------------------
         const config = {
-            type: Phaser.AUTO,
-            width: 1980,
-            height: 1080,
-            parent: 'game-canvas',
-            backgroundColor: '#000000',
-            physics: {
-                default: 'arcade',
+            type: Phaser.AUTO,          // Elección del método de renderizado en función de las capacidades del navegador
+            width: 1920,                // Ancho de la pantalla
+            height: 1080,               // Alto de la pantalla
+            parent: 'game-canvas',      // Contenedor donde se renderiza el juego
+            backgroundColor: '#000000', // Color del fondo
+
+            physics: {                  // FÍSICAS DEL JUEGO ---------------------------------------------------------------
+                default: 'arcade',      
                 arcade: {
-                    debug: true,
-                    gravity: { y: 9.8 }
+                    debug: true,        // Activa el modo de depuración mostrando colisiones y bordes
+                    gravity: { y: 9.8 } // Aplica la gravedad vertical
                 }
             },
-            scene: [IntroGame, 
-                    GameScene, 
-                    EndGame, 
-                    AjustesGame,
-                    PersonajesGame,
-                    MapaGame ]
+            scene: [IntroGame,          // ESCENAS DEL JUEGO ---------------------------------------------------------------
+                GameScene, 
+                EndGame, 
+                AjustesGame,
+                PersonajesGame,
+                MapaGame ],
+
+            scale: {
+                mode: Phaser.Scale.FIT,                 // Escala el juego para ajustarse a la ventana
+                autoCenter: Phaser.Scale.CENTER_BOTH    // Centra el juego en la ventana
+            }
         };
 
-        // Create the game instance
-        const game = new Phaser.Game(config);
-        game.scene.start('IntroScene');
+        // Creación del juego ----------------------------------------------------------------------------------------------
+        const game = new Phaser.Game(config);   // Crea una nueva intancia del juego con la configuración definida
+        game.scene.start('IntroScene');         // Phaser inicializa el juego
 
     </script>
 </body>
