@@ -23,10 +23,10 @@ class IntroGame extends Phaser.Scene {
         //    fontSize: 38 
         //}).setOrigin(0.5);
 
-         const background = this.add.image(0, 0, "background_image")
-         .setOrigin(0)                                                                                   // Alinea la esquina superior izquierda al (0,0)
-         .setScale(this.scale.width / background.width, this.scale.height / background.height);
-         background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
+         //const background = this.add.image(0, 0, "background_image")
+         //.setOrigin(0)                                                                                   // Alinea la esquina superior izquierda al (0,0)
+         //.setScale(this.scale.width / background.width, this.scale.height / background.height);
+         //background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
          
 
         // Música de fondo
@@ -57,8 +57,8 @@ class IntroGame extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.scene.stop("IntroScene");                          // Detiene la escena actual
-                //this.scene.start("");     //hay que crear escena salir            // Cambia a la escena de selección de personajes
+                window.close();                                         // Cierra la ventana si es posible
+                //this.scene.stop("IntroScene");                        // Detiene la escena actual                
             });
 
         // Botón de configuración
