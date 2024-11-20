@@ -23,10 +23,10 @@ class IntroGame extends Phaser.Scene {
         //    fontSize: 38 
         //}).setOrigin(0.5);
 
-         //const background = this.add.image(0, 0, "background_image")
-         //.setOrigin(0)                                                                                   // Alinea la esquina superior izquierda al (0,0)
-         //.setScale(this.scale.width / background.width, this.scale.height / background.height);
-         //background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
+         const background = this.add.image(0, 0, "background_image")
+         .setOrigin(0)                                                                                   // Alinea la esquina superior izquierda al (0,0)
+         background.setScale(this.scale.width / background.width, this.scale.height / background.height);
+         background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
          
 
         // Música de fondo

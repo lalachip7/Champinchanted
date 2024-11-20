@@ -4,18 +4,39 @@ class PersonajesGame extends Phaser.Scene {
     }
 
     preload() { // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
-		this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
-        
+        this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
+
+        this.load.image("background1_image", "assets/personajesgame/fondoPersonajes.png");                        // Imagen de fondo
+
+        this.load.image("options_button", "assets/pantallaInicial/ajustes.png");                        // Botón de ajustes
+
         // Cargar las imágenes de los personajes y el botón de "listo"
-        this.load.image('character1', 'assets/personajesgame/character1.png');
-        this.load.image('character2', 'assets/personajesgame/character2.png');
-        this.load.image('character3', 'assets/personajesgame/character3.png');
-        this.load.image('character4', 'assets/personajesgame/character4.png');
-        this.load.image('character5', 'assets/personajesgame/character5.png');
+        this.load.image('character1', 'assets/personajesgame/perretxiko.png');
+        this.load.image('character2', 'assets/personajesgame/champichip.png');
+        this.load.image('character3', 'assets/personajesgame/.png');
+        this.load.image('character4', 'assets/personajesgame/.png');
+        this.load.image('character5', 'assets/personajesgame/.png');
         this.load.image("ready_button", "assets/personajesgame/ready_button.png");
     }
 
     create() {      // AÑADE LOS OBJETOS A LA ESCENA ----------------------------------------------------------------------------
+        const background = this.add.image(0, 0, "background1_image")
+            .setOrigin(0)                                                                                   // Alinea la esquina superior izquierda al (0,0)
+        background.setScale(this.scale.width / background.width, this.scale.height / background.height);
+        background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
+
+        // Boton de configuracion
+        const options_button = this.add.image(this.scale.width - 50, 50, "options_button")   // Añade el botón de configuración
+            .setOrigin(0.75, 0.25) // Ajustar el punto de anclaje (derecha, arriba)
+            .setScale(0.15) // Reducir tamaño a la mitad    
+            .setInteractive()
+            .setDepth(1) // Botones en una capa más alta
+            .on('pointerdown', () => {
+                this.scene.stop("IntroScene");
+                this.scene.start("AjustesScene");                           // Cambia a la escena de ajustes
+            });
+
+
         const ready_button = this.add.image(990, 300, "ready_button")   // Botón "listo"
             .setInteractive()
             .on('pointerdown', () => {              // Al pulsar el botón
@@ -31,7 +52,7 @@ class PersonajesGame extends Phaser.Scene {
             });
 
         // Nombres de las claves de las imágenes de los personajes
-        this.characters = ['character1', 'character2', 'character3', 'character4', 'character5'];
+        this.characters = ['perretxiko', 'champichip', 'character3', 'character4', 'character5'];
 
         this.playerSelections = [
             { x: 200, y: 300, currentIndex: 0, text: null, image: null, ready: false, clicks: 0 },
