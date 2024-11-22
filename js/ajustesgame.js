@@ -5,8 +5,8 @@ class AjustesGame extends Phaser.Scene {
     
     
         preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------
-            this.load.image('windowBackground', 'assets/ajustes/fondo.png'); //sin imagen yet
-            this.load.image('closeIcon', 'assets/ajustes/closeIcon.png');        //sin imagen yet
+            this.load.image('windowBackground', 'assets/Fondos/fondo.png'); //sin imagen yet
+            this.load.image('closeIcon', 'assets/Botones/closeIcon.png');        //sin imagen yet
         }
     
         create() {

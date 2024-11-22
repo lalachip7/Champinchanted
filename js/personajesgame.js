@@ -6,17 +6,17 @@ class PersonajesGame extends Phaser.Scene {
     preload() { // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
         this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
 
-        this.load.image("background1_image", "assets/personajesgame/fondoPersonajes.png");                        // Imagen de fondo
+        this.load.image("background1_image", "assets/Fondos/fondoPersonajes.png");                        // Imagen de fondo
 
-        this.load.image("options_button", "assets/pantallaInicial/ajustes.png");                        // Botón de ajustes
+        this.load.image("options_button", "assets/Botones/ajustes.png");                        // Botón de ajustes
 
         // Cargar las imágenes de los personajes y el botón de "listo"
-        this.load.image('character1', 'assets/personajesgame/perretxiko.png');
-        this.load.image('character2', 'assets/personajesgame/champichip.png');
-        this.load.image('character3', 'assets/personajesgame/.png');
-        this.load.image('character4', 'assets/personajesgame/.png');
-        this.load.image('character5', 'assets/personajesgame/.png');
-        this.load.image("ready_button", "assets/personajesgame/ready_button.png");
+        this.load.image('character1', 'assets/Sprites/perretxiko.png');
+        this.load.image('character2', 'assets/Sprites/champichip.png');
+        this.load.image('character3', 'assets/Sprites/.png');
+        this.load.image('character4', 'assets/Sprites/.png');
+        this.load.image('character5', 'assets/Sprites/.png');
+        this.load.image("ready_button", "assets/Sprites/ready_button.png");
     }
 
     create() {      // AÑADE LOS OBJETOS A LA ESCENA ----------------------------------------------------------------------------

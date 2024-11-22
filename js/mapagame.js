@@ -5,12 +5,12 @@ class MapaGame extends Phaser.Scene {
 
     preload() {
         // imágenes de los mapas
-        this.load.image('invierno', 'assets/mapagame/');
-        this.load.image('primavera', 'assets/mapagame/');
-        this.load.image('otoño', 'assets/mapagame/Mapa_de_otoño');
-        this.load.image('verano', 'assets/mapagame/');
+        this.load.image('invierno', 'assets/Mapas/');
+        this.load.image('primavera', 'assets/Mapas/');
+        this.load.image('otoño', 'assets/Mapas/Mapa_de_otoño');
+        this.load.image('verano', 'assets/Mapas/');
 
-        this.load.image("ready_button", "assets/mapagame/");
+        this.load.image("ready_button", "assets/Botones/");
     }
 
     create() {

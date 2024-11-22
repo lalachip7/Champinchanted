@@ -7,12 +7,12 @@ class IntroGame extends Phaser.Scene {
         this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
         this.load.audio("background", 'assets/Wandering Stars.mp3');
 
-        this.load.image("background_image", "assets/pantallaInicial/fondo.png");                        // Imagen de fondo
+        this.load.image("background_image", "assets/Fondos/fondo.png");                        // Imagen de fondo
 
 
-        this.load.image("start_button", "assets/pantallaInicial/botonJugar.png");                       // Botón de comenzar partida
-        this.load.image("options_button", "assets/pantallaInicial/ajustes.png");                        // Botón de ajustes
-        this.load.image("exit_button", "assets/pantallaInicial/botonSalir.png");                        // Botón de ajustes
+        this.load.image("start_button", "assets/Botones/botonJugar.png");                       // Botón de comenzar partida
+        this.load.image("options_button", "assets/Botones/ajustes.png");                        // Botón de ajustes
+        this.load.image("exit_button", "assets/Botones/botonSalir.png");                        // Botón de ajustes
 
     }
 

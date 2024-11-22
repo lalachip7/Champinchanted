@@ -6,39 +6,96 @@ class GameScene extends Phaser.Scene {
     init() {
         this.movement_speed = 600;  // Velocidad de los personajes
         this.gameStarted = false;   // Indica si el juego ha empezado
-        this.score = 0;             // Puntuación del jugador
+        this.scorePlayer1 = 0;      // Puntuación del jugador 1
+        this.scorePlayer2 = 0;      // Puntuación del jugador 2
+        this.isJumpingPlayer1 = false;
+        this.isJumpingPlayer2 = false;
+
+        // provisional
+        this.point = false;
+        
     }
 
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
-        this.load.image('background', 'assets/mapagame/Mapa_de_otoño.png'); 
-        this.load.image('player1', 'assets/personajesgame/champichip.png');   // Jugador 1
-        this.load.image('player2', 'assets/personajesgame/perretxiko.png');   // Jugador 2
-        this.load.image('ground', 'assets/ground.png');     // Suelo
-        
+        this.load.image('background', 'assets/Fondos/Mapa_de_otoño.png');   // fondo
+        this.load.image('ground', 'assets/Fondos/suelo.png');               // Suelo
+        this.load.image('player1', 'assets/Sprites/champichip.png');        // Jugador 1
+        this.load.image('player2', 'assets/Sprites/perretxiko.png');        // Jugador 2
+        this.load.image('flag', 'assets/Sprites/Bandera_otoño.png');        // Bandera
+        this.load.image('house', 'assets/Sprites/Casa_otoño.png');          // Casa
+        this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', {frameWidth: 131.4, frameHeight: 134});
     }
 
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
 
         // Creación del mundo del juego
-        this.add.image(960, 540, 'background');
-        //this.groung = this.physics.add.image(960, 900, 'ground').setImmovable();
-        //this.ground.body.allowGravity = false;     // No está influido por la gravedad
+        this.background = this.add.image(960, 540, 'background');
+        this.background.alpha = 0.5;
+
+        this.ground = this.physics.add.image(960, 1080, 'ground').setImmovable();
+        this.ground.setScale(2.5);
+        this.ground.body.allowGravity = false;     // No está influido por la gravedad
+
+        
+
+        // Creación de la bandera
+        this.flag = this.physics.add.image(700, 400, 'flag');
+        this.flag.setScale(0.2);
+        this.flag.body.allowGravity = false;
+        this.flag.setCollideWorldBounds(true);
+
+        // Creación de las casas
+        this.housePlayer1 = this.physics.add.image(175, 875, 'house').setImmovable();
+        this.housePlayer1.body.allowGravity = false;
+        this.housePlayer1.setScale(0.4);
+        
+        this.housePlayer2 = this.physics.add.image(1750, 875, 'house').setImmovable();
+        this.housePlayer2.body.allowGravity = false;
+        this.housePlayer2.setScale(0.4);
 
         // Creación de los personajes
-        this.player1 = this.physics.add.image(900, 460, 'player1');
-        this.player1.body.allowGravity = false;     // No está influido por la gravedad
+        this.player1 = this.physics.add.sprite(900, 800, 'champichip');
         this.player1.setCollideWorldBounds(true);   // Colisión con los límites
 
-        this.player2 = this.physics.add.image(1200, 460, 'player2');
-        this.player2.body.allowGravity = false;     // No está influido por la gravedad
+        this.anims.create({
+            key: 'saltar',
+            frames: this.anims.generateFrameNumbers('champichip', {start:0, end: 4}),
+            frameRate:10,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'caminar',
+            frames: this.anims.generateFrameNumbers('champichip', {start:0, end: 4}),
+            frameRate:10,
+            repeat: 0
+        })
+
+
+
+
+        this.player2 = this.physics.add.image(1200, 800, 'player2');
         this.player2.setCollideWorldBounds(true);   // Colisión con los límites
 
         // Colisiones
         this.physics.add.collider(this.player1, this.ground);
         this.physics.add.collider(this.player2, this.ground);
 
-        // Creación de la bandera
+        this.physics.add.overlap(
+            this.player1, 
+            this.housePlayer1, 
+            (player, house) => this.playerToHouse(player, house), 
+            () => this.playerHasFlag(this.player1), 
+            this
+        );
         
+        this.physics.add.overlap(
+            this.player2, 
+            this.housePlayer2, 
+            (player, house) => this.playerToHouse(player, house), 
+            () => this.playerHasFlag(this.player2), 
+            this
+        );        
 
         // Creación de la puntuación (texto)
 
@@ -48,49 +105,77 @@ class GameScene extends Phaser.Scene {
         // this.morespeed.body.setImmovable(true); // Make the paddle immovable
         // this.morespeed.body.setAllowGravity(false);
 
+        this.leftKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.rightKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        this.upKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+
+        this.leftKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.rightKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);   
 
     }
 
+    playerHasFlag(player) {
+        return true; // Devuelve true si el jugador tiene la bandera
+    }
+
+    playerToHouse(player, house) {
+        if (this.playerHasFlag(player) && this.point === false) {
+            if (player === this.player1) {
+                this.scorePlayer1++;
+                console.log('Score Player 1: ${this.scorePlayer1}');
+                this.point = true;
+                this.nextRound();
+
+            } else if (player === this.player2) {
+                this.scorePlayer2++;
+                console.log('Score Player 2: ${this.scorePlayer2}');
+                this.point = true;
+                this.nextRound();
+            }
+        }
+    }
+
+    nextRound() {
+        
+    }
+
     updatePlayerMovement() {  // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES CON ENTRADAS POR TECLADO ----------------------------------------------------
-        this.input.keyboard.on('keydown-LEFT', () => {          
+        
+        // Movimiento del jugador 1
+        if (this.leftKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(-this.movement_speed);
-        });
-
-        this.input.keyboard.on('keyup-LEFT', () => {
-            this.player1.body.setVelocityX(0);
-        });
-
-        this.input.keyboard.on('keydown-RIGHT', () => {
+            this.player1.anims.play('caminar', true);
+            this.player1.flipX = false;
+        } else if (this.rightKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(this.movement_speed);
-        });
-
-        this.input.keyboard.on('keyup-RIGHT', () => {
+            this.player1.anims.play('caminar', true);
+            this.player1.flipX = true;
+        } else {
             this.player1.body.setVelocityX(0);
-        });
+        }
 
-        this.input.keyboard.on('keydown-UP', () => {
-            
-        });
+        // Salto del jugador 1
+        if (this.upKeyPlayer1.isDown && this.player1.body.touching.down) {
+            this.player1.body.setVelocityY(-1200);
+            this.player1.anims.play('saltar', true);
+            this.isJumpingPlayer1 = true;
+        }
 
-        this.input.keyboard.on('keydown-A', () => {          
+        // Movimiento del jugador 2
+        if (this.leftKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(-this.movement_speed);
-        });
-
-        this.input.keyboard.on('keyup-A', () => {
-            this.player2.body.setVelocityX(0);
-        });
-
-        this.input.keyboard.on('keydown-D', () => {
+        } else if (this.rightKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(this.movement_speed);
-        });
-
-        this.input.keyboard.on('keyup-D', () => {
+        } else {
             this.player2.body.setVelocityX(0);
-        });
+        }
 
-        this.input.keyboard.on('keydown-W', () => {
-            
-        });
+        // Salto del jugador 2
+        if (this.upKeyPlayer2.isDown && this.player2.body.touching.down) {
+            this.player2.body.setVelocityY(-1200);
+            this.isJumpingPlayer2 = true;
+        }
     }
 
 
