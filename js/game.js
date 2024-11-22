@@ -19,11 +19,12 @@ class GameScene extends Phaser.Scene {
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
         this.load.image('background', 'assets/Fondos/Mapa_de_otoño.png');   // fondo
         this.load.image('ground', 'assets/Fondos/suelo.png');               // Suelo
-        this.load.image('player1', 'assets/Sprites/champichip.png');        // Jugador 1
-        this.load.image('player2', 'assets/Sprites/perretxiko.png');        // Jugador 2
         this.load.image('flag', 'assets/Sprites/Bandera_otoño.png');        // Bandera
         this.load.image('house', 'assets/Sprites/Casa_otoño.png');          // Casa
-        this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', {frameWidth: 131.4, frameHeight: 134});
+        this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', {frameWidth: 183, frameHeight: 157});
+        this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', {frameWidth: 181.55, frameHeight: 151});
+        this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', {frameWidth: 178, frameHeight: 155});
+        // mariñón
     }
 
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
@@ -58,24 +59,36 @@ class GameScene extends Phaser.Scene {
         this.player1.setCollideWorldBounds(true);   // Colisión con los límites
 
         this.anims.create({
-            key: 'saltar',
+            key: 'saltar1',
             frames: this.anims.generateFrameNumbers('champichip', {start:0, end: 4}),
-            frameRate:10,
+            frameRate: 10,
             repeat: 0
         })
 
         this.anims.create({
-            key: 'caminar',
-            frames: this.anims.generateFrameNumbers('champichip', {start:0, end: 4}),
-            frameRate:10,
+            key: 'morir1',
+            frames: this.anims.generateFrameNumbers('champichip', {start:5, end: 10}),
+            frameRate: 6,
             repeat: 0
         })
 
-
-
-
-        this.player2 = this.physics.add.image(1200, 800, 'player2');
+        this.player2 = this.physics.add.sprite(1200, 800, 'perretxiko');
         this.player2.setCollideWorldBounds(true);   // Colisión con los límites
+
+        this.anims.create({
+            key: 'saltar2',
+            frames: this.anims.generateFrameNumbers('perretxiko', {start:0, end: 4}),
+            frameRate: 10,
+            repeat: 0
+        })
+
+        this.anims.create({
+            key: 'morir2',
+            frames: this.anims.generateFrameNumbers('perretxiko', {start:5, end: 10}),
+            frameRate: 6,
+            repeat: 0
+        })
+
 
         // Colisiones
         this.physics.add.collider(this.player1, this.ground);
@@ -145,11 +158,9 @@ class GameScene extends Phaser.Scene {
         // Movimiento del jugador 1
         if (this.leftKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(-this.movement_speed);
-            this.player1.anims.play('caminar', true);
             this.player1.flipX = false;
         } else if (this.rightKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(this.movement_speed);
-            this.player1.anims.play('caminar', true);
             this.player1.flipX = true;
         } else {
             this.player1.body.setVelocityX(0);
@@ -158,15 +169,17 @@ class GameScene extends Phaser.Scene {
         // Salto del jugador 1
         if (this.upKeyPlayer1.isDown && this.player1.body.touching.down) {
             this.player1.body.setVelocityY(-1200);
-            this.player1.anims.play('saltar', true);
+            this.player1.anims.play('saltar1', true);
             this.isJumpingPlayer1 = true;
         }
 
         // Movimiento del jugador 2
         if (this.leftKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(-this.movement_speed);
+            this.player2.flipX = false;
         } else if (this.rightKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(this.movement_speed);
+            this.player2.flipX = true;
         } else {
             this.player2.body.setVelocityX(0);
         }
@@ -174,6 +187,7 @@ class GameScene extends Phaser.Scene {
         // Salto del jugador 2
         if (this.upKeyPlayer2.isDown && this.player2.body.touching.down) {
             this.player2.body.setVelocityY(-1200);
+            this.player2.anims.play('saltar2', true);
             this.isJumpingPlayer2 = true;
         }
     }
