@@ -4,27 +4,41 @@ class GameScene extends Phaser.Scene {
     }
 
     init() {
-        this.paddle_speed = 400;    // Velocidad de la paleta 
+        this.movement_speed = 600;  // Velocidad de los personajes
         this.gameStarted = false;   // Indica si el juego ha empezado
         this.score = 0;             // Puntuación del jugador
     }
 
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
-        this.load.image('player1', 'assets/player1.png');   // Jugador 1
-        this.load.image('player2', 'assets/player2.png');   // Jugador 2
+        this.load.image('background', 'assets/mapagame/Mapa_de_otoño.png'); 
+        this.load.image('player1', 'assets/personajesgame/champichip.png');   // Jugador 1
+        this.load.image('player2', 'assets/personajesgame/perretxiko.png');   // Jugador 2
         this.load.image('ground', 'assets/ground.png');     // Suelo
         
     }
 
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
 
-        // QUITAR CUANDO TEMINEMOS EL JUEGO *********************************************************
-        this.physics.world.createDebugGraphic();    // Activa el modo de depuración que dibuja cajas
-                                                    // de colisión alrededor de los objetos
+        // Creación del mundo del juego
+        this.add.image(960, 540, 'background');
+        //this.groung = this.physics.add.image(960, 900, 'ground').setImmovable();
+        //this.ground.body.allowGravity = false;     // No está influido por la gravedad
 
         // Creación de los personajes
+        this.player1 = this.physics.add.image(900, 460, 'player1');
+        this.player1.body.allowGravity = false;     // No está influido por la gravedad
+        this.player1.setCollideWorldBounds(true);   // Colisión con los límites
+
+        this.player2 = this.physics.add.image(1200, 460, 'player2');
+        this.player2.body.allowGravity = false;     // No está influido por la gravedad
+        this.player2.setCollideWorldBounds(true);   // Colisión con los límites
+
+        // Colisiones
+        this.physics.add.collider(this.player1, this.ground);
+        this.physics.add.collider(this.player2, this.ground);
 
         // Creación de la bandera
+        
 
         // Creación de la puntuación (texto)
 
@@ -37,21 +51,45 @@ class GameScene extends Phaser.Scene {
 
     }
 
-    setupPaddleControllers() {  // CONFIGURA LOS CONTROLES DE LOS PERSONAJES ----------------------------------------------------
+    updatePlayerMovement() {  // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES CON ENTRADAS POR TECLADO ----------------------------------------------------
         this.input.keyboard.on('keydown-LEFT', () => {          
-            this.paddle.body.setVelocityX(-this.paddle_speed);
+            this.player1.body.setVelocityX(-this.movement_speed);
         });
 
         this.input.keyboard.on('keyup-LEFT', () => {
-            this.paddle.body.setVelocityX(0);
+            this.player1.body.setVelocityX(0);
         });
 
         this.input.keyboard.on('keydown-RIGHT', () => {
-            this.paddle.body.setVelocityX(this.paddle_speed);
+            this.player1.body.setVelocityX(this.movement_speed);
         });
 
         this.input.keyboard.on('keyup-RIGHT', () => {
-            this.paddle.body.setVelocityX(0);
+            this.player1.body.setVelocityX(0);
+        });
+
+        this.input.keyboard.on('keydown-UP', () => {
+            
+        });
+
+        this.input.keyboard.on('keydown-A', () => {          
+            this.player2.body.setVelocityX(-this.movement_speed);
+        });
+
+        this.input.keyboard.on('keyup-A', () => {
+            this.player2.body.setVelocityX(0);
+        });
+
+        this.input.keyboard.on('keydown-D', () => {
+            this.player2.body.setVelocityX(this.movement_speed);
+        });
+
+        this.input.keyboard.on('keyup-D', () => {
+            this.player2.body.setVelocityX(0);
+        });
+
+        this.input.keyboard.on('keydown-W', () => {
+            
         });
     }
 
@@ -75,6 +113,6 @@ class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
-
+        this.updatePlayerMovement();
     }
 }
