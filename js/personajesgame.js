@@ -7,14 +7,16 @@ class PersonajesGame extends Phaser.Scene {
         // Cargar recursos
         this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');
         this.load.image("background1_image", "assets/Fondos/fondoPersonajes.png");
-        this.load.image("ready_button1", "assets/Botones/botonListo.png");
-        this.load.image("ready_button2", "assets/Botones/botonListo.png");
+        this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
+        this.load.image("ready_button2", "assets/Interfaz/botonListo.png");
 
         // Personajes
         this.load.image('character1', 'assets/Personajes/perretxiko.png');
         this.load.image('character2', 'assets/Personajes/champichip.png');
         this.load.image('character3', 'assets/Personajes/champistar.png');
         this.load.image("highlight", "assets/Botones/highlight.png");
+        this.load.image("highlight", "assets/Interfaz/highlight.png");
+
     }
 
     create() {
@@ -163,6 +165,4 @@ class PersonajesGame extends Phaser.Scene {
             }
         };
     }
-    
-    
 }
