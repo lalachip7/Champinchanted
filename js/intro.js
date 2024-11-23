@@ -10,9 +10,9 @@ class IntroGame extends Phaser.Scene {
         this.load.image("background_image", "assets/Fondos/fondo.png");                        // Imagen de fondo
 
 
-        this.load.image("start_button", "assets/Botones/botonJugar.png");                       // Botón de comenzar partida
-        this.load.image("options_button", "assets/Botones/ajustes.png");                        // Botón de ajustes
-        this.load.image("exit_button", "assets/Botones/botonSalir.png");                        // Botón de ajustes
+        this.load.image("start_button", "assets/Interfaz/botonJugar.png");                       // Botón de comenzar partida
+        this.load.image("options_button", "assets/Interfaz/ajustes.png");                        // Botón de ajustes
+        this.load.image("exit_button", "assets/Interfaz/botonSalir.png");                        // Botón de ajustes
 
     }
 
