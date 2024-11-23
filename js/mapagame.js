@@ -4,76 +4,82 @@ class MapaGame extends Phaser.Scene {
     }
 
     preload() {
-        // imágenes de los mapas
-        this.load.image('invierno', 'assets/Mapas/');
-        this.load.image('primavera', 'assets/Mapas/');
-        this.load.image('otoño', 'assets/Mapas/Mapa_de_otoño');
-        this.load.image('verano', 'assets/Mapas/');
+        // Fondo e imágenes de los mapas
+        this.load.image("background2_image", "assets/Fondos/fondoMapas.png");
 
-        this.load.image("ready_button", "assets/Botones/");
+        this.load.image('invierno', 'assets/Fondos/invierno.png');
+        this.load.image('primavera', 'assets/Fondos/primavera.png');
+        this.load.image('otoño', 'assets/Fondos/otoño.png');
+        this.load.image('verano', 'assets/Fondos/verano.png');
+
+        this.load.image("options_button", "assets/Interfaz/ajustes.png");
+        this.load.image("readyMapa1_button", "assets/Interfaz/botonVeranoMapa.png");
+        this.load.image("readyMapa2_button", "assets/Interfaz/botonOtoñoMapa.png");
+        this.load.image("readyMapa3_button", "assets/Interfaz/botonInviernoMapa.png");
+        this.load.image("readyMapa4_button", "assets/Interfaz/botonPrimaveraMapa.png");
     }
 
     create() {
-        const ready_button = this.add.image(990, 300, "ready_button")   //  regular hecho el acceso
+        // Fondo
+        this.add.image(0, 0, "background2_image")
+            .setOrigin(0)
+            .setDisplaySize(this.scale.width, this.scale.height);
+
+        // Botón de configuración
+        this.add.image(this.scale.width - 50, 50, "options_button")
+            .setOrigin(0.75, 0.25)
+            .setScale(0.15)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop("MapaGame");
+                this.scene.start("AjustesScene");
+            });
+
+        // Mostrar imágenes de los mapas en diferentes posiciones
+
+        const mapas = [
+            { key: 'otoño', x: this.scale.width / 3.45, y: this.scale.height / 3.5 },
+            { key: 'invierno', x: (this.scale.width / 1.41), y: this.scale.height / 3.5 },
+            // { key: 'primavera', x: this.scale.width / 4, y: (this.scale.height / 3) * 2 },
+            // { key: 'verano', x: (this.scale.width / 4) * 3, y: (this.scale.height / 3) * 2 }
+        ];
+
+        mapas.forEach((mapa) => {
+            this.add.image(mapa.x, mapa.y, mapa.key)
+                .setScale(0.30); // Ajustar tamaño de las imágenes
+        });
+
+        this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button")
+        .setScale(0.20)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.scene.stop("MapaGame");
+            this.scene.start("GameScene");
+        });
+
+        this.add.image(this.scale.width / 2.5, this.scale.height - 600, "readyMapa2_button")
+            .setScale(0.20)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.stop("MapaGame");
                 this.scene.start("GameScene");
+            });
+
+        
+        this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button")
+        .setScale(0.20)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.scene.stop("MapaGame");
+            this.scene.start("GameScene");
         });
 
-
-        this.maps = ['invierno', 'primavera', 'otoño', 'verano'];
-        this.currentMapIndex = 0;
-
-        this.add.text(400, 50, 'SELECT MAP', {
-            fontSize: '32px',
-            fill: '#ff9900'
-        }).setOrigin(0.5);
-
-        // Mostrar el mapa actual
-        this.mapDisplay = this.add.image(400, 300, this.maps[this.currentMapIndex]).setScale(1.5);
-
-        // Botones izq y derech
-        this.leftArrow = this.add.text(100, 300, '<', {
-            fontSize: '48px',
-            fill: '#ff9900'
-        }).setOrigin(0.5).setInteractive();
-
-        this.rightArrow = this.add.text(700, 300, '>', {
-            fontSize: '48px',
-            fill: '#ff9900'
-        }).setOrigin(0.5).setInteractive();
-
-
-        this.leftArrow.on('pointerdown', () => this.changeMap(-1));
-        this.rightArrow.on('pointerdown', () => this.changeMap(1));
-
-
-        this.readyText = this.add.text(400, 500, 'Ready', {
-            fontSize: '24px',
-            fill: '#ff0000',
-            backgroundColor: '#ffff00'
-        }).setOrigin(0.5).setInteractive();
-
-        this.readyText.on('pointerdown', () => {
-
-            this.scene.start('GameScene', { selectedMap: this.maps[this.currentMapIndex] });
+        this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button")
+        .setScale(0.20)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.scene.stop("MapaGame");
+            this.scene.start("GameScene");
         });
     }
-
-    changeMap(direction) {
-
-        this.currentMapIndex = (this.currentMapIndex + direction + this.maps.length) % this.maps.length;
-        this.mapDisplay.setTexture(this.maps[this.currentMapIndex]);
-    }
-};
-
-
-
-
-
-
-
-
-
-
+}
