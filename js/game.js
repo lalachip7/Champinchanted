@@ -13,6 +13,18 @@ class GameScene extends Phaser.Scene {
         this.scorePlayer2 = 0;      // Rondas ganadas por el jugador 2
         this.rounds = 0;            // Número de rondas jugadas
 
+        this.sizeX1 = 120;
+        this.sizeY1 = 119;
+        this.offsetXR1 = 28;
+        this.offsetXL1 = 39;
+        this.offsetY1 = 39.25;
+
+        this.sizeX2 = 120;
+        this.sizeY2 = 119;
+        this.offsetXR2 = 28;
+        this.offsetXL2 = 39;
+        this.offsetY2 = 39.25;
+
         // provisional
         this.point = false;
         this.j1 = 1;
@@ -120,34 +132,86 @@ class GameScene extends Phaser.Scene {
 
         // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
         
-        let personaje1 = 'champichip';      // Champichip por defecto
+        let personaje1 = 'champichip';          // Champichip por defecto
+        
         if (this.j1 === 2) {                     // Champistar
             personaje1 = 'champistar';
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
+
+
         } else if (this.j1 === 3) {              // Perretxiko
             personaje1 = 'perretxiko';
+            this.sizeX1 = 120;
+            this.sizeY1 = 119;
+            this.offsetXR1 = 30;
+            this.offsetXL1 = 30;
+            this.offsetY1 = 35;
+
         } else if (this.j1 === 4) {              // Mariñon
             //personaje1 = 'mariñon';
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
+
+
         } else if (this.j1 === 5) {              // Biblioseta
             //personaje1 = 'biblioseta';
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
+
         }
 
         // ELECCIÓN PERSONAJE JUGADOR 2 .......................................................................................
        
-        let personaje2 = 'champichip';      // Champichip por defecto
+        let personaje2 = 'champichip';           // Champichip por defecto
+
         if (this.j2 === 2) {                     // Champistar
             personaje2 = 'champistar';
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
+
         } else if (this.j2 === 3) {              // Perretxiko
             personaje2 = 'perretxiko';
+            this.sizeX2 = 120;
+            this.sizeY2 = 119;
+            this.offsetXR2 = 30;
+            this.offsetXL2 = 30;
+            this.offsetY2 = 35;
+
         } else if (this.j2 === 4) {              // Mariñon
             //personaje2 = 'mariñon';
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
+
         } else if (this.j2 === 5) {              // Biblioseta
             //personaje2 = 'biblioseta';
+            //this.sizeX1 = ;
+            //this.sizeX1 = ;
+            //this.sizeY1 = ;
+            //this.offsetXR1 = ;
+            //this.offsetXL1 = ;
+            //this.offsetY1 = ;
         }
 
         // ELECCIÓN MUNDO .....................................................................................................
 
-        let fondo = 'background_o';         // Otoño por defecto
-        let suelo = 'ground_o';
+        let fondo = 'background_o';             // Otoño por defecto
+        let suelo = 'ground_i';
         let bandera = 'flag_o';
         let casa = 'house_o'
         let pared = 'wall_o';
@@ -195,7 +259,7 @@ class GameScene extends Phaser.Scene {
         }
 
         // CREACIÓN DEL MUNDO DEL JUEGO .......................................................................................
-        
+
         this.background = this.add.image(960, 540, fondo);                              // Fondo
         this.background.alpha = 0.5;
 
@@ -204,9 +268,7 @@ class GameScene extends Phaser.Scene {
         this.ground.body.allowGravity = false;     
 
         this.platforms = this.physics.add.staticGroup();                                // Plataformas
-        this.platforms.add.create(200, 400, pared);
-
-
+        this.platforms.create(200, 400, pared);
 
 
         
@@ -223,8 +285,16 @@ class GameScene extends Phaser.Scene {
         this.housePlayer2.body.allowGravity = false;
         this.housePlayer2.setScale(0.4);
 
-        this.player1 = this.physics.add.sprite(900, 800, personaje1);                   // Personaje 1
-        this.player1.setCollideWorldBounds(true);   
+        this.player1 = this.physics.add.sprite(900, 700, personaje1);                   // Personaje 1 
+        this.player1.body.setSize(this.sizeX1, this.sizeY1); 
+        this.player1.body.setOffset(this.offsetXL1, this.offsetY1);
+
+        this.anims.create({
+            key: 'caminar1',    // Animación de caminar personaje 1
+            frames: this.anims.generateFrameNumbers(personaje1, {start: 0, end: 0}), 
+            frameRate: 10,
+            repeat: -1          
+        });
 
         this.anims.create({     // Animación de salto personaje 1
             key: 'saltar1',
@@ -240,11 +310,19 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         })
 
-        this.player2 = this.physics.add.sprite(1200, 800, personaje2);                  // Personaje 2
-        this.player2.setCollideWorldBounds(true);   
+        this.player2 = this.physics.add.sprite(1200, 700, personaje2);                  // Personaje 2 
+        this.player2.body.setSize(this.sizeX2, this.sizeY2); 
+        this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
 
         this.anims.create({
-            key: 'saltar2',     // Animación de salto personaje 2
+            key: 'caminar2',     // Animación de caminar personaje 1
+            frames: this.anims.generateFrameNumbers(personaje2, {start: 0, end: 0}), 
+            frameRate: 10,
+            repeat: -1           
+        });
+
+        this.anims.create({
+            key: 'saltar2',      // Animación de salto personaje 2
             frames: this.anims.generateFrameNumbers(personaje2, {start:0, end: 4}),
             frameRate: 10,
             repeat: 0
@@ -261,6 +339,9 @@ class GameScene extends Phaser.Scene {
 
 
         // COLISIONES .........................................................................................................
+
+        this.player1.setCollideWorldBounds(true);                       // Con los límites del mundo
+        this.player2.setCollideWorldBounds(true);  
 
         this.physics.add.collider(this.player1, this.ground);           // Con el suelo
         this.physics.add.collider(this.player2, this.ground);
@@ -285,7 +366,6 @@ class GameScene extends Phaser.Scene {
         );        
 
 
-
         // Create power-up more speed
         // this.morespeed = this.add.rectangle(400, 250, 100, 20, 0xff00f0);
         // this.physics.add.existing(this.morespeed);
@@ -305,6 +385,7 @@ class GameScene extends Phaser.Scene {
         this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);   
 
     }
+
 
     playerHasFlag(player) {
         return true; // Devuelve true si el jugador tiene la bandera
@@ -338,9 +419,13 @@ class GameScene extends Phaser.Scene {
         if (this.leftKeyPlayer1.isDown) {                                   
             this.player1.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player1.flipX = false;
+            this.player1.body.setOffset(this.offsetXL1, this.offsetY1);         
+
         } else if (this.rightKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player1.flipX = true;                                          // Cambiar de sentido el sprite
+            this.player1.body.setOffset(this.offsetXR1, this.offsetY1);         // Cambiar el offset
+
         } else {
             this.player1.body.setVelocityX(0);                                  // No moverse
         }
@@ -348,24 +433,36 @@ class GameScene extends Phaser.Scene {
         // Salto del jugador 1
         if (this.upKeyPlayer1.isDown && this.player1.body.touching.down) {
             this.player1.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
-            this.player1.anims.play('saltar1', true);                           // Animación de saltar              
+            this.player1.anims.play('saltar1', true);                           // Animación de saltar     
+
+        } else if (this.player1.body.touching.down) {
+            this.player1.anims.stop();                                          // Detiene la animación de salto
+            this.player1.anims.play('caminar1', true);                          // Activa la de caminar
         }
 
         // Movimiento del jugador 2
         if (this.leftKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player2.flipX = false;
+            this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
+
         } else if (this.rightKeyPlayer2.isDown) {   
             this.player2.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player2.flipX = true;                                          // Cambiar de sentido el sprite
+            this.player2.body.setOffset(this.offsetXR2, this.offsetY2);         // Cambiar el offset
+
         } else {
-            this.player2.body.setVelocityX(0);
+            this.player2.body.setVelocityX(0);                                  // No moverse
         }
 
         // Salto del jugador 2
         if (this.upKeyPlayer2.isDown && this.player2.body.touching.down) {
             this.player2.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
             this.player2.anims.play('saltar2', true);                           // Animación de saltar
+
+        } else if (this.player2.body.touching.down) {
+            this.player2.anims.stop();                                          // Detiene la animación de salto
+            this.player2.anims.play('caminar2', true);                          // Activa la de caminar
         }
     }
 
