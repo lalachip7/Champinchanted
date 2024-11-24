@@ -13,7 +13,15 @@ class GameScene extends Phaser.Scene {
         this.scorePlayer2 = 0;      // Rondas ganadas por el jugador 2
         this.rounds = 0;            // Número de rondas jugadas
 
-        this.sizeX1 = 120;
+        this.mundo = this.registry.get('mapa');     // Mundo elegido
+        this.j1 = this.registry.get('personajeJ2'); // Personaje elegido por el jugador 1                   
+        this.j2 = this.registry.get('personajeJ1'); // Personaje elegido por el jugador 2
+
+        this.player1HasFlag = false;   // Indica si el jugador 1 tiene la bandera
+        this.player2HasFlag = false;   // Indica si el jugador 2 tiene la bandera
+        this.isCaptured = false;
+
+        this.sizeX1 = 120;          
         this.sizeY1 = 119;
         this.offsetXR1 = 28;
         this.offsetXL1 = 39;
@@ -24,13 +32,16 @@ class GameScene extends Phaser.Scene {
         this.offsetXR2 = 28;
         this.offsetXL2 = 39;
         this.offsetY2 = 39.25;
-
+       
         // provisional
-        this.point = false;
-        this.j1 = 1;
-        this.j2 = 3;
-        this.mundo = 1;
-        
+        this.wait = false;
+        this.flagIsReset = true;
+
+        // Semáforos
+        this.lockCollision = false;
+        this.lockFlagP1 = false;
+        this.lockFlagP2 = false;
+        this.captureFlag = true;
     }
 
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
@@ -133,18 +144,21 @@ class GameScene extends Phaser.Scene {
         // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
         
         let personaje1 = 'champichip';          // Champichip por defecto
+        let personaje1i = 'champichip_i';       
         
         if (this.j1 === 2) {                     // Champistar
             personaje1 = 'champistar';
-            //this.sizeX1 = ;
-            //this.sizeY1 = ;
-            //this.offsetXR1 = ;
-            //this.offsetXL1 = ;
-            //this.offsetY1 = ;
+            personaje1i = 'champistar_i'; 
+            this.sizeX1 = 140;
+            this.sizeY1 = 119;
+            this.offsetXR1 = 20;
+            this.offsetXL1 = 25;
+            this.offsetY1 = 28;
 
 
         } else if (this.j1 === 3) {              // Perretxiko
             personaje1 = 'perretxiko';
+            personaje1i = 'perretxiko_i'; 
             this.sizeX1 = 120;
             this.sizeY1 = 119;
             this.offsetXR1 = 30;
@@ -153,6 +167,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j1 === 4) {              // Mariñon
             //personaje1 = 'mariñon';
+            //personaje1i = 'mariñon_i'; 
             //this.sizeX1 = ;
             //this.sizeY1 = ;
             //this.offsetXR1 = ;
@@ -162,6 +177,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j1 === 5) {              // Biblioseta
             //personaje1 = 'biblioseta';
+            //personaje1i = 'biblioseta_i'; 
             //this.sizeX1 = ;
             //this.sizeY1 = ;
             //this.offsetXR1 = ;
@@ -173,17 +189,20 @@ class GameScene extends Phaser.Scene {
         // ELECCIÓN PERSONAJE JUGADOR 2 .......................................................................................
        
         let personaje2 = 'champichip';           // Champichip por defecto
+        let personaje2i = 'champichip_i';
 
         if (this.j2 === 2) {                     // Champistar
             personaje2 = 'champistar';
-            //this.sizeX1 = ;
-            //this.sizeY1 = ;
-            //this.offsetXR1 = ;
-            //this.offsetXL1 = ;
-            //this.offsetY1 = ;
+            personaje2i = 'champistar_i'; 
+            this.sizeX1 = 140;
+            this.sizeY1 = 119;
+            this.offsetXR1 = 20;
+            this.offsetXL1 = 25;
+            this.offsetY1 = 28;
 
         } else if (this.j2 === 3) {              // Perretxiko
             personaje2 = 'perretxiko';
+            personaje2i = 'perretxiko_i'; 
             this.sizeX2 = 120;
             this.sizeY2 = 119;
             this.offsetXR2 = 30;
@@ -192,6 +211,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j2 === 4) {              // Mariñon
             //personaje2 = 'mariñon';
+            //personaje2i = 'mariñon_i'; 
             //this.sizeX1 = ;
             //this.sizeY1 = ;
             //this.offsetXR1 = ;
@@ -200,6 +220,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j2 === 5) {              // Biblioseta
             //personaje2 = 'biblioseta';
+            //personaje2i = 'biblioseta_i'; 
             //this.sizeX1 = ;
             //this.sizeX1 = ;
             //this.sizeY1 = ;
@@ -211,7 +232,7 @@ class GameScene extends Phaser.Scene {
         // ELECCIÓN MUNDO .....................................................................................................
 
         let fondo = 'background_o';             // Otoño por defecto
-        let suelo = 'ground_i';
+        let suelo = 'ground_o';
         let bandera = 'flag_o';
         let casa = 'house_o'
         let pared = 'wall_o';
@@ -269,10 +290,10 @@ class GameScene extends Phaser.Scene {
 
         this.platforms = this.physics.add.staticGroup();                                // Plataformas
         this.platforms.create(200, 400, pared);
-
+        // Ir colocando todas las plataformas del mapa...
 
         
-        this.flag = this.physics.add.image(700, 400, bandera);                          // Bandera
+        this.flag = this.physics.add.image(700, 900, bandera);                          // Bandera
         this.flag.setScale(0.2);
         this.flag.body.allowGravity = false;
         this.flag.setCollideWorldBounds(true);
@@ -291,7 +312,7 @@ class GameScene extends Phaser.Scene {
 
         this.anims.create({
             key: 'caminar1',    // Animación de caminar personaje 1
-            frames: this.anims.generateFrameNumbers(personaje1, {start: 0, end: 0}), 
+            frames: this.anims.generateFrameNumbers(personaje1, {start: 0, end: 4}), 
             frameRate: 10,
             repeat: -1          
         });
@@ -316,7 +337,7 @@ class GameScene extends Phaser.Scene {
 
         this.anims.create({
             key: 'caminar2',     // Animación de caminar personaje 1
-            frames: this.anims.generateFrameNumbers(personaje2, {start: 0, end: 0}), 
+            frames: this.anims.generateFrameNumbers(personaje2, {start: 0, end: 4}), 
             frameRate: 10,
             repeat: -1           
         });
@@ -335,7 +356,33 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         })
 
-        // TEXTO DE INTERFAZ ..................................................................................................
+        // INTERFAZ ..........................................................................................................
+        const configText = {
+            style: {
+                fontFamily: 'calibri',
+                color: '#3c2201',
+                fontSize: '25px'
+            }
+        }
+        
+        this.player1Rectangle = this.add.image(170, 75, 'rectangle').setScale(0.5);
+        this.player1Character = this.add.image(75, 75, personaje1i).setScale(0.5);
+
+        this.player1Points = this.add.image(140, 55, 'star').setScale(0.7);
+        this.player1Life = this.add.image(140, 95, 'heart').setScale(0.7);
+
+        this.p1Points = this.add.text(170, 45, this.scorePlayer1 + ' puntos', configText.style);
+        this.p1Life = this.add.text(170, 82, this.lifePlayer1 + ' vida', configText.style);
+
+
+        this.player2Rectangle = this.add.image(1750, 75, 'rectangle').setScale(0.5);
+        this.player1Character = this.add.image(1655 , 75, personaje2i).setScale(0.5);
+
+        this.player2Points = this.add.image(1720, 55, 'star').setScale(0.7);
+        this.player2Life = this.add.image(1720, 95, 'heart').setScale(0.7);
+
+        this.p2Points = this.add.text(1750, 45, this.scorePlayer2 + ' puntos', configText.style);
+        this.p2Life = this.add.text(1750, 82, this.lifePlayer2 + ' vida', configText.style);
 
 
         // COLISIONES .........................................................................................................
@@ -353,7 +400,7 @@ class GameScene extends Phaser.Scene {
             this.player1,           // Jugador 1
             this.housePlayer1,      // Con casa 1
             (player, house) => this.playerToHouse(player, house),       
-            () => this.playerHasFlag(this.player1), 
+            () => this.currentFlagHolder === this.player1, 
             this
         );
         
@@ -361,10 +408,12 @@ class GameScene extends Phaser.Scene {
             this.player2,           // Jugador 2
             this.housePlayer2,      // Con casa 2
             (player, house) => this.playerToHouse(player, house), 
-            () => this.playerHasFlag(this.player2), 
+            () => this.currentFlagHolder === this.player2, 
             this
         );        
 
+        this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1);    // Con la bandera
+        this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2,);
 
         // Create power-up more speed
         // this.morespeed = this.add.rectangle(400, 250, 100, 20, 0xff00f0);
@@ -373,44 +422,95 @@ class GameScene extends Phaser.Scene {
         // this.morespeed.body.setAllowGravity(false);
 
 
-
         // RECONOCIMIENTO DE TECLAS ...........................................................................................
 
-        this.leftKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        this.rightKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        this.upKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.leftKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.rightKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.upKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.throwKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-        this.leftKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.rightKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);   
+        this.leftKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.rightKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);   
+        this.throwKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    }
+    
+    collectFlagPlayer1() {
+        if (!this.player1HasFlag && this.captureFlag) {             // Si no está bloqueado para el jugador 1 ni estaba en posesión de la bandera
+            this.captureFlag = false;
+            this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
+            this.player2HasFlag = false;
 
+            this.isCaptured = true;                                 // Está capturada
+            this.currentFlagHolder = this.player1;                  // Por el jugador 1
+            console.log('El jugador 1 tiene ahora la bandera');
+
+            setTimeout(this.captureFlag = true, 2000);              // Actualiza los bloqueos (desbloquea al otro)
+        } 
     }
 
+    collectFlagPlayer2() {
+        if (!this.player2HasFlag && this.captureFlag) {             // Si no está bloqueado para el jugador 2 ni estaba en posesión de la bandera
+            this.captureFlag = false;
+            this.player2HasFlag = true;                             // El jugador 2 tiene ahora la bandera
+            this.player1HasFlag = false;
 
-    playerHasFlag(player) {
-        return true; // Devuelve true si el jugador tiene la bandera
+            this.isCaptured = true;                                 // Está capturada
+            this.currentFlagHolder = this.player2;                  // Por el jugador 2
+            console.log('El jugador 2 tiene ahora la bandera');
+            
+            setTimeout(this.captureFlag = true, 2000);              // Desbloquea al jugador 1 y bloquea al 2
+        } 
     }
 
-    playerToHouse(player, house) {
+    playerToHouse(player) {
+        if (this.lockCollision) {
+            console.log("Exit playerToHouse");
+            return
+        }
+        this.lockCollision = true;
 
-        if (this.playerHasFlag(player) && this.point === false) {
-            if (player === this.player1) {
-                this.scorePlayer1++;
-                console.log('Score Player 1: ${this.scorePlayer1}');
-                this.point = true;
-                this.nextRound();
+        if (player === this.player1 && this.player1HasFlag) {
+            this.scorePlayer1++;
+            this.p1Points.setText(this.scorePlayer1 + ' puntos');
 
-            } else if (player === this.player2) {
-                this.scorePlayer2++;
-                console.log('Score Player 2: ${this.scorePlayer2}');
-                this.point = true;
-                this.nextRound();
-            }
+            this.physics.world.removeCollider(this.player1, this.housePlayer1);      // Desactiva temporalmente las colisiones con la casa
+
+            this.resetFlag();
+            this.nextRound();
+
+        } else if (player === this.player2 && this.player2HasFlag) {
+            this.scorePlayer2++;
+            this.p2Points.setText(this.scorePlayer2 + ' puntos');
+
+            this.physics.world.removeCollider(this.player2, this.housePlayer2);      // Desactiva temporalmente las colisiones con la casa
+
+            this.resetFlag();
+            this.nextRound();
         }
     }
 
-    nextRound() {
-        this.rounds++;
+    resetFlag() {
+        this.player1HasFlag = false;
+        this.player2HasFlag = false;
+        this.currentFlagHolder = null;
+        this.isCaptured = false;
+
+        this.flag.setPosition(600, 700);
+    }
+
+    playerHasSpell(player) {
+
+    }
+
+    throwSpell() {  // LANZAR HECHIZOS ----------------------------------------------------------------------------------------
+        if (this.throwKeyPlayer1.isDown && this.playerHasSpell(this.player1)) {   
+            // Lanza el hechizo
+        }
+
+        if (this.throwKeyPlayer2.isDown && this.playerHasSpell(this.player2)) {   
+            // Lanza el hechizo
+        }
     }
 
     updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
@@ -419,12 +519,14 @@ class GameScene extends Phaser.Scene {
         if (this.leftKeyPlayer1.isDown) {                                   
             this.player1.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player1.flipX = false;
-            this.player1.body.setOffset(this.offsetXL1, this.offsetY1);         
+            this.player1.body.setOffset(this.offsetXL1, this.offsetY1);   
+            this.player1.anims.play('caminar1', true);         
 
         } else if (this.rightKeyPlayer1.isDown) {
             this.player1.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player1.flipX = true;                                          // Cambiar de sentido el sprite
             this.player1.body.setOffset(this.offsetXR1, this.offsetY1);         // Cambiar el offset
+            this.player1.anims.play('caminar1', true);   
 
         } else {
             this.player1.body.setVelocityX(0);                                  // No moverse
@@ -440,16 +542,22 @@ class GameScene extends Phaser.Scene {
             this.player1.anims.play('caminar1', true);                          // Activa la de caminar
         }
 
+        if (this.lifePlayer1 <= 0) {                                            // Animación de muerte
+            this.player1.anims.play('morir1', true);  
+        }
+
         // Movimiento del jugador 2
         if (this.leftKeyPlayer2.isDown) {
             this.player2.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player2.flipX = false;
             this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
+            this.player2.anims.play('caminar2', true);   
 
         } else if (this.rightKeyPlayer2.isDown) {   
             this.player2.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player2.flipX = true;                                          // Cambiar de sentido el sprite
             this.player2.body.setOffset(this.offsetXR2, this.offsetY2);         // Cambiar el offset
+            this.player2.anims.play('caminar2', true);   
 
         } else {
             this.player2.body.setVelocityX(0);                                  // No moverse
@@ -464,16 +572,34 @@ class GameScene extends Phaser.Scene {
             this.player2.anims.stop();                                          // Detiene la animación de salto
             this.player2.anims.play('caminar2', true);                          // Activa la de caminar
         }
-    }
 
+        if (this.lifePlayer2 <= 0) {
+            this.player2.anims.play('morir2', true);                            // Animación de muerte
+        }
+    }
 
     startGame() {   // COMIENZA EL JUEGO --------------------------------------------------------------------------------------
         this.gameStarted = true;            
     }
+    
+    nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
+        this.rounds++;                              // Aumenta el contador de rondas
 
+        this.player1.setPosition(900, 700);         // Resetea la posición de los jugadores
+        this.player2.setPosition(1200, 700);
 
-    updateScore(points) {   // ACTUALIZA LA PUNTUACIÓN ------------------------------------------------------------------------
-        
+        this.physics.world.enable(this.player1);    // Reactiva las colisiones con las casas
+        this.physics.world.enable(this.player2);
+
+        this.lifePlayer1 = 25;                      // Resetea la vida de los jugadores
+        this.lifePlayer2 = 25;
+
+        this.physics.add.collider(this.player1, this.housePlayer1);
+        this.physics.add.collider(this.player2, this.housePlayer2);
+
+        this.lockCollision = false;
+
+        // Cambiar las plataformas del mundo (opcional)
     }
 
     checkWinCondition() {   // COMPRUEBA SI SE CUMPLE LA CONDICIÓN DE FIN DE PARTIDA O NUEVA RONDA ----------------------------
@@ -488,13 +614,30 @@ class GameScene extends Phaser.Scene {
             this.nextRound;
         }
         
-        if (this.rounds > 3) {                  // Cuando han pasado 3 rondas
+        if (this.rounds >= 3) {                  // Cuando han pasado 3 rondas
             this.scene.start("EndScene", {})    // Carga la escena de fin de partida
         }
+    }
+
+    activeFlagP1() {
+        this.lockFlagP1 = false;
+        this.lockFlagP2 = true;
+        console.log('Cambio posesión bandera realizado')
+        
+    }
+
+    activeFlagP2() {
+        this.lockFlagP2 = false;
+        this.lockFlagP1 = true;
+        console.log('Cambio posesión bandera realizado')
     }
 
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
+
+        if (this.isCaptured) {
+            this.flag.setPosition(this.currentFlagHolder.x + 50, this.currentFlagHolder.y - 50);
+        }
     }
 }
