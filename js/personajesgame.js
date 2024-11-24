@@ -44,6 +44,8 @@ class PersonajesGame extends Phaser.Scene {
             { key: 'character1', name: 'Perretxiko' },
             { key: 'character2', name: 'ChampiChip' },
             { key: 'character3', name: 'ChampiStar' },
+            { key: 'character4', name: 'Mariñon' },
+            { key: 'character5', name: 'Biblioseta' },
         ];
 
         // Mostrar selección del jugador 1
@@ -53,7 +55,7 @@ class PersonajesGame extends Phaser.Scene {
         this.player1SelectedText = this.add.text(575, 375, '', {
             fontSize: '24px',
             color: '#ffffff',
-        }).setOrigin(0.5);
+        }).setOrigin(0.5)
 
         // Mostrar selección del jugador 2
         this.player2SelectedImage = this.add.image(1350, 275, null)
@@ -87,6 +89,7 @@ class PersonajesGame extends Phaser.Scene {
                 .setScale(0.6)
                 .on('pointerdown', () => {
                     this.selectCharacter(player, char, charImage, selectedImage, selectedText);
+                    this.updatePlayersCharacters(player, char);
                 });
 
             // Deshabilitar visualmente si ya está seleccionado
@@ -109,7 +112,7 @@ class PersonajesGame extends Phaser.Scene {
 
         // Actualizar selección del jugador
         this.selectedCharacters[player] = character.key;
-
+        
         // Mostrar personaje seleccionado en la parte superior
         selectedImage.setTexture(character.key).setVisible(true);
         selectedText.setText(character.name);
@@ -164,5 +167,33 @@ class PersonajesGame extends Phaser.Scene {
                 this.scene.start("MapaGame");
             }
         };
+    }
+
+    updatePlayersCharacters(player, character) {
+        if (player === "player1") {
+            if (character.key === "character2") {
+                this.registry.set('personajeJ1', 1);
+            } else if (character.key === "character3") {
+                this.registry.set('personajeJ1', 2);
+            } else if (character.key === "character1") {
+                this.registry.set('personajeJ1', 3);
+            } else if (character.key === "character4") {
+                this.registry.set('personajeJ1', 4);
+            } else if (character.key === "character5") {
+                this.registry.set('personajeJ1', 5);
+            }
+        } else {
+            if (character.key === "character2") {
+                this.registry.set('personajeJ2', 1);
+            } else if (character.key === "character3") {
+                this.registry.set('personajeJ2', 2);
+            } else if (character.key === "character1") {
+                this.registry.set('personajeJ2', 3);
+            } else if (character.key === "character4") {
+                this.registry.set('personajeJ2', 4);
+            } else if (character.key === "character5") {
+                this.registry.set('personajeJ2', 5);
+            }
+        }   
     }
 }

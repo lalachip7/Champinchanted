@@ -49,35 +49,38 @@ class MapaGame extends Phaser.Scene {
                 .setScale(0.30); // Ajustar tamaño de las imágenes
         });
 
-        this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button")
+        this.add.image(this.scale.width / 2.5, this.scale.height - 600, "readyMapa2_button")    // Mapa otoño
         .setScale(0.20)
         .setInteractive()
         .on('pointerdown', () => {
-            this.scene.stop("MapaGame");
+            this.registry.set('mapa', 1);
+            this.scene.stop("MapaGame"); 
             this.scene.start("GameScene");
-        });
-
-        this.add.image(this.scale.width / 2.5, this.scale.height - 600, "readyMapa2_button")
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.stop("MapaGame");
-                this.scene.start("GameScene");
-            });
-
+        });   
         
-        this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button")
+        this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button")   // Mapa invierno
         .setScale(0.20)
         .setInteractive()
         .on('pointerdown', () => {
+            this.registry.set('mapa', 2);
             this.scene.stop("MapaGame");
             this.scene.start("GameScene");
         });
 
-        this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button")
+        this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button")   // Mapa primavera
         .setScale(0.20)
         .setInteractive()
         .on('pointerdown', () => {
+            this.registry.set('mapa', 3);
+            this.scene.stop("MapaGame");
+            this.scene.start("GameScene");
+        });
+
+        this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button")    // Mapa verano
+        .setScale(0.20)
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.registry.set('mapa', 4);
             this.scene.stop("MapaGame");
             this.scene.start("GameScene");
         });
