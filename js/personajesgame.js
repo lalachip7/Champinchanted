@@ -5,7 +5,6 @@ class PersonajesGame extends Phaser.Scene {
 
     preload() {
         // Cargar recursos
-        this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');
         this.load.image("background1_image", "assets/Fondos/fondoPersonajes.png");
         this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
         this.load.image("ready_button2", "assets/Interfaz/botonListo.png");
