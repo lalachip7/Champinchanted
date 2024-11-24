@@ -13,6 +13,7 @@ class PersonajesGame extends Phaser.Scene {
         this.load.image('character1', 'assets/Personajes/perretxiko.png');
         this.load.image('character2', 'assets/Personajes/champichip.png');
         this.load.image('character3', 'assets/Personajes/champistar.png');
+        this.load.image('character4', 'assets/Personajes/mariñon.png');
         this.load.image("highlight", "assets/Botones/highlight.png");
         this.load.image("highlight", "assets/Interfaz/highlight.png");
 
