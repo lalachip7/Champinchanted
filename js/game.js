@@ -210,13 +210,13 @@ class GameScene extends Phaser.Scene {
             this.offsetY2 = 35;
 
         } else if (this.j2 === 4) {              // Mariñon
-            //personaje2 = 'mariñon';
-            //personaje2i = 'mariñon_i'; 
-            //this.sizeX1 = ;
-            //this.sizeY1 = ;
-            //this.offsetXR1 = ;
-            //this.offsetXL1 = ;
-            //this.offsetY1 = ;
+            personaje2 = 'mariñon';
+            personaje2i = 'mariñon_i'; 
+            this.sizeX1 = 140;
+            this.sizeY1 = 119;
+            this.offsetXR1 = 20;
+            this.offsetXL1 = 25;
+            this.offsetY1 = 28;
 
         } else if (this.j2 === 5) {              // Biblioseta
             //personaje2 = 'biblioseta';
@@ -396,24 +396,28 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player1, this.platforms);        // Con las plataformas
         this.physics.add.collider(this.player2, this.platforms);
 
-        this.physics.add.overlap(                                       // Con las casas
+        this.physics.add.collider(                                       // Con las casas
             this.player1,           // Jugador 1
             this.housePlayer1,      // Con casa 1
             (player, house) => this.playerToHouse(player, house),       
-            () => this.currentFlagHolder === this.player1, 
+            null,
+            //() => this.currentFlagHolder === this.player1, 
             this
         );
         
-        this.physics.add.overlap(
+        this.physics.add.collider(
             this.player2,           // Jugador 2
             this.housePlayer2,      // Con casa 2
             (player, house) => this.playerToHouse(player, house), 
-            () => this.currentFlagHolder === this.player2, 
+            null,
+            //() => this.currentFlagHolder === this.player2, 
             this
         );        
 
-        this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1);    // Con la bandera
-        this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2,);
+        this.playersCollision = this.physics.add.collider(this.player1, this.player2, this.switchFlag, null, this);
+
+        this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1, null, this);    // Con la bandera
+        this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2, null, this);
 
         // Create power-up more speed
         // this.morespeed = this.add.rectangle(400, 250, 100, 20, 0xff00f0);
@@ -436,31 +440,61 @@ class GameScene extends Phaser.Scene {
     }
     
     collectFlagPlayer1() {
-        if (!this.player1HasFlag && this.captureFlag) {             // Si no está bloqueado para el jugador 1 ni estaba en posesión de la bandera
+
+        this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
+        this.currentFlagHolder = this.player1;                  // Por el jugador 1
+        this.isCaptured = true;
+        this.flag.disableBody(true, true);
+
+        //this.collisionFlagP1.active = false;
+        //this.collisionFlagP2.active = false;
+        
+        console.log('El jugador 1 ha conseguido la bandera');
+
+
+        /*if (!this.player1HasFlag && this.captureFlag) {           // Si no está bloqueado para el jugador 1 ni estaba en posesión de la bandera
             this.captureFlag = false;
-            this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
             this.player2HasFlag = false;
-
             this.isCaptured = true;                                 // Está capturada
-            this.currentFlagHolder = this.player1;                  // Por el jugador 1
-            console.log('El jugador 1 tiene ahora la bandera');
-
             setTimeout(this.captureFlag = true, 2000);              // Actualiza los bloqueos (desbloquea al otro)
-        } 
+        } */
     }
 
     collectFlagPlayer2() {
-        if (!this.player2HasFlag && this.captureFlag) {             // Si no está bloqueado para el jugador 2 ni estaba en posesión de la bandera
+
+        this.player2HasFlag = true;                             // El jugador 2 tiene ahora la bandera
+        this.currentFlagHolder = this.player2;                  // Por el jugador 2
+        this.isCaptured = true;
+        this.flag.disableBody(true, true);
+
+        //this.collisionFlagP1.active = false;
+        //this.collisionFlagP2.active = false;
+        //this.physics.world.disable(this.flag);
+        console.log('El jugador 2 ha conseguido la bandera');
+
+        /*if (!this.player2HasFlag && this.captureFlag) {           // Si no está bloqueado para el jugador 2 ni estaba en posesión de la bandera
             this.captureFlag = false;
-            this.player2HasFlag = true;                             // El jugador 2 tiene ahora la bandera
+            this.player1HasFlag = false;
+            this.isCaptured = true;                                 // Está capturada
+            setTimeout(this.captureFlag = true, 2000);              // Desbloquea al jugador 1 y bloquea al 2
+        } */
+    }
+
+    switchFlag() {
+        if(this.player1HasFlag) {                                   // Si el jugador 1 tenía la bandera
+            this.player2HasFlag = true;
             this.player1HasFlag = false;
 
-            this.isCaptured = true;                                 // Está capturada
-            this.currentFlagHolder = this.player2;                  // Por el jugador 2
+            this.currentFlagHolder = this.player2;
             console.log('El jugador 2 tiene ahora la bandera');
-            
-            setTimeout(this.captureFlag = true, 2000);              // Desbloquea al jugador 1 y bloquea al 2
-        } 
+
+        } else if (this.player2HasFlag) {                           // Si el jugador 2 tenía la bandera
+            this.player2HasFlag = false;
+            this.player1HasFlag = true;
+
+            this.currentFlagHolder = this.player1;
+            console.log('El jugador 1 tiene ahora la bandera');
+        }
     }
 
     playerToHouse(player) {
