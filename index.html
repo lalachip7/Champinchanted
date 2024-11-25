@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">           
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">  
+    <meta charset="UTF-8">
     <title>Champinchanted</title>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.86.0/phaser.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.86.0/phaser.min.js"></script>
     <script src="js/intro.js"></script>
     <script src="js/game.js"></script>
     <script src="js/endgame.js"></script>
@@ -14,8 +15,9 @@
     <script src="js/mapagame.js"></script>
 
 </head>
+
 <body>
-    <div id="game-canvas"></div>        <!-- Canvas del juego controlado por Phaser -->
+    <div id="game-canvas"></div> <!-- Canvas del juego controlado por Phaser -->
     <script>
         // Configuración de Phaser -----------------------------------------------------------------------------------------
         const config = {
@@ -26,15 +28,27 @@
             backgroundColor: '#000000', // Color del fondo
 
             physics: {                  // FÍSICAS DEL JUEGO ---------------------------------------------------------------
-                default: 'arcade',      
-                arcade: {
+                default: 'matter',
+                matter: {
                     debug: true,        // Activa el modo de depuración mostrando colisiones y bordes
-                    gravity: { y: 1900 } // Aplica la gravedad vertical
+                    gravity: { y: 1 },   // Aplica la gravedad vertical
+                    setBounds: {
+                        x: 0,
+                        y: 0,
+                        width: 1920,
+                        height: 1080,
+                        thickness: 200,
+                        left: true,
+                        right: true,
+                        top: true,
+                        bottom: true,
+                    },
                 }
+
             },
             scene: [IntroGame,          // ESCENAS DEL JUEGO ---------------------------------------------------------------
-                GameScene, 
-                EndGame, 
+                GameScene,
+                EndGame,
                 AjustesGame,
                 PersonajesGame,
                 MapaGame],
@@ -51,4 +65,5 @@
 
     </script>
 </body>
+
 </html>

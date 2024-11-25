@@ -4,8 +4,8 @@ class GameScene extends Phaser.Scene {
     }
 
     init() {
-        this.movement_speed = 600;  // Velocidad de los personajes
-        this.movement_jump = 1200;  // Velocidad de los personajes
+        this.movement_speed = 6;  // Velocidad de los personajes
+        this.movement_jump = 12;  // Velocidad de los personajes
         this.gameStarted = false;   // Indica si el juego ha empezado
         this.lifePlayer1 = 25;      // Vida del jugador 1
         this.lifePlayer2 = 25;      // Vida del jugador 2
@@ -21,7 +21,7 @@ class GameScene extends Phaser.Scene {
         this.player2HasFlag = false;   // Indica si el jugador 2 tiene la bandera
         this.isCaptured = false;
 
-        this.sizeX1 = 120;          
+        this.sizeX1 = 120;
         this.sizeY1 = 119;
         this.offsetXR1 = 28;
         this.offsetXL1 = 39;
@@ -32,7 +32,7 @@ class GameScene extends Phaser.Scene {
         this.offsetXR2 = 28;
         this.offsetXL2 = 39;
         this.offsetY2 = 39.25;
-       
+
         // provisional
         this.wait = false;
         this.flagIsReset = true;
@@ -46,33 +46,33 @@ class GameScene extends Phaser.Scene {
 
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
         // Fondos
-        this.load.image('background_o', 'assets/Fondos/Mapa_de_otoño.png');   
-        this.load.image('background_i', 'assets/Fondos/Mapa_de_invierno.png');  
+        this.load.image('background_o', 'assets/Fondos/Mapa_de_otoño.png');
+        this.load.image('background_i', 'assets/Fondos/Mapa_de_invierno.png');
         //this.load.image('background_p', 'assets/Fondos/Mapa_de_primavera.png');  
         //this.load.image('background_v', 'assets/Fondos/Mapa_de_verano.png');  
 
         // Suelos
-        this.load.image('ground_o', 'assets/Fondos/SueloOtoño.png');          
-        this.load.image('ground_i', 'assets/Fondos/SueloInvierno.png'); 
+        this.load.image('ground_o', 'assets/Fondos/SueloOtoño.png');
+        this.load.image('ground_i', 'assets/Fondos/SueloInvierno.png');
         //this.load.image('ground_p', 'assets/Fondos/SueloPrimavera.png'); 
         //this.load.image('ground_v', 'assets/Fondos/SueloVerano.png');  
 
         // Banderas
-        this.load.image('flag_o', 'assets/Sprites/Bandera_otoño.png');        
+        this.load.image('flag_o', 'assets/Sprites/Bandera_otoño.png');
         this.load.image('flag_i', 'assets/Sprites/Bandera_invierno.png');
         this.load.image('flag_p', 'assets/Sprites/Bandera_primavera.png');
         this.load.image('flag_v', 'assets/Sprites/Bandera_verano.png');
 
         // Casas
-        this.load.image('house_o', 'assets/Sprites/Casa_otoño.png');  
+        this.load.image('house_o', 'assets/Sprites/Casa_otoño.png');
         this.load.image('house_i', 'assets/Sprites/Casa_invierno.png');
         this.load.image('house_p', 'assets/Sprites/Casa_primavera.png');
-        this.load.image('house_v', 'assets/Sprites/Casa_verano.png');        
+        this.load.image('house_v', 'assets/Sprites/Casa_verano.png');
 
         // Personajes
-        this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', {frameWidth: 183, frameHeight: 157});
-        this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', {frameWidth: 181.55, frameHeight: 151});
-        this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', {frameWidth: 178, frameHeight: 155});
+        this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', { frameWidth: 183, frameHeight: 157 });
+        this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', { frameWidth: 181.55, frameHeight: 151 });
+        this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', { frameWidth: 178, frameHeight: 155 });
         // mariñón
         // biblioseta
 
@@ -86,18 +86,18 @@ class GameScene extends Phaser.Scene {
         this.load.image('timeMachine', 'assets/Sprites/Time_machine.png');
 
         // Plataformas
-        this.load.image('wall_o', 'assets/Sprites/ParedOtoño.png');   
-        this.load.image('wall_i', 'assets/Sprites/ParedInvierno.png'); 
+        this.load.image('wall_o', 'assets/Sprites/ParedOtoño.png');
+        this.load.image('wall_i', 'assets/Sprites/ParedInvierno.png');
         //this.load.image('wall_p', 'assets/Sprites/ParedPrimavera.png');     
         //this.load.image('wall_v', 'assets/Sprites/ParedVerano.png');   
 
-        this.load.image('small_o', 'assets/Sprites/SetaPequeñaOtoño.png');   
-        this.load.image('medium_o', 'assets/Sprites/SetaMedianaOtoño.png');  
-        this.load.image('large_o', 'assets/Sprites/SetaGrandeOtoño.png'); 
+        this.load.image('small_o', 'assets/Sprites/SetaPequeñaOtoño.png');
+        this.load.image('medium_o', 'assets/Sprites/SetaMedianaOtoño.png');
+        this.load.image('large_o', 'assets/Sprites/SetaGrandeOtoño.png');
 
-        this.load.image('small_i', 'assets/Sprites/SetaPequeñaInvierno.png');   
-        this.load.image('medium_i', 'assets/Sprites/SetaMedianaInvierno.png');  
-        this.load.image('large_i', 'assets/Sprites/SetaGrandeInvierno.png'); 
+        this.load.image('small_i', 'assets/Sprites/SetaPequeñaInvierno.png');
+        this.load.image('medium_i', 'assets/Sprites/SetaMedianaInvierno.png');
+        this.load.image('large_i', 'assets/Sprites/SetaGrandeInvierno.png');
 
         //this.load.image('small_p', 'assets/Sprites/SetaPequeñaPrimavera.png');   
         //this.load.image('medium_p', 'assets/Sprites/SetaMedianaPrimavera.png');  
@@ -107,11 +107,11 @@ class GameScene extends Phaser.Scene {
         //this.load.image('medium_v', 'assets/Sprites/SetaMedianaVerano.png');  
         //this.load.image('large_v', 'assets/Sprites/SetaGrandeVerano.png'); 
 
-        this.load.spritesheet('bouncy_o', 'assets/Sprites/SetaSaltarinaOtoño.png', {frameWidth: 98, frameHeight: 89});   
-        this.load.spritesheet('poisonous_o', 'assets/Sprites/SetaVenenosaOtoño.png', {frameWidth: 98.4, frameHeight: 95}); 
+        this.load.spritesheet('bouncy_o', 'assets/Sprites/SetaSaltarinaOtoño.png', { frameWidth: 98, frameHeight: 89 });
+        this.load.spritesheet('poisonous_o', 'assets/Sprites/SetaVenenosaOtoño.png', { frameWidth: 98.4, frameHeight: 95 });
 
-        this.load.spritesheet('bouncy_i', 'assets/Sprites/SetaSaltarinaInvierno.png', {frameWidth: 98, frameHeight: 89});   
-        this.load.spritesheet('poisonous_i', 'assets/Sprites/SetaVenenosaInvierno.png', {frameWidth: 98.4, frameHeight: 95}); 
+        this.load.spritesheet('bouncy_i', 'assets/Sprites/SetaSaltarinaInvierno.png', { frameWidth: 98, frameHeight: 89 });
+        this.load.spritesheet('poisonous_i', 'assets/Sprites/SetaVenenosaInvierno.png', { frameWidth: 98.4, frameHeight: 95 });
 
         //this.load.spritesheet('bouncy_p', 'assets/Sprites/SetaSaltarinaPrimavera.png', {frameWidth: 98, frameHeight: 89});   
         //this.load.spritesheet('poisonous_p', 'assets/Sprites/SetaVenenosaPrimavera.png', {frameWidth: 98.4, frameHeight: 95}); 
@@ -142,13 +142,13 @@ class GameScene extends Phaser.Scene {
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
 
         // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
-        
+
         let personaje1 = 'champichip';          // Champichip por defecto
-        let personaje1i = 'champichip_i';       
-        
+        let personaje1i = 'champichip_i';
+
         if (this.j1 === 2) {                     // Champistar
             personaje1 = 'champistar';
-            personaje1i = 'champistar_i'; 
+            personaje1i = 'champistar_i';
             this.sizeX1 = 140;
             this.sizeY1 = 119;
             this.offsetXR1 = 20;
@@ -158,7 +158,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j1 === 3) {              // Perretxiko
             personaje1 = 'perretxiko';
-            personaje1i = 'perretxiko_i'; 
+            personaje1i = 'perretxiko_i';
             this.sizeX1 = 120;
             this.sizeY1 = 119;
             this.offsetXR1 = 30;
@@ -187,13 +187,13 @@ class GameScene extends Phaser.Scene {
         }
 
         // ELECCIÓN PERSONAJE JUGADOR 2 .......................................................................................
-       
+
         let personaje2 = 'champichip';           // Champichip por defecto
         let personaje2i = 'champichip_i';
 
         if (this.j2 === 2) {                     // Champistar
             personaje2 = 'champistar';
-            personaje2i = 'champistar_i'; 
+            personaje2i = 'champistar_i';
             this.sizeX1 = 140;
             this.sizeY1 = 119;
             this.offsetXR1 = 20;
@@ -202,7 +202,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (this.j2 === 3) {              // Perretxiko
             personaje2 = 'perretxiko';
-            personaje2i = 'perretxiko_i'; 
+            personaje2i = 'perretxiko_i';
             this.sizeX2 = 120;
             this.sizeY2 = 119;
             this.offsetXR2 = 30;
@@ -267,7 +267,7 @@ class GameScene extends Phaser.Scene {
             venenosa = 'poisonous_p';
 
         } else if (this.mundo === 4) {           // Verano
-            fondo = 'background_v';    
+            fondo = 'background_v';
             suelo = 'ground_v';
             bandera = 'flag_v';
             casa = 'house_v'
@@ -284,74 +284,85 @@ class GameScene extends Phaser.Scene {
         this.background = this.add.image(960, 540, fondo);                              // Fondo
         this.background.alpha = 0.5;
 
-        this.ground = this.physics.add.image(960, 1045, suelo).setImmovable();          // Suelo
+        this.ground = this.matter.add.image(960, 1045, suelo);          // Suelo
+        this.ground.setStatic(true);
         this.ground.setScale(2);
-        this.ground.body.allowGravity = false;     
+        this.ground.body.allowGravity = false;
 
-        this.platforms = this.physics.add.staticGroup();                                // Plataformas
-        this.platforms.create(200, 400, pared);
+        //this.platforms = this.matter.add.staticGroup();                                // Plataformas
+        //this.platforms.create(200, 400, pared);
         // Ir colocando todas las plataformas del mapa...
 
-        
-        this.flag = this.physics.add.image(700, 900, bandera);                          // Bandera
+
+        this.flag = this.matter.add.image(700, 900, bandera);                          // Bandera
         this.flag.setScale(0.2);
-        this.flag.body.allowGravity = false;
-        this.flag.setCollideWorldBounds(true);
+        this.flag.setFixedRotation();
+        this.flag.setSensor(true);
+        this.flag.setIgnoreGravity(true);
+        //this.flag.setCollideWorldBounds(true);
 
-        this.housePlayer1 = this.physics.add.image(175, 875, casa).setImmovable();      // Casa jugador 1
-        this.housePlayer1.body.allowGravity = false;
+        this.housePlayer1 = this.matter.add.image(175, 875, casa);      // Casa jugador 1
+        this.housePlayer1.setStatic(true);
         this.housePlayer1.setScale(0.4);
-        
-        this.housePlayer2 = this.physics.add.image(1750, 875, casa).setImmovable();     // Casa jugador 2
-        this.housePlayer2.body.allowGravity = false;
-        this.housePlayer2.setScale(0.4);
+        this.housePlayer1.setSensor(true);
 
-        this.player1 = this.physics.add.sprite(900, 700, personaje1);                   // Personaje 1 
-        this.player1.body.setSize(this.sizeX1, this.sizeY1); 
-        this.player1.body.setOffset(this.offsetXL1, this.offsetY1);
+        this.housePlayer2 = this.matter.add.image(1750, 875, casa);     // Casa jugador 2
+        this.housePlayer2.setStatic(true);
+        this.housePlayer2.setScale(0.4);
+        this.housePlayer2.setSensor(true);
+
+        this.player1 = this.matter.add.sprite(900, 700, personaje1);                   // Personaje 1 
+        this.player1.setSize(this.sizeX1, this.sizeY1);
+        this.player1.setFixedRotation();
+        this.player1.body.label = 'Player1';
+        this.player1.body.collisionFilter.group = -1;
+        // this.player1.body.setOffset(this.offsetXL1, this.offsetY1);
 
         this.anims.create({
             key: 'caminar1',    // Animación de caminar personaje 1
-            frames: this.anims.generateFrameNumbers(personaje1, {start: 0, end: 4}), 
+            frames: this.anims.generateFrameNumbers(personaje1, { start: 0, end: 4 }),
             frameRate: 10,
-            repeat: -1          
+            repeat: -1
         });
 
         this.anims.create({     // Animación de salto personaje 1
             key: 'saltar1',
-            frames: this.anims.generateFrameNumbers(personaje1, {start:0, end: 4}),
+            frames: this.anims.generateFrameNumbers(personaje1, { start: 0, end: 4 }),
             frameRate: 10,
             repeat: 0
         })
 
         this.anims.create({
             key: 'morir1',      // Animación de muerte personaje 1
-            frames: this.anims.generateFrameNumbers(personaje1, {start:5, end: 10}),
+            frames: this.anims.generateFrameNumbers(personaje1, { start: 5, end: 10 }),
             frameRate: 6,
             repeat: 0
         })
 
-        this.player2 = this.physics.add.sprite(1200, 700, personaje2);                  // Personaje 2 
-        this.player2.body.setSize(this.sizeX2, this.sizeY2); 
-        this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
+        this.player2 = this.matter.add.sprite(1200, 700, personaje2);                  // Personaje 2 
+        this.player2.setSize(this.sizeX2, this.sizeY2);
+        this.player2.setFixedRotation();
+        this.player2.body.label = 'Player2';
+        this.player2.body.collisionFilter.group = -1;
+        //this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
 
         this.anims.create({
             key: 'caminar2',     // Animación de caminar personaje 1
-            frames: this.anims.generateFrameNumbers(personaje2, {start: 0, end: 4}), 
+            frames: this.anims.generateFrameNumbers(personaje2, { start: 0, end: 4 }),
             frameRate: 10,
-            repeat: -1           
+            repeat: -1
         });
 
         this.anims.create({
             key: 'saltar2',      // Animación de salto personaje 2
-            frames: this.anims.generateFrameNumbers(personaje2, {start:0, end: 4}),
+            frames: this.anims.generateFrameNumbers(personaje2, { start: 0, end: 4 }),
             frameRate: 10,
             repeat: 0
         })
 
         this.anims.create({
             key: 'morir2',      // Animación de muerte personaje 2
-            frames: this.anims.generateFrameNumbers(personaje2, {start:5, end: 10}),
+            frames: this.anims.generateFrameNumbers(personaje2, { start: 5, end: 10 }),
             frameRate: 6,
             repeat: 0
         })
@@ -364,7 +375,7 @@ class GameScene extends Phaser.Scene {
                 fontSize: '25px'
             }
         }
-        
+
         this.player1Rectangle = this.add.image(170, 75, 'rectangle').setScale(0.5);
         this.player1Character = this.add.image(75, 75, personaje1i).setScale(0.5);
 
@@ -376,7 +387,7 @@ class GameScene extends Phaser.Scene {
 
 
         this.player2Rectangle = this.add.image(1750, 75, 'rectangle').setScale(0.5);
-        this.player1Character = this.add.image(1655 , 75, personaje2i).setScale(0.5);
+        this.player1Character = this.add.image(1655, 75, personaje2i).setScale(0.5);
 
         this.player2Points = this.add.image(1720, 55, 'star').setScale(0.7);
         this.player2Life = this.add.image(1720, 95, 'heart').setScale(0.7);
@@ -387,16 +398,25 @@ class GameScene extends Phaser.Scene {
 
         // COLISIONES .........................................................................................................
 
-        this.player1.setCollideWorldBounds(true);                       // Con los límites del mundo
-        this.player2.setCollideWorldBounds(true);  
+        this.housePlayer1.setOnCollideActive(pair => {
+            // Ha chochado con player1
+            if (pair.bodyA.label != 'Player1' && pair.bodyB.label != 'Player1') return
 
-        this.physics.add.collider(this.player1, this.ground);           // Con el suelo
-        this.physics.add.collider(this.player2, this.ground);
+            // cuando jugador1 choca con casa1 (completar xd)
+            console.log('jugador1 toca casa1')
 
-        this.physics.add.collider(this.player1, this.platforms);        // Con las plataformas
-        this.physics.add.collider(this.player2, this.platforms);
+        })
+        this.housePlayer2.setOnCollideActive(pair => {
+            // Ha chochado con player2
+            if (pair.bodyA.label != 'Player2' && pair.bodyB.label != 'Player2') return
 
-        this.physics.add.overlap(                                       // Con las casas
+            // cuando jugador2 choca con casa2 (completar xd)
+            console.log('jugador2 toca casa2')
+
+        })
+
+
+        /*this.matter.add.overlap(                                       // Con las casas
             this.player1,           // Jugador 1
             this.housePlayer1,      // Con casa 1
             (player, house) => this.playerToHouse(player, house),       
@@ -404,21 +424,22 @@ class GameScene extends Phaser.Scene {
             this
         );
         
-        this.physics.add.overlap(
+        this.matter.add.overlap(
             this.player2,           // Jugador 2
             this.housePlayer2,      // Con casa 2
             (player, house) => this.playerToHouse(player, house), 
             () => this.currentFlagHolder === this.player2, 
             this
-        );        
+        );     */
 
-        this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1);    // Con la bandera
-        this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2,);
+        //ns que es esto xd
+        //this.collisionFlagP1 = this.matter.add.overlap(this.player1, this.flag, this.collectFlagPlayer1);    // Con la bandera
+        //this.collisionFlagP2 = this.matter.add.overlap(this.player2, this.flag, this.collectFlagPlayer2,);
 
         // Create power-up more speed
         // this.morespeed = this.add.rectangle(400, 250, 100, 20, 0xff00f0);
-        // this.physics.add.existing(this.morespeed);
-        // this.morespeed.body.setImmovable(true); // Make the paddle immovable
+        // this.matter.add.existing(this.morespeed);
+        // this.morespeed.setStatic(true); // Make the paddle immovable
         // this.morespeed.body.setAllowGravity(false);
 
 
@@ -431,10 +452,10 @@ class GameScene extends Phaser.Scene {
 
         this.leftKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.rightKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);   
+        this.upKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.throwKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
-    
+
     collectFlagPlayer1() {
         if (!this.player1HasFlag && this.captureFlag) {             // Si no está bloqueado para el jugador 1 ni estaba en posesión de la bandera
             this.captureFlag = false;
@@ -446,7 +467,7 @@ class GameScene extends Phaser.Scene {
             console.log('El jugador 1 tiene ahora la bandera');
 
             setTimeout(this.captureFlag = true, 2000);              // Actualiza los bloqueos (desbloquea al otro)
-        } 
+        }
     }
 
     collectFlagPlayer2() {
@@ -458,9 +479,9 @@ class GameScene extends Phaser.Scene {
             this.isCaptured = true;                                 // Está capturada
             this.currentFlagHolder = this.player2;                  // Por el jugador 2
             console.log('El jugador 2 tiene ahora la bandera');
-            
+
             setTimeout(this.captureFlag = true, 2000);              // Desbloquea al jugador 1 y bloquea al 2
-        } 
+        }
     }
 
     playerToHouse(player) {
@@ -474,7 +495,7 @@ class GameScene extends Phaser.Scene {
             this.scorePlayer1++;
             this.p1Points.setText(this.scorePlayer1 + ' puntos');
 
-            this.physics.world.removeCollider(this.player1, this.housePlayer1);      // Desactiva temporalmente las colisiones con la casa
+            this.matter.world.removeCollider(this.player1, this.housePlayer1);      // Desactiva temporalmente las colisiones con la casa
 
             this.resetFlag();
             this.nextRound();
@@ -483,7 +504,7 @@ class GameScene extends Phaser.Scene {
             this.scorePlayer2++;
             this.p2Points.setText(this.scorePlayer2 + ' puntos');
 
-            this.physics.world.removeCollider(this.player2, this.housePlayer2);      // Desactiva temporalmente las colisiones con la casa
+            this.matter.world.removeCollider(this.player2, this.housePlayer2);      // Desactiva temporalmente las colisiones con la casa
 
             this.resetFlag();
             this.nextRound();
@@ -504,71 +525,73 @@ class GameScene extends Phaser.Scene {
     }
 
     throwSpell() {  // LANZAR HECHIZOS ----------------------------------------------------------------------------------------
-        if (this.throwKeyPlayer1.isDown && this.playerHasSpell(this.player1)) {   
+        if (this.throwKeyPlayer1.isDown && this.playerHasSpell(this.player1)) {
             // Lanza el hechizo
         }
 
-        if (this.throwKeyPlayer2.isDown && this.playerHasSpell(this.player2)) {   
+        if (this.throwKeyPlayer2.isDown && this.playerHasSpell(this.player2)) {
             // Lanza el hechizo
         }
     }
 
     updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
-        
+
         // Movimiento del jugador 1
-        if (this.leftKeyPlayer1.isDown) {                                   
-            this.player1.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
+        if (this.leftKeyPlayer1.isDown) {
+            this.player1.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player1.flipX = false;
-            this.player1.body.setOffset(this.offsetXL1, this.offsetY1);   
-            this.player1.anims.play('caminar1', true);         
+            //this.player1.body.setOffset(this.offsetXL1, this.offsetY1);
+            this.player1.anims.play('caminar1', true);
 
         } else if (this.rightKeyPlayer1.isDown) {
-            this.player1.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
+            this.player1.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player1.flipX = true;                                          // Cambiar de sentido el sprite
-            this.player1.body.setOffset(this.offsetXR1, this.offsetY1);         // Cambiar el offset
-            this.player1.anims.play('caminar1', true);   
+            //this.player1.body.setOffset(this.offsetXR1, this.offsetY1);         // Cambiar el offset
+            this.player1.anims.play('caminar1', true);
 
         } else {
-            this.player1.body.setVelocityX(0);                                  // No moverse
+            this.player1.setVelocityX(0);                                  // No moverse
         }
 
         // Salto del jugador 1
-        if (this.upKeyPlayer1.isDown && this.player1.body.touching.down) {
-            this.player1.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
+        const suelito1 = this.comprobarSuelito(this.player1);
+        if (this.upKeyPlayer1.isDown && suelito1) {
+            this.player1.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
             this.player1.anims.play('saltar1', true);                           // Animación de saltar     
 
-        } else if (this.player1.body.touching.down) {
+        } else if (suelito1) {
             this.player1.anims.stop();                                          // Detiene la animación de salto
             this.player1.anims.play('caminar1', true);                          // Activa la de caminar
         }
 
         if (this.lifePlayer1 <= 0) {                                            // Animación de muerte
-            this.player1.anims.play('morir1', true);  
+            this.player1.anims.play('morir1', true);
         }
 
         // Movimiento del jugador 2
         if (this.leftKeyPlayer2.isDown) {
-            this.player2.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
+            this.player2.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player2.flipX = false;
-            this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
-            this.player2.anims.play('caminar2', true);   
+            //this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
+            this.player2.anims.play('caminar2', true);
 
-        } else if (this.rightKeyPlayer2.isDown) {   
-            this.player2.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
+        } else if (this.rightKeyPlayer2.isDown) {
+            this.player2.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player2.flipX = true;                                          // Cambiar de sentido el sprite
-            this.player2.body.setOffset(this.offsetXR2, this.offsetY2);         // Cambiar el offset
-            this.player2.anims.play('caminar2', true);   
+            //this.player2.body.setOffset(this.offsetXR2, this.offsetY2);         // Cambiar el offset
+            this.player2.anims.play('caminar2', true);
 
         } else {
-            this.player2.body.setVelocityX(0);                                  // No moverse
+            this.player2.setVelocityX(0);                                  // No moverse
         }
 
         // Salto del jugador 2
-        if (this.upKeyPlayer2.isDown && this.player2.body.touching.down) {
-            this.player2.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
+        const suelito2 = this.comprobarSuelito(this.player2);
+        if (this.upKeyPlayer2.isDown && suelito2) {
+            this.player2.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
             this.player2.anims.play('saltar2', true);                           // Animación de saltar
 
-        } else if (this.player2.body.touching.down) {
+        } else if (suelito2) {
             this.player2.anims.stop();                                          // Detiene la animación de salto
             this.player2.anims.play('caminar2', true);                          // Activa la de caminar
         }
@@ -577,25 +600,34 @@ class GameScene extends Phaser.Scene {
             this.player2.anims.play('morir2', true);                            // Animación de muerte
         }
     }
+    comprobarSuelito(player) {
+        let plataformas = [
+            this.ground.body
+        ]
+        let centroPlayer = Phaser.Physics.Matter.Matter.Vector.create(player.x, player.y)
+        let piesPlayer = Phaser.Physics.Matter.Matter.Vector.create(player.x, player.y + player.height / 2)
+        let choques = Phaser.Physics.Matter.Matter.Query.ray(plataformas, centroPlayer, piesPlayer, 1)
+        return choques.length > 0
+    }
 
     startGame() {   // COMIENZA EL JUEGO --------------------------------------------------------------------------------------
-        this.gameStarted = true;            
+        this.gameStarted = true;
     }
-    
+
     nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
         this.rounds++;                              // Aumenta el contador de rondas
 
         this.player1.setPosition(900, 700);         // Resetea la posición de los jugadores
         this.player2.setPosition(1200, 700);
 
-        this.physics.world.enable(this.player1);    // Reactiva las colisiones con las casas
-        this.physics.world.enable(this.player2);
+        this.matter.world.enable(this.player1);    // Reactiva las colisiones con las casas
+        this.matter.world.enable(this.player2);
 
         this.lifePlayer1 = 25;                      // Resetea la vida de los jugadores
         this.lifePlayer2 = 25;
 
-        this.physics.add.collider(this.player1, this.housePlayer1);
-        this.physics.add.collider(this.player2, this.housePlayer2);
+        this.matter.add.collider(this.player1, this.housePlayer1);
+        this.matter.add.collider(this.player2, this.housePlayer2);
 
         this.lockCollision = false;
 
@@ -613,7 +645,7 @@ class GameScene extends Phaser.Scene {
             this.roundsWonPlayer1++;            // Ej jugador 2 gana la ronda
             this.nextRound;
         }
-        
+
         if (this.rounds >= 3) {                  // Cuando han pasado 3 rondas
             this.scene.start("EndScene", {})    // Carga la escena de fin de partida
         }
@@ -623,7 +655,7 @@ class GameScene extends Phaser.Scene {
         this.lockFlagP1 = false;
         this.lockFlagP2 = true;
         console.log('Cambio posesión bandera realizado')
-        
+
     }
 
     activeFlagP2() {
@@ -634,6 +666,16 @@ class GameScene extends Phaser.Scene {
 
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
+
+        // Comprobar que los jugadores se tocan 
+        let posicionX = this.player1.x - this.player2.x;
+        let posicionY = this.player1.y - this.player2.y;
+
+        let distancia = Math.sqrt(posicionX * posicionX + posicionY * posicionY);
+        if (distancia < this.player1.width) {
+            // console.log('se tocan ☆*:  .｡.:*☆༼ つ ◕_◕ ༽つ')
+        }
+
         this.checkWinCondition();
 
         if (this.isCaptured) {
