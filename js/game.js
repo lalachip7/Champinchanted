@@ -673,7 +673,7 @@ class GameScene extends Phaser.Scene {
 
         let distancia = Math.sqrt(posicionX * posicionX + posicionY * posicionY);
         if (distancia < this.player1.width) {
-            // console.log('se tocan ☆*:  .｡.:*☆༼ つ ◕_◕ ༽つ')
+            console.log('se tocan ☆*:  .｡.:*☆༼ つ ◕_◕ ༽つ')
         }
 
         this.checkWinCondition();
