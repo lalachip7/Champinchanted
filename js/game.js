@@ -404,6 +404,7 @@ class GameScene extends Phaser.Scene {
         );        
 
         this.playersCollision = this.physics.add.collider(this.player1, this.player2, this.switchFlag, null, this);
+        
 
         this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1, null, this);    // Con la bandera
         this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2, null, this);
@@ -449,11 +450,40 @@ class GameScene extends Phaser.Scene {
             this.player2HasFlag = true;
             this.player1HasFlag = false;
             this.currentFlagHolder = this.player2;
+
+            if (this.player1.body.touching.right) {
+                this.player1.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+                this.player2.body.setVelocityX(2000);          // Rebota hacia la derecha
+            } else if (this.player1.body.touching.left) {
+                this.player1.body.setVelocityX(2000);          // Rebota hacia la derecha
+                this.player2.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+            } else if (this.player1.body.touching.up) {
+                this.player1.body.setVelocityY(500);          // Rebota hacia la derecha
+                this.player2.body.setVelocityY(-500);         // Rebota hacia la izquierda
+            } else if (this.player1.body.touching.down) {
+                this.player1.body.setVelocityY(-500);          // Rebota hacia la derecha
+                this.player2.body.setVelocityY(500);         // Rebota hacia la izquierda
+            }
+
             console.log('El jugador 2 tiene ahora la bandera');
 
         } else if (this.player2HasFlag) {                           // Si el jugador 2 tenía la bandera
             this.player2HasFlag = false;
             this.player1HasFlag = true;
+            
+            if (this.player1.body.touching.right) {
+                this.player1.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+                this.player2.body.setVelocityX(2000);          // Rebota hacia la derecha
+            } else if (this.player1.body.touching.left) {
+                this.player1.body.setVelocityX(2000);          // Rebota hacia la derecha
+                this.player2.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+            } else if (this.player1.body.touching.up) {
+                this.player1.body.setVelocityY(500);          // Rebota hacia la derecha
+                this.player2.body.setVelocityY(-500);         // Rebota hacia la izquierda
+            } else if (this.player1.body.touching.down) {
+                this.player1.body.setVelocityY(-500);          // Rebota hacia la derecha
+                this.player2.body.setVelocityY(500);         // Rebota hacia la izquierda
+            }
 
             this.currentFlagHolder = this.player1;
             console.log('El jugador 1 tiene ahora la bandera');
@@ -556,7 +586,9 @@ class GameScene extends Phaser.Scene {
     }
 
     startGame() {   // COMIENZA EL JUEGO --------------------------------------------------------------------------------------
-        this.gameStarted = true;            
+        this.gameStarted = true;   
+        
+        this.rounds = 0;
     }
     
     nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
@@ -592,6 +624,8 @@ class GameScene extends Phaser.Scene {
         }
         
         if (this.rounds >= 3) {                  // Cuando han pasado 3 rondas
+            this.registry.set('player1Score', this.scorePlayer1);            // Guarda en registro la puntuación del jugador 1
+            this.registry.set('player2Score', this.scorePlayer2);            // Guarda en registro la puntuación del jugador 2
             this.scene.start("EndScene", {})    // Carga la escena de fin de partida
         }
     }
