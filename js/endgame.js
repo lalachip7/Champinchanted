@@ -8,8 +8,8 @@ class EndGame extends Phaser.Scene {
         this.scorePlayer1 = this.registry.get('player1Score');
         this.scorePlayer2 = this.registry.get('player2Score');
 
-        this.j1 = this.registry.get('personajeJ2'); // Personaje elegido por el jugador 1                   
-        this.j2 = this.registry.get('personajeJ1'); // Personaje elegido por el jugador 2
+        this.j1 = this.registry.get('personajeJ1'); // Personaje elegido por el jugador 1                   
+        this.j2 = this.registry.get('personajeJ2'); // Personaje elegido por el jugador 2
     }
 
     preload() {

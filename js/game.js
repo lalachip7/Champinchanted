@@ -14,11 +14,14 @@ class GameScene extends Phaser.Scene {
         this.rounds = 0;            // Número de rondas jugadas
 
         this.mundo = this.registry.get('mapa');     // Mundo elegido
-        this.j1 = this.registry.get('personajeJ2'); // Personaje elegido por el jugador 1                   
-        this.j2 = this.registry.get('personajeJ1'); // Personaje elegido por el jugador 2
+        this.j1 = this.registry.get('personajeJ1'); // Personaje elegido por el jugador 1                   
+        this.j2 = this.registry.get('personajeJ2'); // Personaje elegido por el jugador 2
 
         this.player1HasFlag = false;   // Indica si el jugador 1 tiene la bandera
         this.player2HasFlag = false;   // Indica si el jugador 2 tiene la bandera
+        this.isCaptured = false;
+
+        this.isMovementEnabled = true;
 
         this.sizeX1 = 120;          
         this.sizeY1 = 119;
@@ -62,7 +65,7 @@ class GameScene extends Phaser.Scene {
         this.load.spritesheet('champichip', 'assets/Sprites/champichip.png', {frameWidth: 183, frameHeight: 157});
         this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', {frameWidth: 181.55, frameHeight: 151});
         this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', {frameWidth: 178, frameHeight: 155});
-        // mariñón
+        this.load.spritesheet('mariñon', 'assets/Sprites/mariñon.png', {frameWidth: 182.36, frameHeight: 185});
         // biblioseta
 
         // Hechizos
@@ -116,7 +119,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('champichip_i', 'assets/Interfaz/champichip_i.png');
         this.load.image('champistar_i', 'assets/Interfaz/champistar_i.png');
         this.load.image('perretxiko_i', 'assets/Interfaz/perretxiko_i.png');
-        this.load.image('mariñon_i', 'assets/Interfaz/mariñon_i.png');
+        //this.load.image('mariñon_i', 'assets/Interfaz/mariñon_i.png');
         //this.load.image('biblioseta_i', 'assets/Interfaz/biblioseta_i.png');
 
         this.load.image('venom_i', 'assets/Interfaz/Venom_i.png');
@@ -158,10 +161,10 @@ class GameScene extends Phaser.Scene {
             personaje1 = 'mariñon';
             personaje1i = 'mariñon_i'; 
             this.sizeX1 = 140;
-            this.sizeY1 = 119;
+            this.sizeY1 = 140;
             this.offsetXR1 = 20;
             this.offsetXL1 = 25;
-            this.offsetY1 = 28;
+            this.offsetY1 = 40;
 
 
         } else if (this.j1 === 5) {              // Biblioseta
@@ -183,11 +186,11 @@ class GameScene extends Phaser.Scene {
         if (this.j2 === 2) {                     // Champistar
             personaje2 = 'champistar';
             personaje2i = 'champistar_i'; 
-            this.sizeX1 = 140;
-            this.sizeY1 = 119;
-            this.offsetXR1 = 20;
-            this.offsetXL1 = 25;
-            this.offsetY1 = 28;
+            this.sizeX2 = 140;
+            this.sizeY2 = 119;
+            this.offsetXR2 = 20;
+            this.offsetXL2 = 25;
+            this.offsetY2 = 28;
 
         } else if (this.j2 === 3) {              // Perretxiko
             personaje2 = 'perretxiko';
@@ -201,21 +204,21 @@ class GameScene extends Phaser.Scene {
         } else if (this.j2 === 4) {              // Mariñon
             personaje2 = 'mariñon';
             personaje2i = 'mariñon_i'; 
-            this.sizeX1 = 140;
-            this.sizeY1 = 119;
-            this.offsetXR1 = 20;
-            this.offsetXL1 = 25;
-            this.offsetY1 = 28;
+            this.sizeX2 = 140;
+            this.sizeY2 = 140;
+            this.offsetXR2 = 20;
+            this.offsetXL2 = 25;
+            this.offsetY2 = 40;
 
         } else if (this.j2 === 5) {              // Biblioseta
             //personaje2 = 'biblioseta';
             //personaje2i = 'biblioseta_i'; 
-            //this.sizeX1 = ;
-            //this.sizeX1 = ;
-            //this.sizeY1 = ;
-            //this.offsetXR1 = ;
-            //this.offsetXL1 = ;
-            //this.offsetY1 = ;
+            //this.sizeX2 = ;
+            //this.sizeX2 = ;
+            //this.sizeY2 = ;
+            //this.offsetXR2 = ;
+            //this.offsetXL2 = ;
+            //this.offsetY2 = ;
         }
 
         // ELECCIÓN MUNDO .....................................................................................................
@@ -295,7 +298,7 @@ class GameScene extends Phaser.Scene {
         this.housePlayer2.body.allowGravity = false;
         this.housePlayer2.setScale(0.4);
 
-        this.player1 = this.physics.add.sprite(900, 700, personaje1);                   // Personaje 1 
+        this.player1 = this.physics.add.sprite(180, 700, personaje1);                   // Personaje 1 
         this.player1.body.setSize(this.sizeX1, this.sizeY1); 
         this.player1.body.setOffset(this.offsetXL1, this.offsetY1);
 
@@ -320,7 +323,7 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         })
 
-        this.player2 = this.physics.add.sprite(1200, 700, personaje2);                  // Personaje 2 
+        this.player2 = this.physics.add.sprite(1750, 700, personaje2);                  // Personaje 2 
         this.player2.body.setSize(this.sizeX2, this.sizeY2); 
         this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
 
@@ -385,12 +388,11 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player1, this.platforms);        // Con las plataformas
         this.physics.add.collider(this.player2, this.platforms);
 
-        this.physics.add.collider(                                       // Con las casas
+        this.physics.add.collider(                                      // Con las casas
             this.player1,           // Jugador 1
             this.housePlayer1,      // Con casa 1
-            (player, house) => this.playerToHouse(player, house),       
-            null,
-            //() => this.currentFlagHolder === this.player1, 
+            (player, house) => this.playerToHouse(player, house), 
+            () => this.currentFlagHolder === this.player1, 
             this
         );
         
@@ -398,13 +400,11 @@ class GameScene extends Phaser.Scene {
             this.player2,           // Jugador 2
             this.housePlayer2,      // Con casa 2
             (player, house) => this.playerToHouse(player, house), 
-            null,
-            //() => this.currentFlagHolder === this.player2, 
+            () => this.currentFlagHolder === this.player2, 
             this
         );        
 
-        this.playersCollision = this.physics.add.collider(this.player1, this.player2, this.switchFlag, null, this);
-        
+        this.playersCollision = this.physics.add.collider(this.player1, this.player2, this.switchFlag, null, this);       // Entre los jugadores
 
         this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1, null, this);    // Con la bandera
         this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2, null, this);
@@ -433,56 +433,58 @@ class GameScene extends Phaser.Scene {
 
         this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
         this.currentFlagHolder = this.player1;                  
-        this.flag.disableBody(true, true);                      // La desactivamos
+        this.isCaptured = true;
+        this.flag.disableBody(true, false);                      // La desactivamos
         console.log('El jugador 1 ha conseguido la bandera');
     }
 
     collectFlagPlayer2() {
 
         this.player2HasFlag = true;                             // El jugador 2 tiene ahora la bandera
-        this.currentFlagHolder = this.player2;                 
-        this.flag.disableBody(true, true);                      // La desactivamos
+        this.currentFlagHolder = this.player2;     
+        this.isCaptured = true;            
+        this.flag.disableBody(true, false);                      // La desactivamos
         console.log('El jugador 2 ha conseguido la bandera');
     }
 
     switchFlag() {
-        if(this.player1HasFlag) {                                   // Si el jugador 1 tenía la bandera
+        if(this.player1HasFlag) {                           // Si el jugador 1 tenía la bandera
             this.player2HasFlag = true;
             this.player1HasFlag = false;
             this.currentFlagHolder = this.player2;
 
             if (this.player1.body.touching.right) {
-                this.player1.body.setVelocityX(-2000);         // Rebota hacia la izquierda
-                this.player2.body.setVelocityX(2000);          // Rebota hacia la derecha
+                this.player1.body.setVelocityX(-2000);      // Rebota hacia la izquierda
+                this.player2.body.setVelocityX(2000);       // Rebota hacia la derecha
             } else if (this.player1.body.touching.left) {
-                this.player1.body.setVelocityX(2000);          // Rebota hacia la derecha
-                this.player2.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityX(2000);       // Rebota hacia la derecha
+                this.player2.body.setVelocityX(-2000);      // Rebota hacia la izquierda
             } else if (this.player1.body.touching.up) {
-                this.player1.body.setVelocityY(500);          // Rebota hacia la derecha
-                this.player2.body.setVelocityY(-500);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityY(500);        // Rebota hacia la derecha
+                this.player2.body.setVelocityY(-500);       // Rebota hacia la izquierda
             } else if (this.player1.body.touching.down) {
-                this.player1.body.setVelocityY(-500);          // Rebota hacia la derecha
-                this.player2.body.setVelocityY(500);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityY(-500);       // Rebota hacia la derecha
+                this.player2.body.setVelocityY(500);        // Rebota hacia la izquierda
             }
 
             console.log('El jugador 2 tiene ahora la bandera');
 
-        } else if (this.player2HasFlag) {                           // Si el jugador 2 tenía la bandera
+        } else if (this.player2HasFlag) {                   // Si el jugador 2 tenía la bandera
             this.player2HasFlag = false;
             this.player1HasFlag = true;
             
             if (this.player1.body.touching.right) {
-                this.player1.body.setVelocityX(-2000);         // Rebota hacia la izquierda
-                this.player2.body.setVelocityX(2000);          // Rebota hacia la derecha
+                this.player1.body.setVelocityX(-2000);      // Rebota hacia la izquierda
+                this.player2.body.setVelocityX(2000);       // Rebota hacia la derecha
             } else if (this.player1.body.touching.left) {
-                this.player1.body.setVelocityX(2000);          // Rebota hacia la derecha
-                this.player2.body.setVelocityX(-2000);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityX(2000);       // Rebota hacia la derecha
+                this.player2.body.setVelocityX(-2000);      // Rebota hacia la izquierda
             } else if (this.player1.body.touching.up) {
-                this.player1.body.setVelocityY(500);          // Rebota hacia la derecha
-                this.player2.body.setVelocityY(-500);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityY(500);        // Rebota hacia la derecha
+                this.player2.body.setVelocityY(-500);       // Rebota hacia la izquierda
             } else if (this.player1.body.touching.down) {
-                this.player1.body.setVelocityY(-500);          // Rebota hacia la derecha
-                this.player2.body.setVelocityY(500);         // Rebota hacia la izquierda
+                this.player1.body.setVelocityY(-500);       // Rebota hacia la derecha
+                this.player2.body.setVelocityY(500);        // Rebota hacia la izquierda
             }
 
             this.currentFlagHolder = this.player1;
@@ -491,18 +493,24 @@ class GameScene extends Phaser.Scene {
     }
 
     playerToHouse(player) {
-        
+        this.isMovementEnabled = false;
         if (player === this.player1 && this.player1HasFlag) {
             this.scorePlayer1++;
             this.p1Points.setText(this.scorePlayer1 + ' puntos');
             this.housePlayer1.disableBody(true, false);
-            this.nextRound();
+            setTimeout(() => {
+                this.nextRound();  // Se llama a nextRound después de 2 segundos
+                this.isMovementEnabled = true;
+            }, 2000);
 
         } else if (player === this.player2 && this.player2HasFlag) {
             this.scorePlayer2++;
             this.p2Points.setText(this.scorePlayer2 + ' puntos');
             this.housePlayer2.disableBody(true, false);
-            this.nextRound();
+            setTimeout(() => {
+                this.nextRound();  // Se llama a nextRound después de 2 segundos
+                this.isMovementEnabled = true;
+            }, 2000);
         }
     }
 
@@ -523,28 +531,28 @@ class GameScene extends Phaser.Scene {
     updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
         
         // Movimiento del jugador 1
-        if (this.leftKeyPlayer1.isDown) {                                   
+        if (this.leftKeyPlayer1.isDown && this.isMovementEnabled) {                                   
             this.player1.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player1.flipX = false;
             this.player1.body.setOffset(this.offsetXL1, this.offsetY1);   
-            this.player1.anims.play('caminar1', true);         
+            //this.player1.anims.play('caminar1', true);         
 
-        } else if (this.rightKeyPlayer1.isDown) {
+        } else if (this.rightKeyPlayer1.isDown && this.isMovementEnabled) {
             this.player1.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player1.flipX = true;                                          // Cambiar de sentido el sprite
             this.player1.body.setOffset(this.offsetXR1, this.offsetY1);         // Cambiar el offset
-            this.player1.anims.play('caminar1', true);   
+            //this.player1.anims.play('caminar1', true);   
 
         } else {
             this.player1.body.setVelocityX(0);                                  // No moverse
         }
 
         // Salto del jugador 1
-        if (this.upKeyPlayer1.isDown && this.player1.body.touching.down) {
+        if (this.upKeyPlayer1.isDown && this.player1.body.touching.down && this.isMovementEnabled) {
             this.player1.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
             this.player1.anims.play('saltar1', true);                           // Animación de saltar     
 
-        } else if (this.player1.body.touching.down) {
+        } else if (this.player1.body.touching.down && this.isMovementEnabled) {
             this.player1.anims.stop();                                          // Detiene la animación de salto
             this.player1.anims.play('caminar1', true);                          // Activa la de caminar
         }
@@ -554,28 +562,28 @@ class GameScene extends Phaser.Scene {
         }
 
         // Movimiento del jugador 2
-        if (this.leftKeyPlayer2.isDown) {
+        if (this.leftKeyPlayer2.isDown && this.isMovementEnabled) {
             this.player2.body.setVelocityX(-this.movement_speed);               // Moverse a la izquierda
             this.player2.flipX = false;
             this.player2.body.setOffset(this.offsetXL2, this.offsetY2);
-            this.player2.anims.play('caminar2', true);   
+            //this.player2.anims.play('caminar2', true);   
 
-        } else if (this.rightKeyPlayer2.isDown) {   
+        } else if (this.rightKeyPlayer2.isDown && this.isMovementEnabled) {   
             this.player2.body.setVelocityX(this.movement_speed);                // Moverse a la derecha
             this.player2.flipX = true;                                          // Cambiar de sentido el sprite
             this.player2.body.setOffset(this.offsetXR2, this.offsetY2);         // Cambiar el offset
-            this.player2.anims.play('caminar2', true);   
+            //this.player2.anims.play('caminar2', true);   
 
         } else {
             this.player2.body.setVelocityX(0);                                  // No moverse
         }
 
         // Salto del jugador 2
-        if (this.upKeyPlayer2.isDown && this.player2.body.touching.down) {
+        if (this.upKeyPlayer2.isDown && this.player2.body.touching.down && this.isMovementEnabled) {
             this.player2.body.setVelocityY(-this.movement_jump);                // Moverse hacia arriba
             this.player2.anims.play('saltar2', true);                           // Animación de saltar
 
-        } else if (this.player2.body.touching.down) {
+        } else if (this.player2.body.touching.down && this.isMovementEnabled) {
             this.player2.anims.stop();                                          // Detiene la animación de salto
             this.player2.anims.play('caminar2', true);                          // Activa la de caminar
         }
@@ -594,8 +602,8 @@ class GameScene extends Phaser.Scene {
     nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
         this.rounds++;                              // Aumenta el contador de rondas
 
-        this.player1.setPosition(900, 700);         // Resetea la posición de los jugadores
-        this.player2.setPosition(1200, 700);
+        this.player1.setPosition(180, 700);         // Resetea la posición de los jugadores
+        this.player2.setPosition(1750, 700);
 
         this.lifePlayer1 = 25;                      // Resetea la vida de los jugadores
         this.lifePlayer2 = 25;
@@ -603,8 +611,13 @@ class GameScene extends Phaser.Scene {
         this.player1HasFlag = false;
         this.player2HasFlag = false;
         this.currentFlagHolder = null;
+        this.isCaptured = false;
 
-        this.flag.enableBody(true, 400, 700 , true, true);  // Volver a colocar la bandera
+        let posx = Phaser.Math.Between(100, 1800);  // Posición aleatoria x
+        let posy = Phaser.Math.Between(200, 900);  // Posición aleatoria y
+
+        this.flag.enableBody(true, posx, posy , true, true);  // Volver a colocar la bandera
+
         this.housePlayer1.enableBody(true, 175, 875 , true, true);
         this.housePlayer2.enableBody(true, 1750, 875 , true, true);
 
@@ -634,5 +647,9 @@ class GameScene extends Phaser.Scene {
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
+
+        if (this.isCaptured) {
+            this.flag.setPosition(this.currentFlagHolder.x + 50, this.currentFlagHolder.y - 50);
+        }
     }
 }
