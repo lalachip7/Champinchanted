@@ -309,14 +309,15 @@ class GameScene extends Phaser.Scene {
 
         this.platforms = this.physics.add.staticGroup();                                // Plataformas
         this.platforms.create(450, 800, pared).setSize(30, 190).setOffset(10, 15);
-        this.platforms.create(960, 400, pequeña);
-        this.platforms.create(300, 350, mediana);
-        this.platforms.create(800, 600, mediana);
-        this.platforms.create(600, 750, grande);
-        this.platforms.create(1500, 800, pared);
-        this.platforms.create(1350, 750, grande);
-        this.platforms.create(1150, 600, mediana);
-        this.platforms.create(960, 950, pequeña);
+        this.platforms.create(960, 400, pequeña).setSize(70, 40).setOffset(10, 15);
+        this.platforms.create(300, 350, mediana).setSize(150, 40);
+        this.platforms.create(800, 600, mediana).setSize(150, 40);
+        this.platforms.create(600, 750, grande).setSize(230, 40).setOffset(10, 25);
+        this.platforms.create(1500, 800, pared).setSize(30, 190).setOffset(10, 15);
+        this.platforms.create(1350, 750, grande).setSize(230, 40).setOffset(10, 25);
+        this.platforms.create(1150, 600, mediana).setSize(150, 40);
+        this.platforms.create(960, 950, pequeña).setSize(70, 40).setOffset(10, 15);
+        this.platforms.create(1600, 350, mediana).setSize(150, 40);
         //this.platforms.create(800, 850, saltarina);
         //this.platforms.create(200, 600, venenosa);
 
