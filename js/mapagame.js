@@ -26,14 +26,14 @@ class MapaGame extends Phaser.Scene {
             .setDisplaySize(this.scale.width, this.scale.height);
 
         // Botón de configuración
-        this.add.image(this.scale.width - 50, 50, "options_button")
+        /*this.add.image(this.scale.width - 50, 50, "options_button")
             .setOrigin(0.75, 0.25)
             .setScale(0.15)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.stop("MapaGame");
                 this.scene.start("AjustesScene");
-            });
+            });*/
 
         // Mostrar imágenes de los mapas en diferentes posiciones
 

@@ -22,7 +22,7 @@ class PersonajesGame extends Phaser.Scene {
 
     create() {
          // Botón de configuración
-         const options_button = this.add.image(this.scale.width - 50, 50, "options_button")   // Añade el botón de configuración
+         /*const options_button = this.add.image(this.scale.width - 50, 50, "options_button")   // Añade el botón de configuración
          .setOrigin(0.75, 0.25) // Ajustar el punto de anclaje (derecha, arriba)
          .setScale(0.15) // Reducir tamaño a la mitad    
          .setInteractive()
@@ -30,7 +30,7 @@ class PersonajesGame extends Phaser.Scene {
          .on('pointerdown', () => {
              this.scene.stop("IntroScene");
              this.scene.start("AjustesScene");                           // Cambia a la escena de ajustes
-         });
+         });*/
 
         // Fondo
         this.add.image(0, 0, "background1_image")
