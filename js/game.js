@@ -376,6 +376,24 @@ class GameScene extends Phaser.Scene {
         this.p2Points = this.add.text(1750, 45, this.scorePlayer2 + ' puntos', configText.style);
         this.p2Life = this.add.text(1750, 82, this.lifePlayer2 + ' vida', configText.style);
 
+        // HECHIZOS .........................................................................................................
+
+        this.spells = this.physics.add.group();                         // grupo para los hechizos
+
+        let posx = Phaser.Math.Between(100, 1800);
+        let posy = Phaser.Math.Between(200, 900);
+        this.venomSpell = this.physics.add.image(posx, posy, 'venom');
+        this.venomSpell.setScale(0.06);
+        this.venomSpell.body.allowGravity = false;
+
+        // Colisiones de los hechizos con los jugadores
+        this.physics.add.collider(this.spells, this.player1, this.hitPlayer, null, this);
+        this.physics.add.collider(this.spells, this.player2, this.hitPlayer, null, this);
+
+        // Detectar cuando un jugador recoge el hechizo
+        this.physics.add.overlap(this.player1, this.venomSpell, this.collectSpellPlayer1, null, this);
+        this.physics.add.overlap(this.player2, this.venomSpell, this.collectSpellPlayer2, null, this);
+
 
         // COLISIONES .........................................................................................................
 
@@ -514,19 +532,171 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    playerHasSpell(player) {
-
+    collectSpellPlayer1(player, spell) {
+        this.player1HasSpell = true;
+        spell.disableBody(true, true); // Desactivar y ocultar el hechizo
+        console.log('El jugador 1 ha recogido el hechizo de veneno');
     }
+    
+    collectSpellPlayer2(player, spell) {
+        this.player2HasSpell = true;
+        spell.disableBody(true, true); // Desactivar y ocultar el hechizo
+        console.log('El jugador 2 ha recogido el hechizo de veneno');
+    }
+
+    playerHasSpell(player) {
+        if (player === this.player1) {
+            return this.player1HasSpell;
+        } else if (player === this.player2) {
+            return this.player2HasSpell;
+        }
+        return false;
+    }
+    
 
     throwSpell() {  // LANZAR HECHIZOS ----------------------------------------------------------------------------------------
         if (this.throwKeyPlayer1.isDown && this.playerHasSpell(this.player1)) {   
-            // Lanza el hechizo
+            this.createSpell(this.player1);
+            this.player1HasSpell = false; // El jugador 1 ya no tiene el hechizo
         }
-
+    
         if (this.throwKeyPlayer2.isDown && this.playerHasSpell(this.player2)) {   
-            // Lanza el hechizo
+            this.createSpell(this.player2);
+            this.player2HasSpell = false; // El jugador 2 ya no tiene el hechizo
         }
     }
+    
+    createSpell(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
+        let spell = this.spells.create(player.x, player.y, 'venom');
+        spell.setVelocityX(player.flipX ? 600 : -600); // velocidad según la dirección del jugador
+        spell.setScale(0.06); // tamaño del hechizo 
+        spell.body.allowGravity = false; // el hechizo no se ve afectado por la gravedad
+    }
+    
+    hitPlayer(player, spell) {
+        spell.destroy(); // Destruye el hechizo al impactar
+        player.setTint(0x933cb2); // Cambia el color del jugador para indicar que fue golpeado
+        this.time.addEvent({
+            delay: 500,
+            callback: () => {
+                player.clearTint();
+            }
+        });
+
+        // Iniciar el daño del veneno
+        this.applyVenomDamage(player);
+    }
+
+
+    applyVenomDamage(player) {
+        // Verificar si el jugador ya tiene un temporizador activo
+        if (!player.venomTimer) {
+            player.venomTimer = this.time.addEvent({
+                delay: 3000, // 3 segundos entre cada daño
+                callback: () => {
+                    if (player === this.player1) {
+                        if (this.lifePlayer1 > 0) {
+                            this.lifePlayer1 -= 5; // Reducir la vida
+                            player.setTint(0xff0000); // Cambia el color del jugador para indicar que recive daño
+                            this.p1Life.setText(`${this.lifePlayer1} vida`); // Actualizar texto
+
+                            // Restaurar el color después de un breve tiempo
+                            this.time.delayedCall(500, () => {
+                                player.clearTint();
+                            });
+                        }
+                        if (this.lifePlayer1 <= 0) {
+                            this.handlePlayerDeath(player, "Player 1");
+                        }
+                    } else if (player === this.player2) {
+                        if (this.lifePlayer2 > 0) {
+                            this.lifePlayer2 -= 5; // Reducir la vida
+                            player.setTint(0xff0000); // Cambia el color del jugador para indicar que recive daño
+                            this.p2Life.setText(`${this.lifePlayer2} vida`); // Actualizar texto
+
+                            // Restaurar el color después de un breve tiempo
+                            this.time.delayedCall(500, () => {
+                                player.clearTint();
+                            });
+                        }
+                        if (this.lifePlayer2 <= 0) {
+                            this.handlePlayerDeath(player, "Player 2");
+                        }
+                    }
+                },
+                loop: true // Daño recurrente
+            });
+        }
+    }
+    
+    handlePlayerDeath(player, playerName) {
+        console.log(`${playerName} ha muerto.`);
+        player.body.enable = false; // Deshabilitar movimiento
+    
+        // Detener cualquier animación actual y reproducir la animación de muerte
+        player.anims.stop();
+        const deathAnimation = playerName === "Player 1" ? "morir1" : "morir2";
+        player.anims.play(deathAnimation, true);
+    
+        this.stopVenomDamage(player); // Detener daño de veneno
+    
+        // Reaparecer después de 3 segundos
+        this.time.delayedCall(3000, () => {
+            // Configurar ajustes para las posiciones de reaparición
+            const lateralOffset = 150; // Ajuste para mover la posición X más lejos del borde lateral
+            const groundLevelOffset = 200; // Ajuste para elevar la posición en Y
+            const startPosition = playerName === "Player 1" 
+                ? { x: lateralOffset, y: this.sys.game.config.height - groundLevelOffset } // Cerca de la esquina inferior izquierda
+                : { x: this.sys.game.config.width - lateralOffset, y: this.sys.game.config.height - groundLevelOffset }; // Cerca de la esquina inferior derecha
+    
+            // Restaurar posición y estado
+            player.setPosition(startPosition.x, startPosition.y); // Reaparecer en la posición correspondiente
+            player.body.enable = true; // Habilitar movimiento
+    
+            // Restaurar vida
+            if (playerName === "Player 1") {
+                this.lifePlayer1 = 25;
+                this.p1Life.setText(`${this.lifePlayer1} vida`);
+            } else {
+                this.lifePlayer2 = 25;
+                this.p2Life.setText(`${this.lifePlayer2} vida`);
+            }
+    
+            // Reiniciar animaciones y estado
+            player.anims.stop();
+            const idleAnimation = playerName === "Player 1" ? "caminar1" : "caminar2"; // Ejemplo: usar animación de caminar como predeterminada
+            player.anims.play(idleAnimation, true);
+    
+            console.log(`${playerName} ha reaparecido.`);
+        });
+    }
+
+    stopVenomDamage(player) {
+        if (player.venomTimer) {
+            player.venomTimer.remove(false); // Detener el temporizador
+            player.venomTimer = null; // Limpiar referencia
+        }
+    }
+
+    resetPoisonTimers() {
+        // Detener los temporizadores de veneno si existen
+        if (this.player1.venomTimer) {
+            this.player1.venomTimer.remove(false);
+            this.player1.venomTimer = null; // Elimina el temporizador del jugador 1
+        }
+    
+        if (this.player2.venomTimer) {
+            this.player2.venomTimer.remove(false);
+            this.player2.venomTimer = null; // Elimina el temporizador del jugador 2
+        }
+    
+        // Restaurar el estado de veneno de los jugadores a "no envenenados"
+        this.player1.setTint(0xFFFFFF); // Restaurar color original de player 1
+        this.player2.setTint(0xFFFFFF); // Restaurar color original de player 2
+    }
+    
+
+
 
     updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
         
@@ -599,6 +769,7 @@ class GameScene extends Phaser.Scene {
         this.rounds = 0;
     }
     
+    
     nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
         this.rounds++;                              // Aumenta el contador de rondas
 
@@ -620,6 +791,8 @@ class GameScene extends Phaser.Scene {
 
         this.housePlayer1.enableBody(true, 175, 875 , true, true);
         this.housePlayer2.enableBody(true, 1750, 875 , true, true);
+        
+        this.resetPoisonTimers();   // Detener cualquier temporizador de veneno activo
 
         // Cambiar las plataformas del mundo (opcional)
     }
@@ -651,5 +824,7 @@ class GameScene extends Phaser.Scene {
         if (this.isCaptured) {
             this.flag.setPosition(this.currentFlagHolder.x + 50, this.currentFlagHolder.y - 50);
         }
+
+        this.throwSpell();
     }
 }
