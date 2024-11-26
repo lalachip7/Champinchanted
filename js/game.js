@@ -1,4 +1,5 @@
 class GameScene extends Phaser.Scene {
+    static bgMusic
     constructor() {
         super({ key: 'GameScene' });
     }
@@ -37,6 +38,9 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
+        // Musica
+        this.load.audio("background2", 'assets/Sonidos/game.mp3');
+        
         // Fondos
         this.load.image('background_o', 'assets/Fondos/Mapa_de_otoño.png');   
         this.load.image('background_i', 'assets/Fondos/Mapa_de_invierno.png');  
@@ -132,6 +136,12 @@ class GameScene extends Phaser.Scene {
     }
 
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
+
+        // Musica
+        GameScene.bgMusic = this.sound.add('background2');    // Añade la música de fondo,
+        GameScene.bgMusic.loop = true;                        // la configura para que se reproduzca en bucle
+        GameScene.bgMusic.play();                             // e inicia la reproducción
+
 
         // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
         
@@ -813,6 +823,7 @@ class GameScene extends Phaser.Scene {
             this.registry.set('player1Score', this.scorePlayer1);            // Guarda en registro la puntuación del jugador 1
             this.registry.set('player2Score', this.scorePlayer2);            // Guarda en registro la puntuación del jugador 2
             this.scene.start("EndScene", {})    // Carga la escena de fin de partida
+            
         }
     }
 
