@@ -73,6 +73,7 @@ class EndGame extends Phaser.Scene {
         this.playAgainText.on('pointerdown', () => {
             this.scene.stop('EndScene');
             this.scene.start('GameScene'); //Empieza una partida nueva
+            GameScene.bgMusic.stop();
         });
         
         this.exitButton = this.add.image(325, 650, 'buttonExit').setOrigin(-2.0).setInteractive(); // Crea el botón "Salir"
@@ -80,6 +81,7 @@ class EndGame extends Phaser.Scene {
         this.exitButton.on('pointerdown', () => {
             this.scene.stop('EndScene');
             this.scene.start('IntroGame'); // Vuelve a la pantalla de intro
+            GameScene.bgMusic.stop();
         });
         
         // ESTO DA ERROR EN LA SEGUNDA VEZ QUE JUEGAS, CREO QUE PORQUE NO ESTÁN DEFINIDOS
