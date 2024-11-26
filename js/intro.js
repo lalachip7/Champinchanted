@@ -1,10 +1,11 @@
 class IntroGame extends Phaser.Scene {
+    static bgMusic
     constructor() {
         super({ key: 'IntroGame' });   // Asigna la clave "IntroGame" a esta escena
     }
 
     preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
-        this.load.audio("Wandering Stars", 'assets/Wandering Stars.mp3');   // Música del juego
+        
         this.load.audio("background", 'assets/Wandering Stars.mp3');
 
         this.load.image("background_image", "assets/Fondos/fondo.png");                        // Imagen de fondo
@@ -30,9 +31,9 @@ class IntroGame extends Phaser.Scene {
          
 
         // Música de fondo
-        this.bgMusic = this.sound.add('background');    // Añade la música de fondo,
-        this.bgMusic.loop = true;                       // la configura para que se reproduzca en bucle
-        this.bgMusic.play();                            // e inicia la reproducción
+        IntroGame.bgMusic = this.sound.add('background');    // Añade la música de fondo,
+        IntroGame.bgMusic.loop = true;                       // la configura para que se reproduzca en bucle
+        IntroGame.bgMusic.play();                                  // e inicia la reproducción
 
 
         const buttonSpacing = 600; // Espaciado entre botones
@@ -46,7 +47,6 @@ class IntroGame extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             .setDepth(1) // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.sound.play("Wandering Stars");                     // Reproduce la música
                 this.scene.stop("IntroScene");                          // Detiene la escena actual
                 this.scene.start("PersonajesGame");                     // Cambia a la escena de selección de personajes
             });
@@ -72,10 +72,6 @@ class IntroGame extends Phaser.Scene {
                 this.scene.start("AjustesScene");                           // Cambia a la escena de ajustes
             });
 
-
-        this.events.on('shutdown', () => {      // Cuando la escena se detiene
-            this.bgMusic.stop();                // Para la música de fondo 
-        });
 
     }
 

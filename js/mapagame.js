@@ -56,6 +56,7 @@ class MapaGame extends Phaser.Scene {
             this.registry.set('mapa', 1);
             this.scene.stop("MapaGame"); 
             this.scene.start("GameScene");
+            IntroGame.bgMusic.stop();                // Para la música de fondo 
         });   
         
         this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button")   // Mapa invierno
@@ -65,6 +66,7 @@ class MapaGame extends Phaser.Scene {
             this.registry.set('mapa', 2);
             this.scene.stop("MapaGame");
             this.scene.start("GameScene");
+            IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
 
         this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button")   // Mapa primavera
@@ -74,6 +76,7 @@ class MapaGame extends Phaser.Scene {
             this.registry.set('mapa', 3);
             this.scene.stop("MapaGame");
             this.scene.start("GameScene");
+            IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
 
         this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button")    // Mapa verano
@@ -83,6 +86,7 @@ class MapaGame extends Phaser.Scene {
             this.registry.set('mapa', 4);
             this.scene.stop("MapaGame");
             this.scene.start("GameScene");
+            IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
     }
 }
