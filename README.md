@@ -64,7 +64,7 @@ Además, los hechizos y obstáculos que afectan a los jugadores aportan también
 ## 1.4. Propósito y público objetivo
 El propósito del juego es ofrecer una experiencia competitiva y divertida para dos jugadores, combinando mecánicas de plataformas rápidas y acción estratégica con el clásico objetivo de captura de bandera. Los jugadores deben usar sus habilidades de movimiento, su conocimiento del mapa y los recursos que encuentren para superar a su oponente, atrapando la bandera y llevándola a su base. Además de ser un reto físico, el juego busca fomentar la estrategia y el uso inteligente del entorno, mientras mantiene un ritmo de juego dinámico y emocionante.  
 
-Por otro lado el público objetivo son:  
+Por otro lado, el público objetivo son:  
  - **Jugadores casuales** que disfrutan de partidas rápidas y dinámicas. Al ser un juego de plataformas y multijugador, atraerá a aquellos que buscan una experiencia divertida que puedan jugar con amigos en sesiones cortas.
  - **Jugadores competitivos** que valoran juegos con una mezcla de habilidades y estrategia. El formato de capturar la bandera, combinado con la posibilidad de interferir en los planes del oponente mediante hechizos, atraerá a aquellos que disfrutan de enfrentamientos directos y de mejorar sus tácticas.
  - **Jugadores que buscan juegos multijugador**. Los que disfrutan jugando en compañía de amigos encontrarán este juego particularmente atractivo.
@@ -111,7 +111,7 @@ Aunque el juego está orientado a la competición 1 contra 1, la falta de modos 
 
 Además, el videojuego puede resultar algo repetitivo, a pesar de contar con varios mapas y personajes. La falta de diferenciación de estos en cuanto a habilidades, puede resultar menos interesante y contar con únicamente 4 mapas, en vez de tener varios niveles, puede también reducir el interés del jugador. 
 
-Y por último, la limitación del videojuego a ordenadores con acceso a un navegador, puede ser una gran debilidad para jugadores que prefieran usar otras plataformas como consolas. 
+Y, por último, la limitación del videojuego a ordenadores con acceso a un navegador, puede ser una gran debilidad para jugadores que prefieran usar otras plataformas como consolas. 
 
 ### 1.10.2. Amenazas
 Existen muchos juegos de plataformas multijugador competitivos, como Brawlhalla o Smash Bros. Esto puede hacer que nuestro videojuego no destaque, ante la existencia de otros con un éxito ya consolidado. Además, si el juego no se actualiza con frecuencia, los jugadores pueden cansarse y pasarse a juegos más novedosos y actualizados.
@@ -133,7 +133,7 @@ La licencia del videojuego es Apache 2.0, una licencia de código abierto que im
 
 # 2. Historia y narrativa
 ## 2.1. Lore
-En el núcleo del Bosque Eterno, hace miles de años, había un árbol llamado El Árbol de la Sabiduría. A lo largo de los siglos, el árbol absorbió el saber y la historia de la naturaleza. Al llegar al final de su vida, el Árbol predijo el desbalance natural que surgiría en su ausencia a falta de una conciencia colectiva que lo uniera. En un gesto de sacrificio, depositó su esencia en las raíces del bosque, generando una red mágica de hongos que vinculaba cada esquina del mundo subterráneo. De esta manera surgieron las setas, poseedoras de una conciencia primitiva, capaces de interactuar entre sí a través de esporas que se propagaban por todo el bosque.
+En el núcleo del Bosque Eterno, hace miles de años, había un árbol llamado 'El Árbol de la Sabiduría'. A lo largo de los siglos, el árbol absorbió el saber y la historia de la naturaleza. Al llegar al final de su vida, El Árbol predijo el desbalance natural que surgiría en su ausencia a falta de una conciencia colectiva que lo uniera. En un gesto de sacrificio, depositó su esencia en las raíces del bosque, generando una red mágica de hongos que vinculaba cada esquina del mundo subterráneo. De esta manera surgieron las setas, poseedoras de una conciencia primitiva, capaces de interactuar entre sí a través de esporas que se propagaban por todo el bosque.
 
 Con el paso del tiempo, estas setas empezaron a formar personalidades propias, representando elementos de su ambiente: las que se encontraban cerca del agua eran serenas, las que se encontraban en la oscuridad enigmáticas, y las que se desarrollaban al sol eran optimistas y rebosantes de energía.
 
@@ -146,13 +146,13 @@ El mundo del videojuego es un bosque encantado, vibrante y encantador, lleno de 
 ## 2.3. Objetivos del jugador  
 El objetivo del jugador y de su oponente, es llegar desde su base hasta el lugar aleatorio en el que se encuentre la bandera, ayudándose de las diversas plataformas distribuidas por el mapa, alcanzando la bandera y llevándola de vuelta a su base, sin que el otro jugador le alcance y le quite la bandera. 
 
-De esta forma, el jugador que consiga el objetivo, habrá ganado la ronda. El jugador que más rondas haya ganado de entre las tres que componen una partida, será proclamado ganador.
+De esta forma, el jugador que consiga el objetivo habrá ganado la ronda. El jugador que más rondas haya ganado de entre las tres que componen una partida, será proclamado ganador.
 
 # 3. Mecánicas del juego
 ## 3.1. Gameplay
 La jugabilidad de este juego de plataformas multijugador está diseñada para ser rápida, estratégica y dinámica, combinando elementos de competencia directa y la interacción con el entorno del mapa. 
 
-Cada jugador tiene como objetivo principal capturar la bandera, que aparece de manera aleatoria en el mapa, y llevarla de vuelta a su base . Gana la ronda el jugador que logre capturar y asegurar la bandera en su base primero. Se divide en 3 rondas y el jugador que gane más rondas es el vencedor de la partida.
+Cada jugador tiene como objetivo principal capturar la bandera, que aparece de manera aleatoria en el mapa, y llevarla de vuelta a su base. Gana la ronda el jugador que logre capturar y asegurar la bandera en su base primero. Se divide en 3 rondas y el jugador que gane más rondas es el vencedor de la partida.
 
 Antes de cada partida, los jugadores pueden elegir entre una variedad de personajes. No existen diferencias en las habilidades de estos.
 
@@ -235,7 +235,7 @@ Tiene un toque inspirado en la naturaleza fantástica, similar a juegos como *Or
 Los personajes principales tienen un diseño único, inspirado en diferentes tipos de setas. Las paletas de colores que siguen son únicas y temáticas para cada personaje, pero manteniendo una coherencia común.  
 
 **Perretxiko**
-El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
+El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto por lo que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
 
 ![Sprites de Perretxiko](./Imágenes/Perretxiko.png)
 ![Animación de Perretxiko](./Imágenes/Animación_perretxiko.png)
@@ -270,31 +270,64 @@ Hay 4 tipos diferentes de mapas, cada uno inspirado en una estación. Todos los 
 
 ![Boceto del mapa de otoño](./Imágenes/Boceto_mapa_otoño.png)
 ![Mapa otoño](./Imágenes/Mapa_de_otoño.png)
+![Mapa invierno](./Imágenes/Mapa_de_invierno.png)
+![Mapa primavera](./Imágenes/Mapa_de_primavera.png)
+![Mapa verano](./Imágenes/Mapa_de_verano.png)
 
 ### 5.4.2. Diseño de niveles
 Las plataformas principales del juego son una combinación de troncos de árboles caídos y champiñones y setas gigantes. 
-![Nivel de otoño](./Imágenes/Nivel_otoño.jpeg)
+
+Cada estación cuenta con sus propios elementos del juego:
+![Plataforma del nivel de otoño](./Imágenes/SetaPequeñaOtoño.png)
+![Plataforma vertical del nivel de otoño](./Imágenes/ParedOtoño.png)
+
+![Plataforma del nivel de invierno](./Imágenes/PlataformaEstalactitaInvierno.png)
+![Plataforma del nivel de invierno](./Imágenes/SetaGrandeInvierno.png)
+
+![Plataforma del nivel de primavera](./Imágenes/setoMedianoPrimavera.png)
+![Plataforma del nivel de primavera](./Imágenes/amapola.png)
+
+![Plataforma del nivel de verano](./Imágenes/hojaLateral2.png)
+![Plataforma del nivel de verano](./Imágenes/setoGrandeVerano.png)
+
+Además, hay algunos elementos especiales que son interactivos, como las setas saltarinas en las que el jugador rebota, o las setas venenosas que le quitan vida, que además tienen animación:
+![Seta saltarina](./Imágenes/SetaSaltarinaOtoño.png)
+![Seta saltarina invierno](./Imágenes/SetaSaltarinaInvierno.png)
+
+![Seta venenosa](./Imágenes/SetaVenenosaOtoño.png)
+![Seta venenosa invierno](./Imágenes/SetaVenenosaInvierno.png)
+
+Y así es como quedaría un nivel completo
+![Nivel de otoño](./Imágenes/Pantalla_juego_otoño.png)
+![Nivel de invierno](./Imágenes/Pantalla_juego_invierno.png)
 
 ## 5.5. Diseño de ítems
 Las paletas de colores de los objetos van en consonancia con las ya antes mencionadas y la estética general del videojuego.  
 
 ### 5.5.1. Hechizos
 **Dazer**: Al utilizarse sobre el contrincante aplicará un efecto de congelamiento que durará 3s, durante ese tiempo el jugador sobre el que se ha aplicado no podrá realizar ninguna acción.
+![Hechizo Dazer](./Imágenes/Dazer.png)
 
 **Venom**: Al utilizarse sobre el contrincante aplicará efecto de veneno, este hará 1 de daño cada 3s y no dejará de aplicarse hasta que uno de los dos jugadores muera.
+![Hechizo Venom](./Imágenes/Venom.png)
 
 **Dalsy**: Al utilizarse restaura 10 puntos de vida al jugador que lo utilice.
+![Hechizo Dalsy](./Imágenes/Dalsy.png)
 
 **Teleport**: Al activarse, ambos jugadores se teletransportan al punto de partida. En caso de que uno de ellos tenga la bandera, ésta quedará en el suelo en el punto en el que se encontraba el jugador antes de utilizar el hechizo.
+![Hechizo Teleport](./Imágenes/Teleport.png)
 
 **Dash**: Al usarlo se efectuará un desplazamiento (lateral u horizontal) que atraviesa los obstáculos si los hubiera.
+![Hechizo Dash](./Imágenes/Dash.png)
 
-**Time machine**: Devuelve a las posiciones y los puntos de vida en las que se encontraban los jugadores e items 10s antes de emplearse.
+**Time machine**: Devuelve a las posiciones y los puntos de vida en las que se encontraban los jugadores e ítems 10s antes de emplearse.
+![Hechizo Time machine](./Imágenes/Time_machine.png)
 
 **Monster**: Al emplearse el jugador que la utilice recibirá una mejora en velocidad, la mejora aumentará un 15% la velocidad base del jugador y durará 12s.
+![Hechizo Monster](./Imágenes/Monster.png)
 
 ### 5.5.2. Banderas y casas
-Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación se muestran los cuatro diseños.
+Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación, se muestran los cuatro diseños.
 		
 ![Bandera de verano](./Imágenes/Bandera_verano.jpeg)
 ![Bandera de otoño](./Imágenes/Bandera_otoño.jpeg)
@@ -303,9 +336,46 @@ Las banderas son los ítems que deben capturar los jugadores. Cada estación tie
 
 Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
 
-![Casas](./Imágenes/Casa.jpeg)
+![Casa de otoño](./Imágenes/Casa_otoño.png)
+![Casa de invierno](./Imágenes/Casa_invierno.png)
+![Casa de primavera](./Imágenes/Casa_primavera.png)
+![Casa de verano](./Imágenes/Casa_verano.png)
 
 
 ## 5.6. Interfaz de usuario
+La interfaz del videojuego es minimalista y homogénea, integrándose en el videojuego de manera que no saque al usuario de la experiencia inmersiva. 
 
+Cuenta con botones, fondos y recuadros que siguen la estética establecida. A continuación, se muestran algunos de ellos.
+
+![Botón de jugar](./Imágenes/botonJugar.png)
+![Botón de elegir mapa](./Imágenes/botonOtoñoMapa.png)
+![Botón de salir](./Imágenes/Salir.png)
+![Botón de jugar otra vez](./Imágenes/botonJugarOtraVez.png)
+
+Además, en la pantalla de juego aparecen iconos tanto de los personajes como de los hechizos.
+![Icono champichip](./Imágenes/champichip_i.png)
+![Icono champistar](./Imágenes/champistar_i.png)
+![Icono perretxiko](./Imágenes/perretxiko_i.png)
+![Icono mariñon](./Imágenes/mariñon_i.png)
+![Icono biblioseta](./Imágenes/biblioseta_i.png)
+
+![Icono Dazer](./Imágenes/Dazer_i.png)
+![Icono Venom](./Imágenes/Venom_i.png)
+![Icono Dalsy](./Imágenes/Dalsy_i.png)
+![Icono Teleport](./Imágenes/Teleport_i.png)
+![Icono Dash](./Imágenes/Dash_i.png)
+![Icono Time machine](./Imágenes/Time_machine_i.png)
+![Icono Monster](./Imágenes/Monster_i.png)
+
+En la pantalla de partida, en la parte superior, cada jugador puede ver un recuadro donde consultar su personaje, su vida y su puntuación, así como los hechizos que tenga disponibles.
+
+![Recuadro información jugador](./Imágenes/Cuadro_información_jugador.png)
+
+Por último, mostramos todas las pantallas que componen el videojuego, según todo lo visto anteriormente:
+
+![Pantalla de inicio](./Imágenes/Pantalla_inicio.png)
+![Pantalla de selección de personajes](./Imágenes/Pantalla_selección_personajes.png)
+![Pantalla de selección de mapas](./Imágenes/Pantalla_selección_mapas.png)
+![Pantalla de partida](./Imágenes/Pantalla_juego.png)
+![Pantalla de fin de partida](./Imágenes/Pantalla_ganador.png)
 
