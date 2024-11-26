@@ -13,11 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777  
-
-José Ramón Hernández-Franch Pérez del Hierro  
-* jor.hernandezfr.2022@alumnos.urjc.es  
-* Github:  
+* Github: ratamolinera777   
 
 Laura Blázquez Pelaz   
 * l.blazquez.2022@alumnos.urjc.es   
@@ -33,37 +29,37 @@ Laura Blázquez Pelaz
 
 # 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
-Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico.   
+Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico. 
 
-El objetivo del juego es capturar una bandera que aparece de forma aleatoria en diferentes puntos del mapa. Cada jugador comienza en su "casa", una base fija situada en lados opuestos del mapa. Desde allí, ambos deberán correr y saltar para llegar hasta la bandera antes que su oponente. Cuando un jugador capture la bandera, deberá regresar rápidamente a su casa para marcar un punto. El juego se compone de tres rondas y el jugador que gane más rondas será declarado vencedor.  
+El objetivo del juego es capturar una bandera que aparece de forma aleatoria en diferentes puntos del mapa. Cada jugador comienza en su "casa", una base fija situada en lados opuestos del mapa. Desde allí, ambos deberán correr y saltar para llegar hasta la bandera antes que su oponente. Cuando un jugador capture la bandera, deberá regresar rápidamente a su casa para marcar un punto. El juego se compone de tres rondas y el jugador que gane más rondas será declarado vencedor.
 
-El desafío no solo radica en capturar la bandera, sino también en sobrevivir a los obstáculos y hechizos que aparecerán aleatoriamente en el mapa. Estos hechizos y trampas están diseñados para entorpecer y complicar la tarea de los jugadores, pudiendo ser utilizados por estos de manera estratégica para ralentizar o incluso detener al oponente.   
+El desafío no solo radica en capturar la bandera, sino también en sobrevivir a los obstáculos y hechizos que aparecerán aleatoriamente en el mapa. Estos hechizos y trampas están diseñados para entorpecer y complicar la tarea de los jugadores, pudiendo ser utilizados por estos de manera estratégica para ralentizar o incluso detener al oponente. 
+El juego ofrece un equilibrio perfecto entre la acción rápida de las plataformas y la estrategia de saber cuándo atacar, defender o utilizar los hechizos a tu favor. 
 
-El juego ofrece un equilibrio perfecto entre la acción rápida de las plataformas y la estrategia de saber cuándo atacar, defender o utilizar los hechizos a tu favor.  
   
 ## 1.2. Características principales 
-Los jugadores pueden elegir entre varios personajes, cada uno con sus propios diseños. Esto aporta un toque de personalización y hace que el juego sea más atractivo visualmente.  
+Los jugadores pueden elegir entre varios personajes, cada uno con sus propios diseños. Esto aporta un toque de personalización y hace que el juego sea más atractivo visualmente.
 
-El mapa está lleno de plataformas, lo que añade un reto adicional de movimiento y salto. Los jugadores deben maniobrar hábilmente a través de los niveles para alcanzar la bandera y evitar a su oponente.  
+El mapa está lleno de plataformas, lo que añade un reto adicional de movimiento y salto. Los jugadores deben maniobrar hábilmente a través de los niveles para alcanzar la bandera y evitar a su oponente.
 
-Durante la partida, aparecen hechizos (ítems), en lugares aleatorios del mapa, que los jugadores pueden recoger y activar. Estos hechizos complican el reto, al interferir con el progreso del oponente, haciendo que aumente la dificultad de obtener la bandera.  
+Durante la partida, aparecen hechizos (ítems), en lugares aleatorios del mapa, que los jugadores pueden recoger y activar. Estos hechizos complican el reto, al interferir con el progreso del oponente, haciendo que aumente la dificultad de obtener la bandera.
 
-La posición de la bandera cambia de manera aleatoria en cada ronda, lo que obliga a los jugadores a adaptarse constantemente y evita que las estrategias se vuelvan repetitivas.  
+La posición de la bandera cambia de manera aleatoria en cada ronda, lo que obliga a los jugadores a adaptarse constantemente y evita que las estrategias se vuelvan repetitivas.
+Además, se ofrecen cuatro mapas distintos, uno por cada estación del año, evitando así, nuevamente, que el juego sea demasiado repetitivo y el jugador pierda el interés.
 
-Además, se ofrecen cuatro mapas distintos, uno por cada estación del año, evitando así, nuevamente, que el juego sea demasiado repetitivo y el jugador pierda el interés.  
-
-Los controles son fáciles de aprender pero difíciles de dominar. Esto permite que tanto jugadores novatos como expertos disfruten del juego, pero también recompensa la habilidad.  
-
-El videojuego tiene la posibilidad de jugar tanto en local como en red.  
+Los controles son fáciles de aprender pero difíciles de dominar. Esto permite que tanto jugadores novatos como expertos disfruten del juego, pero también recompensa la habilidad.
+El videojuego tiene la posibilidad de jugar tanto en local como en red.
+  
 
 ## 1.3. Género
-Es un juego de plataformas competitivas, que sigue la dinámica del “Captura la bandera”.   
+Es un juego de plataformas competitivas, que sigue la dinámica del “Captura la bandera”. 
 
-La acción se basa en las mecánicas clásicas de escenarios de plataformas donde los jugadores deben moverse, saltar y utilizar habilidades en un entorno dinámico y lleno de obstáculos.  
+La acción se basa en las mecánicas clásicas de escenarios de plataformas donde los jugadores deben moverse, saltar y utilizar habilidades en un entorno dinámico y lleno de obstáculos. 
 
-La mecánica central de capturar la bandera y llevarla a una base añade un elemento de estrategia y competición, lo que lo encuadra también dentro de los juegos competitivos locales o en línea.  
+La mecánica central de capturar la bandera y llevarla a una base añade un elemento de estrategia y competición, lo que lo encuadra también dentro de los juegos competitivos locales o en línea.
 
-Además, los hechizos y obstáculos que afectan a los jugadores aportan también acción y estrategia.  
+Además, los hechizos y obstáculos que afectan a los jugadores aportan también acción y estrategia.
+
 
 ## 1.4. Propósito y público objetivo
 El propósito del juego es ofrecer una experiencia competitiva y divertida para dos jugadores, combinando mecánicas de plataformas rápidas y acción estratégica con el clásico objetivo de captura de bandera. Los jugadores deben usar sus habilidades de movimiento, su conocimiento del mapa y los recursos que encuentren para superar a su oponente, atrapando la bandera y llevándola a su base. Además de ser un reto físico, el juego busca fomentar la estrategia y el uso inteligente del entorno, mientras mantiene un ritmo de juego dinámico y emocionante.  
@@ -98,10 +94,10 @@ Inicialmente ofrecerá un único modo de juego, basado en enfrentamientos direct
 La versión inicial contará con 5 personajes para elegir, cada uno con un diseño único y 4 mapas distintos, con diseños y plataformas completamente diferentes.
 
 El juego estará disponible para PC, y se podrá jugar tanto de manera local como en línea.
-
 Si bien es este el alcance inicial, el juego tiene potencial para expandirse con más modos de juego, como un modo cooperativo o competitivo con más de 2 jugadores, y la posibilidad de incluir más hechizos y mapas a través de actualizaciones. Además de un sistema de invitaciones rápidas para facilitar la jugabilidad.
 
 También en el futuro, se podrá cambiar el modelo de negocio del videojuego para poder obtener rentabilidad, por ejemplo mediante compras dentro del juego o venta de expansiones.
+
 
 ## 1.8. Motor de juego
 El videojuego usará el motor Unity, una plataforma comúnmente utilizada para videojuegos 2D y 3D. La elección del motor del juego se ha basado en las herramientas que proporciona para la creación de juegos 2D como Champinchanted, su sistema de físicas, la facilidad para crear animaciones y la gestión de multijugador, necesaria para este videojuego.
@@ -136,10 +132,18 @@ Y otros aspectos como un buen marketing o la integración en torneos online pued
 La licencia del videojuego es Apache 2.0, una licencia de código abierto que implica que los usuarios tienen libertad de usar, copiar y modificar el código del videojuego; redistribuir el software y su uso con fines comerciales, siempre y cuando den crédito a los autores. 
 
 # 2. Historia y narrativa
-## 2.1. Ambientación
+## 2.1. Lore
+En el núcleo del Bosque Eterno, hace miles de años, había un árbol llamado El Árbol de la Sabiduría. A lo largo de los siglos, el árbol absorbió el saber y la historia de la naturaleza. Al llegar al final de su vida, el Árbol predijo el desbalance natural que surgiría en su ausencia a falta de una conciencia colectiva que lo uniera. En un gesto de sacrificio, depositó su esencia en las raíces del bosque, generando una red mágica de hongos que vinculaba cada esquina del mundo subterráneo. De esta manera surgieron las setas, poseedoras de una conciencia primitiva, capaces de interactuar entre sí a través de esporas que se propagaban por todo el bosque.
+
+Con el paso del tiempo, estas setas empezaron a formar personalidades propias, representando elementos de su ambiente: las que se encontraban cerca del agua eran serenas, las que se encontraban en la oscuridad enigmáticas, y las que se desarrollaban al sol eran optimistas y rebosantes de energía.
+
+Conforme las setas tomaron conciencia, comprendieron que su tarea era salvaguardar y preservar la estabilidad del Bosque Eterno. A lo largo de siglos, el bosque experimentó desbalances naturales, variaciones climáticas y la aparición de seres inusuales. Para asegurar la salvaguarda del bosque, las setas de diversas facciones (dependiendo de su aspecto) se involucran en el torneo de Atrapa la Bandera. Este certamen no solo representa una costumbre cultural, sino también un examen para seleccionar a las setas más adecuadas para proteger el bienestar del bosque. A pesar de no poseer poderes mágicos, cada seta simboliza la biodiversidad y el balance de su ecosistema, y su batalla por la bandera representa su dedicación a salvaguardar su casa.
+
+
+## 2.2. Ambientación
 El mundo del videojuego es un bosque encantado, vibrante y encantador, lleno de naturaleza, fauna y elementos mágicos. Desde grandes troncos y champiñones, hasta hechizos y criaturas del bosque. Todo esto ambientado en las cuatro estaciones del año (primavera, verano, otoño e invierno). 
 
-## 2.2. Objetivos del jugador  
+## 2.3. Objetivos del jugador  
 El objetivo del jugador y de su oponente, es llegar desde su base hasta el lugar aleatorio en el que se encuentre la bandera, ayudándose de las diversas plataformas distribuidas por el mapa, alcanzando la bandera y llevándola de vuelta a su base, sin que el otro jugador le alcance y le quite la bandera. 
 
 De esta forma, el jugador que consiga el objetivo, habrá ganado la ronda. El jugador que más rondas haya ganado de entre las tres que componen una partida, será proclamado ganador.
@@ -234,26 +238,31 @@ Los personajes principales tienen un diseño único, inspirado en diferentes tip
 El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
 
 ![Sprites de Perretxiko](./Imágenes/Perretxiko.png)
+![Animación de Perretxiko](./Imágenes/Animación_perretxiko.png)
 
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
 ![Sprites de Champichip](./Imágenes/Champichip.png)
+![Animación de Champichip](./Imágenes/Animación_champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
 ![Sprites de Mariñón](./Imágenes/Mariñón.png)
+![Animación de Mariñón](./Imágenes/Animación_mariñon.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
 ![Sprites de Champistar](./Imágenes/Champistar.png)
+![Animación de Champistar](./Imágenes/Animación_champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
 ![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
+![Animación de Biblioseta](./Imágenes/Animación_biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
