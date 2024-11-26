@@ -237,31 +237,26 @@ Los personajes principales tienen un diseño único, inspirado en diferentes tip
 **Perretxiko**
 El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto por lo que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
 
-![Sprites de Perretxiko](./Imágenes/Perretxiko.png)
 ![Animación de Perretxiko](./Imágenes/Animación_perretxiko.png)
 
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-![Sprites de Champichip](./Imágenes/Champichip.png)
 ![Animación de Champichip](./Imágenes/Animación_champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-![Sprites de Mariñón](./Imágenes/Mariñón.png)
 ![Animación de Mariñón](./Imágenes/Animación_mariñon.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-![Sprites de Champistar](./Imágenes/Champistar.png)
 ![Animación de Champistar](./Imágenes/Animación_champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
 ![Animación de Biblioseta](./Imágenes/Animación_biblioseta.png)
 
 ## 5.4. Diseño de entornos
@@ -298,7 +293,7 @@ Además, hay algunos elementos especiales que son interactivos, como las setas s
 ![Seta venenosa invierno](./Imágenes/SetaVenenosaInvierno.png)
 
 Y así es como quedaría un nivel completo
-![Nivel de otoño](./Imágenes/Pantalla_juego_otoño.png)
+![Nivel de otoño](./Imágenes/Pantalla_juego.png)
 ![Nivel de invierno](./Imágenes/Pantalla_juego_invierno.png)
 
 ## 5.5. Diseño de ítems
@@ -306,25 +301,25 @@ Las paletas de colores de los objetos van en consonancia con las ya antes mencio
 
 ### 5.5.1. Hechizos
 **Dazer**: Al utilizarse sobre el contrincante aplicará un efecto de congelamiento que durará 3s, durante ese tiempo el jugador sobre el que se ha aplicado no podrá realizar ninguna acción.
-![Hechizo Dazer](./Imágenes/Dazer.png)
+![Hechizo Dazer](./Imágenes/Dazer.PNG)
 
 **Venom**: Al utilizarse sobre el contrincante aplicará efecto de veneno, este hará 1 de daño cada 3s y no dejará de aplicarse hasta que uno de los dos jugadores muera.
-![Hechizo Venom](./Imágenes/Venom.png)
+![Hechizo Venom](./Imágenes/Venom.PNG)
 
 **Dalsy**: Al utilizarse restaura 10 puntos de vida al jugador que lo utilice.
-![Hechizo Dalsy](./Imágenes/Dalsy.png)
+![Hechizo Dalsy](./Imágenes/Dalsy.PNG)
 
 **Teleport**: Al activarse, ambos jugadores se teletransportan al punto de partida. En caso de que uno de ellos tenga la bandera, ésta quedará en el suelo en el punto en el que se encontraba el jugador antes de utilizar el hechizo.
-![Hechizo Teleport](./Imágenes/Teleport.png)
+![Hechizo Teleport](./Imágenes/Teleport.PNG)
 
 **Dash**: Al usarlo se efectuará un desplazamiento (lateral u horizontal) que atraviesa los obstáculos si los hubiera.
-![Hechizo Dash](./Imágenes/Dash.png)
+![Hechizo Dash](./Imágenes/Dash.PNG)
 
 **Time machine**: Devuelve a las posiciones y los puntos de vida en las que se encontraban los jugadores e ítems 10s antes de emplearse.
-![Hechizo Time machine](./Imágenes/Time_machine.png)
+![Hechizo Time machine](./Imágenes/Time_machine.PNG)
 
 **Monster**: Al emplearse el jugador que la utilice recibirá una mejora en velocidad, la mejora aumentará un 15% la velocidad base del jugador y durará 12s.
-![Hechizo Monster](./Imágenes/Monster.png)
+![Hechizo Monster](./Imágenes/Monster.PNG)
 
 ### 5.5.2. Banderas y casas
 Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación, se muestran los cuatro diseños.
@@ -336,10 +331,10 @@ Las banderas son los ítems que deben capturar los jugadores. Cada estación tie
 
 Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
 
-![Casa de otoño](./Imágenes/Casa_otoño.png)
-![Casa de invierno](./Imágenes/Casa_invierno.png)
-![Casa de primavera](./Imágenes/Casa_primavera.png)
-![Casa de verano](./Imágenes/Casa_verano.png)
+![Casa de otoño](./Imágenes/Casa_otoño.PNG)
+![Casa de invierno](./Imágenes/Casa_invierno.PNG)
+![Casa de primavera](./Imágenes/Casa_primavera.PNG)
+![Casa de verano](./Imágenes/Casa_verano.PNG)
 
 
 ## 5.6. Interfaz de usuario
