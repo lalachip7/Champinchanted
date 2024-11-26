@@ -56,8 +56,8 @@ class GameScene extends Phaser.Scene {
         // Suelos
         this.load.image('ground_o', 'assets/Fondos/SueloOtoño.png');          
         this.load.image('ground_i', 'assets/Fondos/SueloInvierno.png'); 
-        //this.load.image('ground_p', 'assets/Fondos/SueloPrimavera.png'); 
-        //this.load.image('ground_v', 'assets/Fondos/SueloVerano.png');  
+        this.load.image('ground_p', 'assets/Fondos/sueloPrimavera.png'); 
+        this.load.image('ground_v', 'assets/Fondos/sueloVerano.png');  
 
         // Banderas
         this.load.image('flag_o', 'assets/Sprites/Bandera_otoño.png');        
@@ -101,13 +101,18 @@ class GameScene extends Phaser.Scene {
         this.load.image('medium_i', 'assets/Sprites/SetaMedianaInvierno.png');  
         this.load.image('large_i', 'assets/Sprites/SetaGrandeInvierno.png'); 
 
-        //this.load.image('small_p', 'assets/Sprites/SetaPequeñaPrimavera.png');   
-        //this.load.image('medium_p', 'assets/Sprites/SetaMedianaPrimavera.png');  
-        //this.load.image('large_p', 'assets/Sprites/SetaGrandePrimavera.png'); 
+        this.load.image('rose', 'assets/Sprites/rosa.png');
+        this.load.image('poppy', 'assets/Sprites/amapola.png');   
+        this.load.image('medium_p', 'assets/Sprites/setoMedianoPrimavera.png');  
+        this.load.image('large_p', 'assets/Sprites/setoGrandePrimavera.png'); 
 
-        //this.load.image('small_v', 'assets/Sprites/SetaPequeñaVerano.png');   
-        //this.load.image('medium_v', 'assets/Sprites/SetaMedianaVerano.png');  
-        //this.load.image('large_v', 'assets/Sprites/SetaGrandeVerano.png'); 
+        this.load.image('front_leaf', 'assets/Sprites/hojaFrontal.png');
+        this.load.image('side_leaf1', 'assets/Sprites/hojaLateral1.png');
+        this.load.image('side_leaf2', 'assets/Sprites/hojaLateral2.png');
+        this.load.image('side_leaf3', 'assets/Sprites/hojaLateral3.png');
+        this.load.image('clover', 'assets/Sprites/trebol.png');  
+        this.load.image('medium_v', 'assets/Sprites/setoMedianoVerano.png');  
+        this.load.image('large_v', 'assets/Sprites/setoGrandeVerano.png'); 
 
         this.load.spritesheet('bouncy_o', 'assets/Sprites/SetaSaltarinaOtoño.png', {frameWidth: 98, frameHeight: 89});   
         this.load.spritesheet('poisonous_o', 'assets/Sprites/SetaVenenosaOtoño.png', {frameWidth: 98.4, frameHeight: 95}); 
@@ -266,24 +271,30 @@ class GameScene extends Phaser.Scene {
             suelo = 'ground_p';
             bandera = 'flag_p';
             casa = 'house_p'
-            pared = 'wall_p';
-            pequeña = 'small_p';
+            pared = 'wall_o';
+            //rosa = 'rose';
+            //amapola = 'poppy';
+            //trebol = 'clover';
             mediana = 'medium_p';
             grande = 'large_p';
-            saltarina = 'bouncy_p';
-            venenosa = 'poisonous_p';
+            saltarina = 'bouncy_o';
+            venenosa = 'poisonous_o';
 
         } else if (this.mundo === 4) {           // Verano
             fondo = 'background_v';    
             suelo = 'ground_v';
             bandera = 'flag_v';
             casa = 'house_v'
-            pared = 'wall_v';
-            pequeña = 'small_v';
+            pared = 'wall_o';
+            //hoja_front = 'front_leaf';
+            //hoja_lat1 = 'side_leaf1';
+            //hoja_lat2 = 'side_leaf2';
+            //hoja_lat3 = 'side_leaf3';
+            //trebol = 'clover';
             mediana = 'medium_v';
             grande = 'large_v';
-            saltarina = 'bouncy_v';
-            venenosa = 'poisonous_v';
+            saltarina = 'bouncy_o';
+            venenosa = 'poisonous_o';
         }
 
         // CREACIÓN DEL MUNDO DEL JUEGO .......................................................................................
@@ -296,7 +307,17 @@ class GameScene extends Phaser.Scene {
         this.ground.body.allowGravity = false;     
 
         this.platforms = this.physics.add.staticGroup();                                // Plataformas
-        this.platforms.create(200, 400, pared);
+        this.platforms.create(450, 800, pared);
+        this.platforms.create(960, 400, pequeña);
+        this.platforms.create(300, 350, mediana);
+        this.platforms.create(800, 600, mediana);
+        this.platforms.create(600, 750, grande);
+        this.platforms.create(1500, 800, pared);
+        this.platforms.create(1350, 750, grande);
+        this.platforms.create(1150, 600, mediana);
+        this.platforms.create(960, 950, pequeña);
+        //this.platforms.create(800, 850, saltarina);
+        //this.platforms.create(200, 600, venenosa);
         // Ir colocando todas las plataformas del mapa...
 
         
