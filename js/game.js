@@ -59,6 +59,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('ground_p', 'assets/Fondos/sueloPrimavera.png'); 
         this.load.image('ground_v', 'assets/Fondos/sueloVerano.png');  
 
+
         // Banderas
         this.load.image('flag_o', 'assets/Sprites/Bandera_otoño.png');        
         this.load.image('flag_i', 'assets/Sprites/Bandera_invierno.png');
@@ -307,7 +308,7 @@ class GameScene extends Phaser.Scene {
         this.ground.body.allowGravity = false;     
 
         this.platforms = this.physics.add.staticGroup();                                // Plataformas
-        this.platforms.create(450, 800, pared);
+        this.platforms.create(450, 800, pared).setSize(30, 190).setOffset(10, 15);
         this.platforms.create(960, 400, pequeña);
         this.platforms.create(300, 350, mediana);
         this.platforms.create(800, 600, mediana);
@@ -318,7 +319,6 @@ class GameScene extends Phaser.Scene {
         this.platforms.create(960, 950, pequeña);
         //this.platforms.create(800, 850, saltarina);
         //this.platforms.create(200, 600, venenosa);
-        // Ir colocando todas las plataformas del mapa...
 
         
         this.flag = this.physics.add.image(700, 900, bandera);                          // Bandera
