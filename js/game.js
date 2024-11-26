@@ -70,7 +70,7 @@ class GameScene extends Phaser.Scene {
         this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', {frameWidth: 181.55, frameHeight: 151});
         this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', {frameWidth: 178, frameHeight: 155});
         this.load.spritesheet('mariñon', 'assets/Sprites/mariñon.png', {frameWidth: 182.36, frameHeight: 185});
-        // biblioseta
+        this.load.spritesheet('biblioseta', 'assets/Sprites/mariñon.png', {frameWidth: 182.36, frameHeight: 185});
 
         // Hechizos
         this.load.image('venom', 'assets/Sprites/Venom.png');
