@@ -7,10 +7,10 @@ class MapaGame extends Phaser.Scene {
         // Fondo e imágenes de los mapas
         this.load.image("background2_image", "assets/Fondos/fondoMapas.png");
 
-        this.load.image('invierno', 'assets/Fondos/Mapa_de_invierno.png');
-        this.load.image('primavera', 'assets/Fondos/Mapa_de_primavera.png');
-        this.load.image('otoño', 'assets/Fondos/Mapa_de_otoño.png');
-        this.load.image('verano', 'assets/Fondos/Mapa_de_verano.png');
+        this.load.image('invierno', 'assets/Fondos/invierno.png');
+        this.load.image('primavera', 'assets/Fondos/primavera.png');
+        this.load.image('otoño', 'assets/Fondos/otoño.png');
+        this.load.image('verano', 'assets/Fondos/verano.png');
 
         this.load.image("options_button", "assets/Interfaz/ajustes.png");
         this.load.image("readyMapa1_button", "assets/Interfaz/botonVeranoMapa.png");
@@ -40,8 +40,8 @@ class MapaGame extends Phaser.Scene {
         const mapas = [
             { key: 'otoño', x: this.scale.width / 3.45, y: this.scale.height / 3.5 },
             { key: 'invierno', x: (this.scale.width / 1.41), y: this.scale.height / 3.5 },
-            { key: 'primavera', x: this.scale.width / 4, y: (this.scale.height / 3) * 2 },
-            { key: 'verano', x: (this.scale.width / 4) * 3, y: (this.scale.height / 3) * 2 }
+            { key: 'verano', x: this.scale.width / 3.45, y: (this.scale.height / 2.75) * 2 },
+            { key: 'primavera', x: (this.scale.width / 1.41) , y: (this.scale.height / 2.75) * 2 }
         ];
 
         mapas.forEach((mapa) => {
