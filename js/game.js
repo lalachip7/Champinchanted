@@ -76,7 +76,7 @@ class GameScene extends Phaser.Scene {
         this.load.spritesheet('champistar', 'assets/Sprites/champistar.png', {frameWidth: 181.55, frameHeight: 151});
         this.load.spritesheet('perretxiko', 'assets/Sprites/perretxiko.png', {frameWidth: 178, frameHeight: 155});
         this.load.spritesheet('mariñon', 'assets/Sprites/mariñon.png', {frameWidth: 182.36, frameHeight: 185});
-        this.load.spritesheet('biblioseta', 'assets/Sprites/mariñon.png', {frameWidth: 182.36, frameHeight: 185});
+        this.load.spritesheet('biblioseta', 'assets/Sprites/biblioseta.png', {frameWidth: 177.55, frameHeight: 163});
 
         // Hechizos
         this.load.image('venom', 'assets/Sprites/Venom.png');
@@ -130,7 +130,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('champistar_i', 'assets/Interfaz/champistar_i.png');
         this.load.image('perretxiko_i', 'assets/Interfaz/perretxiko_i.png');
         this.load.image('mariñon_i', 'assets/Interfaz/mariñon_i.png');
-        //this.load.image('biblioseta_i', 'assets/Interfaz/biblioseta_i.png');
+        this.load.image('biblioseta_i', 'assets/Interfaz/biblioseta_i.png');
 
         this.load.image('venom_i', 'assets/Interfaz/Venom_i.png');
         this.load.image('dacer_i', 'assets/Interfaz/Dacer_i.png');
@@ -184,13 +184,13 @@ class GameScene extends Phaser.Scene {
 
 
         } else if (this.j1 === 5) {              // Biblioseta
-            //personaje1 = 'biblioseta';
-            //personaje1i = 'biblioseta_i'; 
-            //this.sizeX1 = ;
-            //this.sizeY1 = ;
-            //this.offsetXR1 = ;
-            //this.offsetXL1 = ;
-            //this.offsetY1 = ;
+            personaje1 = 'biblioseta';
+            personaje1i = 'biblioseta_i'; 
+            this.sizeX1 = 120;
+            this.sizeY1 = 120;
+            this.offsetXR1 = 20;
+            this.offsetXL1 = 30;
+            this.offsetY1 = 30;
 
         }
 
@@ -213,8 +213,8 @@ class GameScene extends Phaser.Scene {
             personaje2i = 'perretxiko_i'; 
             this.sizeX2 = 120;
             this.sizeY2 = 119;
-            this.offsetXR2 = 30;
-            this.offsetXL2 = 30;
+            this.offsetXR2 = 20;
+            this.offsetXL2 = 20;
             this.offsetY2 = 35;
 
         } else if (this.j2 === 4) {              // Mariñon
@@ -224,17 +224,16 @@ class GameScene extends Phaser.Scene {
             this.sizeY2 = 140;
             this.offsetXR2 = 20;
             this.offsetXL2 = 25;
-            this.offsetY2 = 40;
+            this.offsetY2 = 30;
 
         } else if (this.j2 === 5) {              // Biblioseta
-            //personaje2 = 'biblioseta';
-            //personaje2i = 'biblioseta_i'; 
-            //this.sizeX2 = ;
-            //this.sizeX2 = ;
-            //this.sizeY2 = ;
-            //this.offsetXR2 = ;
-            //this.offsetXL2 = ;
-            //this.offsetY2 = ;
+            personaje2 = 'biblioseta';
+            personaje2i = 'biblioseta_i'; 
+            this.sizeX2 = 120;
+            this.sizeY2 = 120;
+            this.offsetXR2 = 20;
+            this.offsetXL2 = 30;
+            this.offsetY2 = 30;
         }
 
         // ELECCIÓN MUNDO .....................................................................................................
@@ -365,7 +364,7 @@ class GameScene extends Phaser.Scene {
         })
 
         // INTERFAZ ..........................................................................................................
-        const configText = {
+        this.configText = {
             style: {
                 fontFamily: 'calibri',
                 color: '#3c2201',
@@ -379,18 +378,18 @@ class GameScene extends Phaser.Scene {
         this.player1Points = this.add.image(140, 55, 'star').setScale(0.7);
         this.player1Life = this.add.image(140, 95, 'heart').setScale(0.7);
 
-        this.p1Points = this.add.text(170, 45, this.scorePlayer1 + ' puntos', configText.style);
-        this.p1Life = this.add.text(170, 82, this.lifePlayer1 + ' vida', configText.style);
+        this.p1Points = this.add.text(170, 45, this.scorePlayer1 + ' puntos', this.configText.style);
+        this.p1Life = this.add.text(170, 82, this.lifePlayer1 + ' vida', this.configText.style);
 
 
         this.player2Rectangle = this.add.image(1750, 75, 'rectangle').setScale(0.5);
-        this.player1Character = this.add.image(1655 , 75, personaje2i).setScale(0.5);
+        this.player2Character = this.add.image(1655 , 75, personaje2i).setScale(0.5);
 
         this.player2Points = this.add.image(1720, 55, 'star').setScale(0.7);
         this.player2Life = this.add.image(1720, 95, 'heart').setScale(0.7);
 
-        this.p2Points = this.add.text(1750, 45, this.scorePlayer2 + ' puntos', configText.style);
-        this.p2Life = this.add.text(1750, 82, this.lifePlayer2 + ' vida', configText.style);
+        this.p2Points = this.add.text(1750, 45, this.scorePlayer2 + ' puntos', this.configText.style);
+        this.p2Life = this.add.text(1750, 82, this.lifePlayer2 + ' vida', this.configText.style);
 
         // HECHIZOS .........................................................................................................
 
@@ -399,8 +398,7 @@ class GameScene extends Phaser.Scene {
         let posx = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el hechizo
         let posy = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el hechizo
 
-        this.venomSpell = this.physics.add.image(posx, posy, 'venom');
-        this.venomSpell.setScale(0.1);
+        this.venomSpell = this.physics.add.image(posx, posy, 'venom').setScale(0.1);
         this.venomSpell.body.allowGravity = false;
 
         // COLISIONES .........................................................................................................
@@ -542,12 +540,31 @@ class GameScene extends Phaser.Scene {
     collectSpellPlayer1(player, spell) {
         this.player1HasSpell = true;                                    // El jugador 1 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
+
+        this.player1Spelli = this.add.image(75 , 175, 'venom_i').setScale(0.5);
+        this.poisonText1 = this.add.text(120, 150, 
+            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+            { 
+                ...this.configText.style, 
+                color: '#FFFFFF'
+            }
+        );
         console.log('El jugador 1 ha recogido el hechizo de veneno');
     }
     
     collectSpellPlayer2(player, spell) {
         this.player2HasSpell = true;                                    // El jugador 2 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
+
+        this.player2Spelli = this.add.image(1655 , 175, 'venom_i').setScale(0.5);
+        this.poisonText2 = this.add.text(1700, 150, 
+            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+            { 
+                ...this.configText.style, 
+                color: '#FFFFFF'
+            }
+        );
+
         console.log('El jugador 2 ha recogido el hechizo de veneno');
     }
 
@@ -555,12 +572,20 @@ class GameScene extends Phaser.Scene {
         if (this.throwKeyPlayer1.isDown && this.player1HasSpell) {   
             this.createSpell(this.player1);                             // Crea y lanza un hechizo
             this.player1HasSpell = false;                               // El jugador 1 ya no tiene el hechizo
+
+            this.player1Spelli.destroy();
+            this.poisonText1.destroy();
+
             console.log('El jugador 1 ha lanzado el hechizo de veneno');
         }
     
         if (this.throwKeyPlayer2.isDown && this.player2HasSpell) {   
             this.createSpell(this.player2);                             // Crea y lanza un hechizo
             this.player2HasSpell = false;                               // El jugador 2 ya no tiene el hechizo
+
+            this.player2Spelli.destroy();
+            this.poisonText2.destroy();
+
             console.log('El jugador 2 ha lanzado el hechizo de veneno');
         }
     }
@@ -711,6 +736,15 @@ class GameScene extends Phaser.Scene {
 
         this.housePlayer1.enableBody(true, 175, 875 , true, true);
         this.housePlayer2.enableBody(true, 1750, 875 , true, true);
+
+        if (this.player1HasSpell) {
+            this.player1Spelli.destroy();
+            this.poisonText1.destroy();
+        } 
+        if (this.player2HasSpell) {
+            this.player2Spelli.destroy();
+            this.poisonText2.destroy();
+        }
 
         let posxSpell = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el hechizo
         let posySpell = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el hechizo

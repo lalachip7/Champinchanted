@@ -19,7 +19,8 @@ class EndGame extends Phaser.Scene {
         this.load.image('champistar', 'assets/Personajes/champistar.png');
         this.load.image('perretxiko', 'assets/Personajes/perretxiko.png');
         this.load.image('mariñon', 'assets/Personajes/mariñon.png');
-        //this.load.image('biblioseta', 'assets/Personajes/biblioseta.png');
+        this.load.image('biblioseta', 'assets/Personajes/biblioseta.png');
+
         this.load.image('buttonPlayAgain', 'assets/Interfaz/botonJugarOtraVez.png');
         this.load.image('buttonExit', 'assets/Interfaz/Salir.png');
         this.load.image('victory1', 'assets/Interfaz/Victoria1.png');
@@ -43,7 +44,7 @@ class EndGame extends Phaser.Scene {
         } else if (this.j1 === 4) {              // Mariñon
             personaje1 = 'mariñon';
         } else if (this.j1 === 5) {              // Biblioseta
-            //personaje1 = 'biblioseta';
+            personaje1 = 'biblioseta';
         }
        
         let personaje2 = 'champichip';           // Champichip por defecto
@@ -54,7 +55,7 @@ class EndGame extends Phaser.Scene {
         } else if (this.j2 === 4) {              // Mariñon
             personaje2 = 'mariñon';
         } else if (this.j2 === 5) {              // Biblioseta
-            //personaje2 = 'biblioseta';
+            personaje2 = 'biblioseta';
         }
 
 
@@ -83,14 +84,6 @@ class EndGame extends Phaser.Scene {
             this.scene.start('IntroGame'); // Vuelve a la pantalla de intro
             GameScene.bgMusic.stop();
         });
-        
-        // ESTO DA ERROR EN LA SEGUNDA VEZ QUE JUEGAS, CREO QUE PORQUE NO ESTÁN DEFINIDOS
-        // Agrega un hover visual para los botones
-        //this.playAgainButton.on('pointerover', () => buttonPlayAgain.setScale(0.55));
-        //this.playAgainButton.on('pointerout', () => buttonPlayAgain.setScale(0.5));
-
-        //this.exitButton.on('pointerover', () => buttonExit.setScale(0.55));
-        //this.exitButton.on('pointerout', () => buttonExit.setScale(0.5));
     }
 
     update() {
