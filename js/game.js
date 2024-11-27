@@ -25,8 +25,8 @@ class GameScene extends Phaser.Scene {
         this.isMovementEnabled = true;
         this.dead = true;
 
-        this.player1HasSpell = false;   // Indica si el jugador 1 tiene la bandera
-        this.player2HasSpell = false;   // Indica si el jugador 2 tiene la bandera
+        this.player1HasVenom = false;   // Indica si el jugador 1 tiene la bandera
+        this.player2HasVenom = false;   // Indica si el jugador 2 tiene la bandera
         this.isCaptured = false;
 
 
@@ -81,7 +81,7 @@ class GameScene extends Phaser.Scene {
 
         // Hechizos
         this.load.image('venom', 'assets/Sprites/Venom.png');
-        this.load.image('dacer', 'assets/Sprites/Dacer.png');
+        this.load.image('dazer', 'assets/Sprites/Dazer.png');
         this.load.image('dalsy', 'assets/Sprites/Dalsy.png');
         this.load.image('dash', 'assets/Sprites/Dash.png');
         this.load.image('monster', 'assets/Sprites/Monster.png');
@@ -139,7 +139,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('biblioseta_i', 'assets/Interfaz/biblioseta_i.png');
 
         this.load.image('venom_i', 'assets/Interfaz/Venom_i.png');
-        this.load.image('dacer_i', 'assets/Interfaz/Dacer_i.png');
+        this.load.image('dazer_i', 'assets/Interfaz/Dazer_i.png');
         this.load.image('dalsy_i', 'assets/Interfaz/Dalsy_i.png');
         this.load.image('dash_i', 'assets/Interfaz/Dash_i.png');
         this.load.image('monster_i', 'assets/Interfaz/Monster_i.png');
@@ -273,7 +273,7 @@ class GameScene extends Phaser.Scene {
             bandera = 'flag_p';
             casa = 'house_p'
             pared = 'wall_o';
-            pequeña = 'rose';
+            //rosa = 'rose';
             //amapola = 'poppy';
             //trebol = 'clover';
             mediana = 'medium_p';
@@ -289,7 +289,7 @@ class GameScene extends Phaser.Scene {
             pared = 'wall_o';
             //hoja_front = 'front_leaf';
             //hoja_lat1 = 'side_leaf1';
-            pequeña = 'side_leaf2';
+            //hoja_lat2 = 'side_leaf2';
             //hoja_lat3 = 'side_leaf3';
             //trebol = 'clover';
             mediana = 'medium_v';
@@ -415,13 +415,20 @@ class GameScene extends Phaser.Scene {
 
         // HECHIZOS .........................................................................................................
 
-        this.spells = this.physics.add.group();                         // grupo para los hechizos
+        this.spellVenom = this.physics.add.group();                         // grupo para los hechizos
+        this.spellDazer = this.physics.add.group(); 
 
-        let posx = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el hechizo
-        let posy = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el hechizo
+        let posx = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el veneno
+        let posy = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el veneno
 
         this.venomSpell = this.physics.add.image(posx, posy, 'venom').setScale(0.1);
         this.venomSpell.body.allowGravity = false;
+
+        let posx2 = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el dazer
+        let posy2 = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el dazer
+
+        this.dazerSpell = this.physics.add.image(posx2, posy2, 'dazer').setScale(0.1);
+        this.dazerSpell.body.allowGravity = false;
 
         // COLISIONES .........................................................................................................
 
@@ -455,11 +462,17 @@ class GameScene extends Phaser.Scene {
         this.collisionFlagP1 = this.physics.add.overlap(this.player1, this.flag, this.collectFlagPlayer1, null, this);    // Con la bandera
         this.collisionFlagP2 = this.physics.add.overlap(this.player2, this.flag, this.collectFlagPlayer2, null, this);
 
-        this.physics.add.collider(this.spells, this.player1, this.hitPlayer, null, this);                   // Con los hechizos
-        this.physics.add.collider(this.spells, this.player2, this.hitPlayer, null, this);
+        this.physics.add.collider(this.spellVenom, this.player1, this.hitPlayerVenom, null, this);                   // Con los hechizos
+        this.physics.add.collider(this.spellVenom, this.player2, this.hitPlayerVenom, null, this);
 
-        this.physics.add.collider(this.player1, this.venomSpell, this.collectSpellPlayer1, null, this);      
-        this.physics.add.collider(this.player2, this.venomSpell, this.collectSpellPlayer2, null, this);
+        this.physics.add.collider(this.spellDazer, this.player1, this.hitPlayerDazer, null, this);                   // Con los hechizos
+        this.physics.add.collider(this.spellDazer, this.player2, this.hitPlayerDazer, null, this);
+
+        this.physics.add.collider(this.player1, this.venomSpell, this.collectVenomPlayer1, null, this);      
+        this.physics.add.collider(this.player2, this.venomSpell, this.collectVenomPlayer2, null, this);
+
+        this.physics.add.collider(this.player1, this.dazerSpell, this.collectDazerPlayer1, null, this);      
+        this.physics.add.collider(this.player2, this.dazerSpell, this.collectDazerPlayer2, null, this);
 
         // RECONOCIMIENTO DE TECLAS ...........................................................................................
 
@@ -559,8 +572,15 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    collectSpellPlayer1(player, spell) {
-        this.player1HasSpell = true;                                    // El jugador 1 tiene un hechizo
+    collectVenomPlayer1(player, spell) {
+        // Si el jugador ya tiene un hechizo, lo elimina
+        if (this.player1HasDazer) {
+            if (this.player1Spell2i) this.player1Spell2i.destroy();  // Elimina el icono del otro hechizo
+            if (this.dazerText1) this.dazerText1.destroy();          // Elimina el texto del otro hechizo
+            this.player1HasDazer = false;
+        }
+
+        this.player1HasVenom = true;                                    // El jugador 1 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
 
         this.player1Spelli = this.add.image(75 , 175, 'venom_i').setScale(0.5);
@@ -571,16 +591,68 @@ class GameScene extends Phaser.Scene {
                 color: '#FFFFFF'
             }
         );
+    }
+    
+    collectVenomPlayer2(player, spell) {
+        // Si el jugador ya tiene un hechizo, lo elimina
+        if (this.player2HasDazer) {
+            if (this.player2Spell2i) this.player2Spell2i.destroy();  // Elimina el icono del otro hechizo
+            if (this.dazerText2) this.dazerText2.destroy();          // Elimina el texto del otro hechizo
+            this.player2HasDazer = false;                           // Aquí estaba el typo
+        }
+    
+        this.player2HasVenom = true;                                    // El jugador 2 tiene un hechizo
+        spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
+    
+        this.player2Spelli = this.add.image(1655, 175, 'venom_i').setScale(0.5);
+        this.poisonText2 = this.add.text(1700, 150, 
+            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+            { 
+                ...this.configText.style, 
+                color: '#FFFFFF'
+            }
+        );
+    
+        console.log('El jugador 2 ha recogido el hechizo de veneno');
+    }
+    
+
+    collectDazerPlayer1(player, spell) {
+        // Si el jugador ya tiene un hechizo, lo elimina
+        if (this.player1HasVenom) {
+            if (this.player1Spelli) this.player1Spelli.destroy();    // Elimina el icono del hechizo
+            if (this.poisonText1) this.poisonText1.destroy();        // Elimina el texto del hechizo
+            this.player1HasVenom = false;
+        }
+
+        this.player1HasDazer = true;                                    // El jugador 1 tiene un hechizo
+        spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
+
+        this.player1Spell2i = this.add.image(75 , 175, 'dazer_i').setScale(0.5);
+        this.dazerText1 = this.add.text(120, 150, 
+            'Dazer: \ncongela al enemigo 5 \npor 3 segundos', 
+            { 
+                ...this.configText.style, 
+                color: '#FFFFFF'
+            }
+        );
         console.log('El jugador 1 ha recogido el hechizo de veneno');
     }
     
-    collectSpellPlayer2(player, spell) {
-        this.player2HasSpell = true;                                    // El jugador 2 tiene un hechizo
+    collectDazerPlayer2(player, spell) {
+        // Si el jugador ya tiene un hechizo, lo elimina
+        if (this.player2HasVenom) {
+            if (this.player2Spelli) this.player2Spelli.destroy();    // Elimina el icono del hechizo
+            if (this.poisonText2) this.poisonText2.destroy();        // Elimina el texto del hechizo
+            this.player2HasVenom = false;
+        }
+
+        this.player2HasDazer = true;                                    // El jugador 2 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
 
-        this.player2Spelli = this.add.image(1655 , 175, 'venom_i').setScale(0.5);
-        this.poisonText2 = this.add.text(1700, 150, 
-            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+        this.player2Spell2i = this.add.image(1655 , 175, 'dazer_i').setScale(0.5);
+        this.dazerText2 = this.add.text(1700, 150, 
+            'Dazer: \ncongela al enemigo 5 \npor 3 segundos', 
             { 
                 ...this.configText.style, 
                 color: '#FFFFFF'
@@ -590,10 +662,10 @@ class GameScene extends Phaser.Scene {
         console.log('El jugador 2 ha recogido el hechizo de veneno');
     }
 
-    throwSpell() {  // LANZAR HECHIZOS ----------------------------------------------------------------------------------------
-        if (this.throwKeyPlayer1.isDown && this.player1HasSpell) {   
-            this.createSpell(this.player1);                             // Crea y lanza un hechizo
-            this.player1HasSpell = false;                               // El jugador 1 ya no tiene el hechizo
+    throwVenom() {  // LANZAR VENENO ----------------------------------------------------------------------------------------
+        if (this.throwKeyPlayer1.isDown && this.player1HasVenom) {   
+            this.createVenom(this.player1);                             // Crea y lanza un hechizo
+            this.player1HasVenom = false;                               // El jugador 1 ya no tiene el hechizo
 
             this.player1Spelli.destroy();
             this.poisonText1.destroy();
@@ -601,9 +673,9 @@ class GameScene extends Phaser.Scene {
             console.log('El jugador 1 ha lanzado el hechizo de veneno');
         }
     
-        if (this.throwKeyPlayer2.isDown && this.player2HasSpell) {   
-            this.createSpell(this.player2);                             // Crea y lanza un hechizo
-            this.player2HasSpell = false;                               // El jugador 2 ya no tiene el hechizo
+        if (this.throwKeyPlayer2.isDown && this.player2HasVenom) {   
+            this.createVenom(this.player2);                             // Crea y lanza un hechizo
+            this.player2HasVenom = false;                               // El jugador 2 ya no tiene el hechizo
 
             this.player2Spelli.destroy();
             this.poisonText2.destroy();
@@ -611,16 +683,45 @@ class GameScene extends Phaser.Scene {
             console.log('El jugador 2 ha lanzado el hechizo de veneno');
         }
     }
+
+    throwDazer() {  // LANZAR VENENO ----------------------------------------------------------------------------------------
+        if (this.throwKeyPlayer1.isDown && this.player1HasDazer) {   
+            this.createDazer(this.player1);                             // Crea y lanza un hechizo
+            this.player1HasDazer = false;                               // El jugador 1 ya no tiene el hechizo
+
+            this.player1Spell2i.destroy();
+            this.dazerText1.destroy();
+
+            console.log('El jugador 1 ha lanzado el hechizo de dazer');
+        }
     
-    createSpell(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
-        let spell = this.spells.create(player.x, player.y, 'venom');    // Crea un hechizo de tipo venom
-        spell.setVelocityX(player.flipX ? 600 : -600);                  // Velocidad según la dirección del jugador
-        spell.setScale(0.1);                                            // Tamaño del hechizo 
-        spell.body.allowGravity = false;                                // El hechizo no se ve afectado por la gravedad
+        if (this.throwKeyPlayer2.isDown && this.player2HasDazer) {   
+            this.createDazer(this.player2);                             // Crea y lanza un hechizo
+            this.player2HasDazer = false;                               // El jugador 2 ya no tiene el hechizo
+
+            this.player2Spell2i.destroy();
+            this.dazerText2.destroy();
+
+            console.log('El jugador 2 ha lanzado el hechizo de dazer');
+        }
     }
     
-    hitPlayer(player, spell) {
-        spell.destroy();                        // Destruye el hechizo al impactar
+    createVenom(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
+        let spellVenom = this.spellVenom.create(player.x, player.y, 'venom');    // Crea un hechizo de tipo venom
+        spellVenom.setVelocityX(player.flipX ? 600 : -600);                  // Velocidad según la dirección del jugador
+        spellVenom.setScale(0.1);                                            // Tamaño del hechizo 
+        spellVenom.body.allowGravity = false;                                // El hechizo no se ve afectado por la gravedad
+    }
+
+    createDazer(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
+        let spellDazer = this.spellDazer.create(player.x, player.y, 'dazer');    // Crea un hechizo de tipo venom
+        spellDazer.setVelocityX(player.flipX ? 600 : -600);                  // Velocidad según la dirección del jugador
+        spellDazer.setScale(0.1);                                            // Tamaño del hechizo 
+        spellDazer.body.allowGravity = false;                                // El hechizo no se ve afectado por la gravedad
+    }
+    
+    hitPlayerVenom(player, spellVenom) {
+        spellVenom.destroy();                        // Destruye el hechizo al impactar
         player.setTint(0x933cb2);               // Cambia el color del jugador para indicar que fue golpeado
         this.time.addEvent({                    
             delay: 500,
@@ -630,6 +731,11 @@ class GameScene extends Phaser.Scene {
         });
 
         this.applyVenomDamage(player);          // E inicia el daño del veneno
+    }
+
+    hitPlayerDazer(player, spellDazer) {
+        spellDazer.destroy();                   // Destruye el hechizo al impactar
+        this.applyFreezer(player);              // E inicia el daño del veneno
     }
 
     applyVenomDamage(player) {
@@ -662,6 +768,17 @@ class GameScene extends Phaser.Scene {
                 loop: true                                                  // Daño recurrente
             });
         }
+    }
+
+    applyFreezer(player) {
+        player.body.enable = false;
+        player.setTint(0x67a3f1);
+
+        this.time.delayedCall(3000, () => {
+            player.body.enable = true;
+            player.clearTint();
+        }, null, this);
+
     }
 
     updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
@@ -759,26 +876,62 @@ class GameScene extends Phaser.Scene {
         this.housePlayer1.enableBody(true, 175, 875 , true, true);
         this.housePlayer2.enableBody(true, 1750, 875 , true, true);
 
-        if (this.player1HasSpell) {
-            this.player1Spelli.destroy();
-            this.poisonText1.destroy();
-        } 
-        if (this.player2HasSpell) {
-            this.player2Spelli.destroy();
-            this.poisonText2.destroy();
-        }
+        // Elimina los hechizos activos de la ronda anterior
+    if (this.venomSpell) {
+        this.venomSpell.destroy();  // Destruye el hechizo de veneno
+        this.venomSpell = null;     // Limpia la referencia
+    }
+    if (this.dazerSpell) {
+        this.dazerSpell.destroy();  // Destruye el hechizo de Dazer
+        this.dazerSpell = null;     // Limpia la referencia
+    }
 
-        let posxSpell = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el hechizo
-        let posySpell = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el hechizo
+    // Elimina el estado visual de hechizos en los jugadores
+    if (this.player1HasVenom) {
+        this.player1Spelli.destroy();
+        this.poisonText1.destroy();
+    } 
+    if (this.player2HasVenom) {
+        this.player2Spelli.destroy();
+        this.poisonText2.destroy();
+    }
 
-        this.venomSpell = this.physics.add.image(posxSpell, posySpell, 'venom');
-        this.venomSpell.setScale(0.1);
-        this.venomSpell.body.allowGravity = false;
+    if (this.player1HasDazer) {
+        this.player1Spell2i.destroy();
+        this.dazerText1.destroy();
+    } 
+    if (this.player2HasDazer) {
+        this.player2Spell2i.destroy();
+        this.dazerText2.destroy();
+    }
 
-        this.physics.add.collider(this.player1, this.venomSpell, this.collectSpellPlayer1, null, this);      
-        this.physics.add.collider(this.player2, this.venomSpell, this.collectSpellPlayer2, null, this);
-        
-        this.resetPoisonTimers();                   // Detener cualquier temporizador de veneno activo
+    // Resetea las variables de hechizos en los jugadores
+    this.player1HasVenom = false;
+    this.player2HasVenom = false;
+    this.player1HasDazer = false;
+    this.player2HasDazer = false;
+
+    // Crear nuevos hechizos para la nueva ronda
+    let posxSpell = Phaser.Math.Between(100, 1800);  // Posición x aleatoria para el hechizo
+    let posySpell = Phaser.Math.Between(200, 900);   // Posición y aleatoria para el hechizo
+
+    this.venomSpell = this.physics.add.image(posxSpell, posySpell, 'venom');
+    this.venomSpell.setScale(0.1);
+    this.venomSpell.body.allowGravity = false;
+    this.physics.add.collider(this.player1, this.venomSpell, this.collectVenomPlayer1, null, this);      
+    this.physics.add.collider(this.player2, this.venomSpell, this.collectVenomPlayer2, null, this);
+
+    let posxSpell2 = Phaser.Math.Between(100, 1800);  // Posición x aleatoria para el hechizo
+    let posySpell2 = Phaser.Math.Between(200, 900);   // Posición y aleatoria para el hechizo
+
+    this.dazerSpell = this.physics.add.image(posxSpell2, posySpell2, 'dazer');
+    this.dazerSpell.setScale(0.1);
+    this.dazerSpell.body.allowGravity = false;
+    this.physics.add.collider(this.player1, this.dazerSpell, this.collectDazerPlayer1, null, this);      
+    this.physics.add.collider(this.player2, this.dazerSpell, this.collectDazerPlayer2, null, this);
+
+    // Detener cualquier temporizador de veneno activo
+    this.resetPoisonTimers();
     }
 
     resetPoisonTimers() {   // DETIENE LOS TEMPORIZADORES DE VENENO -----------------------------------------------------------
@@ -836,7 +989,8 @@ class GameScene extends Phaser.Scene {
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
-        this.throwSpell();
+        this.throwVenom();
+        this.throwDazer();
 
         if (this.isCaptured) {
             this.flag.setPosition(this.currentFlagHolder.x + 50, this.currentFlagHolder.y - 50);
