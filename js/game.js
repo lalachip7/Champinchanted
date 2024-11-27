@@ -271,9 +271,9 @@ class GameScene extends Phaser.Scene {
             fondo = 'background_p';
             suelo = 'ground_p';
             bandera = 'flag_p';
-            casa = 'house_p'
+            casa = 'house_p';
             pared = 'wall_o';
-            //rosa = 'rose';
+            pequeña = 'rose';
             //amapola = 'poppy';
             //trebol = 'clover';
             mediana = 'medium_p';
@@ -289,7 +289,7 @@ class GameScene extends Phaser.Scene {
             pared = 'wall_o';
             //hoja_front = 'front_leaf';
             //hoja_lat1 = 'side_leaf1';
-            //hoja_lat2 = 'side_leaf2';
+            pequeña = 'side_leaf2';
             //hoja_lat3 = 'side_leaf3';
             //trebol = 'clover';
             mediana = 'medium_v';
