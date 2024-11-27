@@ -13,11 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777  
-
-José Ramón Hernández-Franch Pérez del Hierro  
-* jor.hernandezfr.2022@alumnos.urjc.es  
-* Github:  
+* Github: ratamolinera777    
 
 Laura Blázquez Pelaz   
 * l.blazquez.2022@alumnos.urjc.es   
