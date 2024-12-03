@@ -8,8 +8,8 @@ class GameScene extends Phaser.Scene {
         this.movement_speed = 600;  // Velocidad de los personajes
         this.movement_jump = 1200;  // Velocidad de los personajes
         this.gameStarted = false;   // Indica si el juego ha empezado
-        this.lifePlayer1 = 25;      // Vida del jugador 1
-        this.lifePlayer2 = 25;      // Vida del jugador 2
+        this.lifePlayer1 = 5;      // Vida del jugador 1
+        this.lifePlayer2 = 5;      // Vida del jugador 2
         this.scorePlayer1 = 0;      // Rondas ganadas por el jugador 1
         this.scorePlayer2 = 0;      // Rondas ganadas por el jugador 2
         this.rounds = 0;            // Número de rondas jugadas
@@ -145,6 +145,16 @@ class GameScene extends Phaser.Scene {
         this.load.image('monster_i', 'assets/Interfaz/Monster_i.png');
         this.load.image('teleport_i', 'assets/Interfaz/Teleport_i.png');
         this.load.image('timeMachine_i', 'assets/Interfaz/Time_machine_i.png');
+
+        // Fuentes
+        const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
+
+        font.load().then((loadedFont) => {                      // Carga la fuente y la añade al documento
+            document.fonts.add(loadedFont);
+            console.log('Fuente FantasyFont cargada');
+        }).catch((err) => {
+            console.error('Error al cargar la fuente FantasyFont:', err);
+        });
     }
 
     create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
@@ -386,32 +396,43 @@ class GameScene extends Phaser.Scene {
         })
 
         // INTERFAZ ..........................................................................................................
+               
         this.configText = {
             style: {
-                fontFamily: 'calibri',
+                fontFamily: 'FantasyFont, calibri',
                 color: '#3c2201',
                 fontSize: '25px'
             }
         }
+
+        this.scoreConfigText = {
+            style: {
+                fontFamily: 'FantasyFont, calibri',
+                color: '#ffffff',
+                fontSize: '40px'
+            }
+        }
+
+        this.scoreText = this.add.text(this.scale.width / 2, 50, this.scorePlayer1 + ' / ' + this.scorePlayer2, this.scoreConfigText.style);
         
-        this.player1Rectangle = this.add.image(170, 75, 'rectangle').setScale(0.5);
+        
         this.player1Character = this.add.image(75, 75, personaje1i).setScale(0.5);
 
-        this.player1Points = this.add.image(140, 55, 'star').setScale(0.7);
-        this.player1Life = this.add.image(140, 95, 'heart').setScale(0.7);
+        this.player1Life1 = this.add.image(140, 75, 'heart').setScale(0.7);
+        this.player1Life2 = this.add.image(180, 75, 'heart').setScale(0.7);
+        this.player1Life3 = this.add.image(220, 75, 'heart').setScale(0.7);
+        this.player1Life4 = this.add.image(260, 75, 'heart').setScale(0.7);
+        this.player1Life5 = this.add.image(300, 75, 'heart').setScale(0.7);
 
-        this.p1Points = this.add.text(170, 45, this.scorePlayer1 + ' puntos', this.configText.style);
-        this.p1Life = this.add.text(170, 82, this.lifePlayer1 + ' vida', this.configText.style);
+        
+        this.player2Character = this.add.image(1600 , 75, personaje2i).setScale(0.5);
 
-
-        this.player2Rectangle = this.add.image(1750, 75, 'rectangle').setScale(0.5);
-        this.player2Character = this.add.image(1655 , 75, personaje2i).setScale(0.5);
-
-        this.player2Points = this.add.image(1720, 55, 'star').setScale(0.7);
-        this.player2Life = this.add.image(1720, 95, 'heart').setScale(0.7);
-
-        this.p2Points = this.add.text(1750, 45, this.scorePlayer2 + ' puntos', this.configText.style);
-        this.p2Life = this.add.text(1750, 82, this.lifePlayer2 + ' vida', this.configText.style);
+        this.player2Life1 = this.add.image(1665, 75, 'heart').setScale(0.7);
+        this.player2Life2 = this.add.image(1705, 75, 'heart').setScale(0.7);
+        this.player2Life3 = this.add.image(1745, 75, 'heart').setScale(0.7);
+        this.player2Life4 = this.add.image(1785, 75, 'heart').setScale(0.7);
+        this.player2Life5 = this.add.image(1825, 75, 'heart').setScale(0.7);
+        
 
         // HECHIZOS .........................................................................................................
 
@@ -554,7 +575,7 @@ class GameScene extends Phaser.Scene {
         this.isMovementEnabled = false;
         if (player === this.player1 && this.player1HasFlag) {
             this.scorePlayer1++;
-            this.p1Points.setText(this.scorePlayer1 + ' puntos');
+            this.scoreText.setText(this.scorePlayer1 + ' / ' + this.scorePlayer2);
             this.housePlayer1.disableBody(true, false);
             setTimeout(() => {
                 this.nextRound();  // Se llama a nextRound después de 2 segundos
@@ -563,7 +584,7 @@ class GameScene extends Phaser.Scene {
 
         } else if (player === this.player2 && this.player2HasFlag) {
             this.scorePlayer2++;
-            this.p2Points.setText(this.scorePlayer2 + ' puntos');
+            this.scoreText.setText(this.scorePlayer1 + ' / ' + this.scorePlayer2);
             this.housePlayer2.disableBody(true, false);
             setTimeout(() => {
                 this.nextRound();  // Se llama a nextRound después de 2 segundos
@@ -583,12 +604,13 @@ class GameScene extends Phaser.Scene {
         this.player1HasVenom = true;                                    // El jugador 1 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
 
-        this.player1Spelli = this.add.image(75 , 175, 'venom_i').setScale(0.5);
-        this.poisonText1 = this.add.text(120, 150, 
-            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+        this.player1Rectangle = this.add.image(160, 200, 'rectangle').setScale(0.8);
+        this.player1Spelli = this.add.image(75 , 200, 'venom_i').setScale(0.5);
+        this.poisonText1 = this.add.text(135, 145, 
+            'Poción veneno: \nquita al oponente 1 \nvida cada 5 \nsegundos', 
             { 
                 ...this.configText.style, 
-                color: '#FFFFFF'
+                color: '#35221E'
             }
         );
     }
@@ -604,12 +626,13 @@ class GameScene extends Phaser.Scene {
         this.player2HasVenom = true;                                    // El jugador 2 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
     
-        this.player2Spelli = this.add.image(1655, 175, 'venom_i').setScale(0.5);
-        this.poisonText2 = this.add.text(1700, 150, 
-            'Poción veneno: \nquita al oponente 5 \nde vida cada 5 \nsegundos', 
+        this.player2Rectangle = this.add.image(1760, 200, 'rectangle').setScale(0.8);
+        this.player2Spelli = this.add.image(1600, 200, 'venom_i').setScale(0.5);
+        this.poisonText2 = this.add.text(1665, 145, 
+            'Poción veneno: \nquita al oponente 1 \nvida cada 5 \nsegundos', 
             { 
                 ...this.configText.style, 
-                color: '#FFFFFF'
+                color: '#35221E'
             }
         );
     
@@ -625,15 +648,16 @@ class GameScene extends Phaser.Scene {
             this.player1HasVenom = false;
         }
 
+        this.player1Rectangle = this.add.image(160, 200, 'rectangle').setScale(0.8);
         this.player1HasDazer = true;                                    // El jugador 1 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
 
-        this.player1Spell2i = this.add.image(75 , 175, 'dazer_i').setScale(0.5);
-        this.dazerText1 = this.add.text(120, 150, 
+        this.player1Spell2i = this.add.image(75 , 200, 'dazer_i').setScale(0.5);
+        this.dazerText1 = this.add.text(135, 145, 
             'Dazer: \ncongela al enemigo 5 \npor 3 segundos', 
             { 
                 ...this.configText.style, 
-                color: '#FFFFFF'
+                color: '#35221E'
             }
         );
         console.log('El jugador 1 ha recogido el hechizo de veneno');
@@ -650,12 +674,13 @@ class GameScene extends Phaser.Scene {
         this.player2HasDazer = true;                                    // El jugador 2 tiene un hechizo
         spell.disableBody(true, true);                                  // Desactivar y ocultar el hechizo
 
-        this.player2Spell2i = this.add.image(1655 , 175, 'dazer_i').setScale(0.5);
-        this.dazerText2 = this.add.text(1700, 150, 
+        this.player2Rectangle = this.add.image(1760, 200, 'rectangle').setScale(0.8);
+        this.player2Spell2i = this.add.image(1600 , 200, 'dazer_i').setScale(0.5);
+        this.dazerText2 = this.add.text(1665, 145, 
             'Dazer: \ncongela al enemigo 5 \npor 3 segundos', 
             { 
                 ...this.configText.style, 
-                color: '#FFFFFF'
+                color: '#35221E'
             }
         );
 
@@ -668,6 +693,7 @@ class GameScene extends Phaser.Scene {
             this.player1HasVenom = false;                               // El jugador 1 ya no tiene el hechizo
 
             this.player1Spelli.destroy();
+            this.player1Rectangle.destroy();
             this.poisonText1.destroy();
 
             console.log('El jugador 1 ha lanzado el hechizo de veneno');
@@ -678,6 +704,7 @@ class GameScene extends Phaser.Scene {
             this.player2HasVenom = false;                               // El jugador 2 ya no tiene el hechizo
 
             this.player2Spelli.destroy();
+            this.player2Rectangle.destroy();
             this.poisonText2.destroy();
 
             console.log('El jugador 2 ha lanzado el hechizo de veneno');
@@ -690,6 +717,7 @@ class GameScene extends Phaser.Scene {
             this.player1HasDazer = false;                               // El jugador 1 ya no tiene el hechizo
 
             this.player1Spell2i.destroy();
+            this.player1Rectangle.destroy();
             this.dazerText1.destroy();
 
             console.log('El jugador 1 ha lanzado el hechizo de dazer');
@@ -700,6 +728,7 @@ class GameScene extends Phaser.Scene {
             this.player2HasDazer = false;                               // El jugador 2 ya no tiene el hechizo
 
             this.player2Spell2i.destroy();
+            this.player2Rectangle.destroy();
             this.dazerText2.destroy();
 
             console.log('El jugador 2 ha lanzado el hechizo de dazer');
@@ -739,33 +768,32 @@ class GameScene extends Phaser.Scene {
     }
 
     applyVenomDamage(player) {
-        if (!player.venomTimer) {                                           // Verificar si el jugador ya tiene un temporizador activo
+        if (!player.venomTimer) {                                               // Verificar si el jugador ya tiene un temporizador activo
             player.venomTimer = this.time.addEvent({
-                delay: 3000,                                                // 3 segundos entre cada daño
+                delay: 3000,                                                    // 3 segundos entre cada daño
                 callback: () => {
                     if (player === this.player1) {
                         if (this.lifePlayer1 > 0) {
-                            this.lifePlayer1 -= 5;                          // Reducir la vida
-                            player.setTint(0xff0000);                       // Cambia el color del jugador para indicar que recibe daño
-                            this.p1Life.setText(this.lifePlayer1 + ' vida'); // Actualizar texto
+                            this.lifePlayer1--;                                 // Reducir la vida
+                            player.setTint(0xff0000);                           // Cambia el color del jugador para indicar que recibe daño
                             
-                            this.time.delayedCall(500, () => {              // Restaurar el color después de un breve tiempo
+                            this.time.delayedCall(500, () => {                  // Restaurar el color después de un breve tiempo
                                 player.clearTint();
                             });
                         }
                     } else if (player === this.player2) {
                         if (this.lifePlayer2 > 0) {
-                            this.lifePlayer2 -= 5;                          // Reducir la vida
-                            player.setTint(0xff0000);                       // Cambia el color del jugador para indicar que recibe daño
-                            this.p2Life.setText(this.lifePlayer2 + ' vida'); // Actualizar texto
+                            this.lifePlayer2--;                                 // Reducir la vida
+                            
+                            player.setTint(0xff0000);                           // Cambia el color del jugador para indicar que recibe daño
 
-                            this.time.delayedCall(500, () => {              // Restaurar el color después de un breve tiempo
+                            this.time.delayedCall(500, () => {                  // Restaurar el color después de un breve tiempo
                                 player.clearTint();
                             });
                         }
                     }
                 },
-                loop: true                                                  // Daño recurrente
+                loop: true                                                      // Daño recurrente
             });
         }
     }
@@ -857,10 +885,22 @@ class GameScene extends Phaser.Scene {
         this.player1.setPosition(180, 700);         // Resetea la posición de los jugadores
         this.player2.setPosition(1750, 700);
 
-        this.lifePlayer1 = 25;                      // Resetea la vida de los jugadores
-        this.p1Life.setText(this.lifePlayer1 + ' vida');
-        this.lifePlayer2 = 25;
-        this.p2Life.setText(this.lifePlayer2 + ' vida');
+        this.lifePlayer1 = 5;                      // Resetea la vida de los jugadores
+        this.lifePlayer2 = 5;
+        
+        this.destroyLifes();
+        this.player1Life1 = this.add.image(140, 75, 'heart').setScale(0.7);
+        this.player1Life2 = this.add.image(180, 75, 'heart').setScale(0.7);
+        this.player1Life3 = this.add.image(220, 75, 'heart').setScale(0.7);
+        this.player1Life4 = this.add.image(260, 75, 'heart').setScale(0.7);
+        this.player1Life5 = this.add.image(300, 75, 'heart').setScale(0.7);
+
+        this.player2Life1 = this.add.image(1665, 75, 'heart').setScale(0.7);
+        this.player2Life2 = this.add.image(1705, 75, 'heart').setScale(0.7);
+        this.player2Life3 = this.add.image(1745, 75, 'heart').setScale(0.7);
+        this.player2Life4 = this.add.image(1785, 75, 'heart').setScale(0.7);
+        this.player2Life5 = this.add.image(1825, 75, 'heart').setScale(0.7);
+
         this.dead = true;
 
         this.player1HasFlag = false;
@@ -954,7 +994,6 @@ class GameScene extends Phaser.Scene {
 
         if (this.lifePlayer1 <= 0 && this.dead) {           // Si el jugador 1 se muere
             this.scorePlayer2++;                            // Ej jugador 2 gana la ronda
-            this.p2Points.setText(this.scorePlayer2 + ' puntos');
 
             this.isMovementEnabled = false;
             this.dead = false;
@@ -967,7 +1006,6 @@ class GameScene extends Phaser.Scene {
 
         if (this.lifePlayer2 <= 0 && this.dead) {           // Si el jugador 2 se muere
             this.scorePlayer1++;                            // Ej jugador 2 gana la ronda
-            this.p1Points.setText(this.scorePlayer1 + ' puntos');
 
             this.isMovementEnabled = false;
             this.dead = false;
@@ -986,14 +1024,56 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    updateLifes() {
+        if (this.lifePlayer1 === 4) {
+            this.player1Life5.destroy();
+        } else if (this.lifePlayer1 === 3) {
+            this.player1Life4.destroy();
+        } else if (this.lifePlayer1 === 2) {
+            this.player1Life3.destroy();
+        } else if (this.lifePlayer1 === 1) {
+            this.player1Life2.destroy();
+        } else if (this.lifePlayer1 === 0) {
+            this.player1Life1.destroy();
+        }
+
+        if (this.lifePlayer2 === 4) {
+            this.player2Life5.destroy();
+        } else if (this.lifePlayer2 === 3) {
+            this.player2Life4.destroy();
+        } else if (this.lifePlayer2 === 2) {
+            this.player2Life3.destroy();
+        } else if (this.lifePlayer2 === 1) {
+            this.player2Life2.destroy();
+        } else if (this.lifePlayer2 === 0) {
+            this.player2Life1.destroy();
+        }
+    }
+
+    destroyLifes() {
+        this.player1Life1.destroy();
+        this.player1Life2.destroy();
+        this.player1Life3.destroy();
+        this.player1Life4.destroy();
+        this.player1Life5.destroy();
+
+        this.player2Life1.destroy();
+        this.player2Life2.destroy();
+        this.player2Life3.destroy();
+        this.player2Life4.destroy();
+        this.player2Life5.destroy();
+    }
+
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
         this.throwVenom();
         this.throwDazer();
+        this.updateLifes();
 
         if (this.isCaptured) {
             this.flag.setPosition(this.currentFlagHolder.x + 50, this.currentFlagHolder.y - 50);
         }
+
     }
 }

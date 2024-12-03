@@ -18,20 +18,24 @@ class PersonajesGame extends Phaser.Scene {
         this.load.image("highlight", "assets/Botones/highlight.png");
         this.load.image("highlight", "assets/Interfaz/highlight.png");
 
+        // Fuentes
+        const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
+
+        font.load().then((loadedFont) => {                      // Carga la fuente y la añade al documento
+            document.fonts.add(loadedFont);
+            console.log('Fuente FantasyFont cargada');
+        }).catch((err) => {
+            console.error('Error al cargar la fuente FantasyFont:', err);
+        });
     }
 
     create() {
-         // Botón de configuración
-         /*const options_button = this.add.image(this.scale.width - 50, 50, "options_button")   // Añade el botón de configuración
-         .setOrigin(0.75, 0.25) // Ajustar el punto de anclaje (derecha, arriba)
-         .setScale(0.15) // Reducir tamaño a la mitad    
-         .setInteractive()
-         .setDepth(1) // Botones en una capa más alta
-         .on('pointerdown', () => {
-             this.scene.stop("IntroScene");
-             this.scene.start("AjustesScene");                           // Cambia a la escena de ajustes
-         });*/
-
+        this.configText = {
+            fontFamily: 'FantasyFont, Calibri',
+            fontSize: '30px',
+            color: '#FEEFD8'
+        };
+        
         // Fondo
         this.add.image(0, 0, "background1_image")
             .setOrigin(0)
@@ -45,27 +49,28 @@ class PersonajesGame extends Phaser.Scene {
             { key: 'character1', name: 'Perretxiko' },
             { key: 'character2', name: 'ChampiChip' },
             { key: 'character3', name: 'ChampiStar' },
-            { key: 'character4', name: 'Mariñon' },
+            { key: 'character4', name: 'Mariñón' },
             { key: 'character5', name: 'Biblioseta' },
         ];
+
+        this.selectPlayerText = this.add.text(960, 80, 'Elegid un personaje', this.configText)
+            .setOrigin(0.5)
+            .setStyle({ fontSize: '65px' });
 
         // Mostrar selección del jugador 1
         this.player1SelectedImage = this.add.image(575, 275, null)
             .setScale(0.8)
             .setVisible(false);
-        this.player1SelectedText = this.add.text(575, 375, '', {
-            fontSize: '24px',
-            color: '#ffffff',
-        }).setOrigin(0.5)
+
+        this.player1SelectedText = this.add.text(575, 375, '', this.configText).setOrigin(0.5);
+        
 
         // Mostrar selección del jugador 2
         this.player2SelectedImage = this.add.image(1350, 275, null)
             .setScale(0.8)
             .setVisible(false);
-        this.player2SelectedText = this.add.text(1350, 375, '', {
-            fontSize: '24px',
-            color: '#ffffff',
-        }).setOrigin(0.5);
+        
+        this.player2SelectedText = this.add.text(1350, 375, '', this.configText).setOrigin(0.5);
 
         // Jugador 1: cuadrícula y selección
         this.createCharacterGrid(425, 500, characters, 'player1', this.player1SelectedImage, this.player1SelectedText);

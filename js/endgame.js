@@ -25,6 +25,16 @@ class EndGame extends Phaser.Scene {
         this.load.image('buttonExit', 'assets/Interfaz/Salir.png');
         this.load.image('victory1', 'assets/Interfaz/Victoria1.png');
         this.load.image('victory2', 'assets/Interfaz/Victoria2.png');
+
+        // Fuentes
+        const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
+
+        font.load().then((loadedFont) => {                      // Carga la fuente y la añade al documento
+            document.fonts.add(loadedFont);
+            console.log('Fuente FantasyFont cargada');
+        }).catch((err) => {
+            console.error('Error al cargar la fuente FantasyFont:', err);
+        });
     }
 
     create(data) {
