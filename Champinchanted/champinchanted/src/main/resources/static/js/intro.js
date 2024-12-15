@@ -98,7 +98,7 @@ class IntroGame extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             .setDepth(1)                                                // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.scene.pause("IntroScene");                          // Detiene la escena actual
+                this.scene.pause("IntroScene");                         // Detiene la escena actual
                 this.scene.launch("UsernameScene");                     // Cambia a la escena de introducir el nombre de usuario
         });
 

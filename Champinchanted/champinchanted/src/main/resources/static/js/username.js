@@ -34,89 +34,43 @@ class UsernameScene extends Phaser.Scene {
         }; 
         
         const background = this.add.image(0, 0, "background_image")
-            .setOrigin(0)                                                                          // Alinea la esquina superior izquierda al (0,0)
+            .setOrigin(0)                                    
             background.setScale(this.scale.width / background.width, this.scale.height / background.height);
-            background.setDepth(-1); // Usa capas para que fondo este nivel más bajo
+            background.setDepth(-1); 
 
         const buttonSpacing = 200;                          // Espaciado entre botones
         const centerX = this.scale.width / 2;               // Centro horizontal de la pantalla
+        const centerY = this.scale.height / 2;              // Centro vertical de la pantalla
 
-        this.formUtil = new FormUtil({
-            scene: this,
-            rows: 22,
-            cols: 22
-        });
+        // Crear el campo de texto (input) y el botón
+        const usernameInput = document.createElement('input');
+        usernameInput.type = 'text';
+        usernameInput.id = 'username-input';
+        usernameInput.placeholder = 'Introduce tu nombre de usuario';
+        usernameInput.style.position = 'absolute';
+        usernameInput.style.left = `${centerX - 170}px`;           
+        usernameInput.style.top = `${centerY - 100}px`;          
+        usernameInput.style.padding = '10px';
+        usernameInput.style.fontSize = '20px';
+        usernameInput.style.width = '300px';
+        usernameInput.style.fontFamily = 'FantasyFont, Calibri';
+        usernameInput.style.border = "0px solid #ffffff";                     // Sin borde
+        usernameInput.style.backgroundColor = "#333333";                        // Color de fondo oscuro
+        usernameInput.style.color = "#ffffff";                                  // Color del texto (blanco)
+        usernameInput.style.borderRadius = "50px";                              // Bordes redondeados
+        usernameInput.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.5)";    // Sombra suave
+        document.body.appendChild(usernameInput);
 
-        this.formUtil.addElement("username", "input", {
-            type: "text",
-            width: 250,
-            height: 30,
-            fontSize: 20,
-            padding: 10,
-            placeholder: "Introduce tu nombre de usuario",
-            fontFamily: 'FantasyFont, Calibri'
-        });
+        // Crear el botón
+        const submitButton = this.add.image(centerX, centerY + 100, "submit_button")
+            .setScale(0.15)
+            .setInteractive()
+            .on('pointerdown', () => this.setUsername(usernameInput));
 
-        const inputElement = document.getElementById("username");
-        inputElement.style.fontFamily = "FantasyFont, sans-serif";
-        inputElement.style.border = "0px solid #ffffff";          // Borde blanco de 2px
-        inputElement.style.backgroundColor = "#333333";             // Color de fondo oscuro
-        inputElement.style.color = "#ffffff";                       // Color del texto (blanco)
-        inputElement.style.borderRadius = "50px";                   // Bordes redondeados
-        inputElement.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.5)"; // Sombra suave
-
-        // Ubicar el campo de texto en la escena
-        this.formUtil.placeElementAt(229, "username", true);
-
-        // Escalar el campo de texto para que se ajuste al tamaño de la pantalla
-        this.formUtil.scaleToGameW("username", 0.3);
-     
-        const submitButton = this.add.image(centerX, 635, "submit_button")      // Añade el botón de confirmar nombre de usuario
-            .setScale(0.15)                                                     // Reducir tamaño a la mitad  
-            .setInteractive()                                                   // Hace que seea interactivo y que pueda responder a eventos
-            .setDepth(1)                                                        // Botones en una capa más alta
-            .on('pointerdown', async() => {                                     // Al hacer click 
-                const username = this.formUtil.getTextAreaValue("username");    // Obtiene el valor del campo de texto
-                console.log("El nombre de usuario es: " + username);
-                this.formUtil.hideElement("username");                  // Oculta el campo de texto
-                submitButton.setVisible(false);                         // Oculta el botón de aceptar
-
-                // Petición HTTP POST .......................................................................................
-                if (!username || username.trim() === "") {              // Verifica si el campo está vacío
-                    console.log("El nombre de usuario no puede estar vacío");
-                    return; 
-                }
-            
-                console.log("Intentando crear usuario con nombre: " + username);
-            
-                try {
-                    const response = await fetch("https://localhost.com/api/users", { 
-                        method: "POST", 
-                        headers: {
-                            "Content-Type": "application/json"  // Indica que se enviará JSON
-                        },
-                        body: JSON.stringify({ username })      // Convierte los datos en JSON
-                    });
-            
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error("Error al crear el usuario:", errorData.message);
-                        alert("Hubo un problema al crear el usuario: " + errorData.message);
-                        return;
-                    }
-            
-                    // Si todo va bien, procesa la respuesta
-                    const responseData = await response.json();
-                    console.log("Usuario creado con éxito:", responseData);
-                    alert("Usuario creado exitosamente: " + responseData.username);
-                    
-                } catch (error) {
-                    // Maneja errores de red o del cliente
-                    console.error("Error en la solicitud POST:", error);
-                    alert("No se pudo conectar con el servidor.");
-                }
-        });
-
+        // Lógica para enviar el nombre de usuario al servidor
+        // Base URL para hacer la llamada al servidor
+        const baseUrl = `${window.location.origin}/api/users`; 
+    
         // Botón de crear partida
         const create_game_button = this.add.image(centerX - buttonSpacing, 790, "create_game_button")   // Añade el botón de comenzar partida en local
             .setScale(0.2)                                              // Reducir tamaño a la mitad  
@@ -143,14 +97,51 @@ class UsernameScene extends Phaser.Scene {
                 this.scene.stop("UsernameScene");                       // Detiene la escena actual
                 this.scene.start("IntroScene");                         // Cambia a la escena de inicio
                 console.log(game.scene.keys);
+                this.shutdown();
         }); 
     }
 
-    update() { }     // En cada frame actualiza la lógica interactiva
+    // Función para hacer el POST y enviar el nombre de usuario
+    setUsername = (usernameInput) => {
+        const enteredUsername = usernameInput.value.trim();
+        if (!enteredUsername) {
+            alert('Por favor, introduce un nombre de usuario.');
+            return;
+        }
 
-    textAreaChanged() {
-        var text = this.formUtil.getTextAreaValue("username");
-        console.log(text);
+        // Enviar el nombre de usuario al servidor usando fetch (POST)
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: enteredUsername })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al crear el usuario.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Nombre de usuario creado con éxito!');
+                console.log('Usuario creado:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un problema al crear el usuario. Inténtalo de nuevo.');
+            });
+            this.formUtil.hideElement("username");                  // Oculta el campo de texto
+            submitButton.setVisible(false);                         // Oculta el botón de confirmar
+    };
+
+    shutdown() {
+        // Eliminar el cuadro de texto al cambiar de escena
+        const usernameInput = document.getElementById('username-input');
+        if (usernameInput) {
+            usernameInput.remove(); // Elimina el cuadro de texto del DOM
+        }
     }
 
+    update() { }     // En cada frame actualiza la lógica interactiva
 }
