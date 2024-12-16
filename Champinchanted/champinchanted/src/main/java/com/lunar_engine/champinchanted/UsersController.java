@@ -1,5 +1,6 @@
 package com.lunar_engine.champinchanted;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class UsersController {
      * @param user
      * @return
      */
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         synchronized (this.userRep) {
             if (user.getUsername() == null) {     // Si el nombre de usuario o la contraseña están vacíos
@@ -88,7 +89,8 @@ public class UsersController {
 
             this.apiStatusService.hasSeen(user.getUsername());      // Si no existe le marca como conectado
             this.userRep.updateUser(user);                         // Actualiza el repositorio de usuarios
-            return ResponseEntity.noContent().build();              // Y devuelve un código 204 (No content)
+            return ResponseEntity.status(HttpStatus.CREATED)
+                              .body(Map.of("message", "Usuario registrado con éxito"));
         }
     }
     
