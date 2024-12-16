@@ -433,7 +433,7 @@ class GameScene extends Phaser.Scene {
         this.player2Life4 = this.add.image(1785, 75, 'heart').setScale(0.7);
         this.player2Life5 = this.add.image(1825, 75, 'heart').setScale(0.7);
 
-
+        //hola caracola
 
         /*this.createOriginal();
 
