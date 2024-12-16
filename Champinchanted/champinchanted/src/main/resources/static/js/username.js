@@ -65,7 +65,40 @@ class UsernameScene extends Phaser.Scene {
         const submitButton = this.add.image(centerX, centerY + 100, "submit_button")
             .setScale(0.15)
             .setInteractive()
-            .on('pointerdown', () => this.setUsername(usernameInput));
+            .on('pointerdown', async () => {
+                const enteredUsername = usernameInput.value.trim();
+                if (!enteredUsername) {
+                    alert('Por favor, introduce un nombre de usuario.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/api/users", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ username: enteredUsername })
+                    })
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error("Error al crear el usuario: ", errorData);
+                        alert("Hubo un problema al crear el usuario: " + errorData.message);
+                        return;
+                    }
+
+                    const data = await response.json();
+                    console.log("Usuario creado con éxito: ", data);
+                    alert("Usuario creado con éxito.");
+                    submitButton.setVisible(false); 
+                    return data;
+                    
+                } catch (error) {
+                    console.error("Error en la solicitud POST: ", error);
+                    alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+                }
+            });
 
         // Lógica para enviar el nombre de usuario al servidor
         // Base URL para hacer la llamada al servidor
@@ -100,40 +133,6 @@ class UsernameScene extends Phaser.Scene {
                 this.shutdown();
         }); 
     }
-
-    // Función para hacer el POST y enviar el nombre de usuario
-    setUsername = (usernameInput) => {
-        const enteredUsername = usernameInput.value.trim();
-        if (!enteredUsername) {
-            alert('Por favor, introduce un nombre de usuario.');
-            return;
-        }
-
-        // Enviar el nombre de usuario al servidor usando fetch (POST)
-        fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username: enteredUsername })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al crear el usuario.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Nombre de usuario creado con éxito!');
-                console.log('Usuario creado:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Hubo un problema al crear el usuario. Inténtalo de nuevo.');
-            });
-            this.formUtil.hideElement("username");                  // Oculta el campo de texto
-            submitButton.setVisible(false);                         // Oculta el botón de confirmar
-    };
 
     shutdown() {
         // Eliminar el cuadro de texto al cambiar de escena
