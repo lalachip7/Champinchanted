@@ -1,6 +1,6 @@
-class PersonajesGame extends Phaser.Scene {
+class PersonajesGameOnline extends Phaser.Scene {
     constructor() {
-        super({ key: 'PersonajesGame' });
+        super({ key: 'PersonajesGameOnline' });
     }
 
     preload() {

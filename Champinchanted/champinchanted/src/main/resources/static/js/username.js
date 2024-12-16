@@ -3,6 +3,10 @@ class UsernameScene extends Phaser.Scene {
         super({ key: 'UsernameScene' });   // Asigna la clave "Username" a esta escena
     }
 
+    init() {
+        this.usernameEntered = false;
+    }
+
     preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
         
         this.load.audio("background", 'assets/Sonidos/musica.mp3');
@@ -91,6 +95,8 @@ class UsernameScene extends Phaser.Scene {
                     const data = await response.json();
                     console.log("Usuario creado con éxito: ", data);
                     alert("Usuario creado con éxito.");
+                    this.usernameEntered = true;
+                    this.shutdown()
                     submitButton.setVisible(false); 
                     return data;
                     
@@ -110,8 +116,14 @@ class UsernameScene extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             .setDepth(1)                                                // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.scene.stop("UsernameScene");                          // Detiene la escena actual
-                this.scene.start("PersonajesGame");                     // Cambia a la escena de selección de personajes
+                if (!this.usernameEntered) {
+                    alert('Por favor, introduce un nombre de usuario.');
+                    return;
+                } else {
+                    this.shutdown();
+                    this.scene.stop("UsernameScene");                       // Detiene la escena actual
+                    this.scene.start("MapaGameOnline");                     // Cambia a la escena de selección de personajes
+                } 
         });
 
         // Botón de comenzar partida en línea
@@ -120,6 +132,11 @@ class UsernameScene extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             .setDepth(1)                                                // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
+                if (!this.usernameEntered) {
+                    alert('Por favor, introduce un nombre de usuario.');
+                } else {
+                    this.shutdown();
+                } 
         });
 
         // Botón de volver

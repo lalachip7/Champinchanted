@@ -1,6 +1,6 @@
-class MapaGame extends Phaser.Scene {
+class MapaGameOnline extends Phaser.Scene {
     constructor() {
-        super({ key: 'MapaGame' });
+        super({ key: 'MapaGameOnline' });
     }
 
     preload() {
@@ -43,7 +43,7 @@ class MapaGame extends Phaser.Scene {
         .on('pointerdown', () => {
             this.registry.set('mapa', 1);
             this.scene.stop("MapaGame"); 
-            this.scene.start("PersonajesGame");
+            this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
         });   
         
@@ -53,7 +53,7 @@ class MapaGame extends Phaser.Scene {
         .on('pointerdown', () => {
             this.registry.set('mapa', 2);
             this.scene.stop("MapaGame");
-            this.scene.start("PersonajesGame");
+            this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
 
@@ -63,7 +63,7 @@ class MapaGame extends Phaser.Scene {
         .on('pointerdown', () => {
             this.registry.set('mapa', 3);
             this.scene.stop("MapaGame");
-            this.scene.start("PersonajesGame");
+            this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
 
@@ -73,7 +73,7 @@ class MapaGame extends Phaser.Scene {
         .on('pointerdown', () => {
             this.registry.set('mapa', 4);
             this.scene.stop("MapaGame");
-            this.scene.start("PersonajesGame");
+            this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
         });
     }

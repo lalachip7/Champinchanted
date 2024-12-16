@@ -89,7 +89,7 @@ class IntroGame extends Phaser.Scene {
             .setDepth(1)                                                // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
                 this.scene.stop("IntroScene");                          // Detiene la escena actual
-                this.scene.start("PersonajesGame");                     // Cambia a la escena de selección de personajes
+                this.scene.start("MapaGame");                           // Cambia a la escena de selección de mapa
         });
 
         // Botón de comenzar partida en línea
@@ -98,8 +98,8 @@ class IntroGame extends Phaser.Scene {
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
             .setDepth(1)                                                // Botones en una capa más alta
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.scene.pause("IntroScene");                         // Detiene la escena actual
-                this.scene.launch("UsernameScene");                     // Cambia a la escena de introducir el nombre de usuario
+                this.scene.stop("IntroScene");                         // Detiene la escena actual
+                this.scene.start("UsernameScene");                     // Cambia a la escena de introducir el nombre de usuario
         });
 
         // Botón de créditos
