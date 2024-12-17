@@ -22,6 +22,16 @@ public class ApiStatusService {
         this.lastSeen.put(username, System.currentTimeMillis());    // Obtiene el tiempo actual con currentTimeMillis y lo actualiza
     }
 
+    // MÉTODO QUE MARCA A UN USUARIO COMO ACTIVO (CONEXIÓN)
+    public void setActive(String username) {
+        this.lastSeen.put(username, System.currentTimeMillis());
+    }
+
+    // MÉTODO QUE MARCA A UN USUARIO COMO INACTIVO (DESCONEXIÓN)
+    public void setInactive(String username) {
+        this.lastSeen.remove(username);
+    }
+
     // MÉTODO QUE DETERMINA LOS USUARIOS QUE ESTÁN CONECTADOS, SEGÚN UN UMBRAL DE TIEMPO
     public List<String> isConnected(long threshold) {   // Threshold es el tiempo en el que se considera que un usuario está conectado
 
@@ -41,4 +51,10 @@ public class ApiStatusService {
         return this.isConnected(threshold).size();          // Devuelve el tamaño de la lista
     }
 
+    // MÉTODO QUE LIMPIA LOS USUARIOS DESCONECTADOS
+    public void cleanupInactiveUsers(long threshold) {
+        long currentTimeMillis = System.currentTimeMillis();
+        this.lastSeen.entrySet().removeIf(entry -> entry.getValue() < (currentTimeMillis - threshold));
+        // Elimina los usuarios inactivos
+    }
 }

@@ -83,7 +83,7 @@ public class UserRepository {
         }
     }
 
-    // MÉTODO QUE ELIMINA UN USUARIO
+    // MÉTODO QUE ELIMINA UN USUARIO    
     @SuppressWarnings("CallToPrintStackTrace")
     public boolean deleteUser(String username) {    // Recibe el usuario a eliminar
         try {

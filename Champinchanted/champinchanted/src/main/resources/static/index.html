@@ -16,6 +16,7 @@
     <script src="js/username.js"></script>
     <script src="js/mapagameonline.js"></script>
     <script src="js/personajesgameonline.js"></script>
+    <script src="js/sessionManager.js"></script>
 
 </head>
 <body>
@@ -55,6 +56,42 @@
 
         // Creación del juego ----------------------------------------------------------------------------------------------
         const game = new Phaser.Game(config);   // Crea una nueva intancia del juego con la configuración definida
+        
+
+        function eliminarUsuario() {
+            const username = sessionManager.getUsername();
+
+            if (username) {
+                fetch(`/api/users/${username}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Usuario eliminado con éxito.");
+                    } else {
+                        console.error("Hubo un problema al eliminar el usuario.");
+                        alert("Hubo un error al intentar eliminar tu cuenta. Por favor, intenta nuevamente.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error en la solicitud: ", error);
+                    alert("No se pudo eliminar el usuario debido a un problema de conexión. Por favor, revisa tu conexión a internet.");
+                })
+            } else {
+                console.error("No se ha encontrado el nombre de usuario.");
+            }
+        }
+
+        window.addEventListener("beforeunload", function(event) {
+            if (sessionManager && sessionManager.stopHeartbeat && sessionManager.getUsername()) {
+                sessionManager.stopHeartbeat();  // Detén el heartbeat si está definido
+            }
+            setTimeout(eliminarUsuario, 500);  // Espera antes de intentar eliminar el usuario
+        });
+
         game.scene.start('IntroScene');         // Phaser inicializa el juego
 
     </script>

@@ -13,7 +13,7 @@ GET /api/users/john_doe HTTP/1.1
 Host: localhost:8080
 
 // Eliminar un usuario
-DELETE /api/users/ok HTTP/1.1
+DELETE /api/users/nuevo HTTP/1.1
 Host: localhost:8080
 
 // Cambiar el nombre de usuario

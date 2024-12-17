@@ -5,6 +5,8 @@ class UsernameScene extends Phaser.Scene {
 
     init() {
         this.usernameEntered = false;
+        this.username = null;
+        this.sessionManager = new SessionManager();
     }
 
     preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
@@ -86,16 +88,29 @@ class UsernameScene extends Phaser.Scene {
                     })
 
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error("Error al crear el usuario: ", errorData);
-                        alert("Hubo un problema al crear el usuario: " + errorData.message);
+                        if (response.status === 409) {
+                            const errorData =  await response.json();
+                            alert(errorData.message || "El nombre de usuario ya existe. Introduce uno distinto");
+                            return;
+                        } else {
+                            console.error(`Error en la respuesta del servidor: ${response.status}`);
+                            alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                        }
                         return;
                     }
 
-                    const data = await response.json();
-                    console.log("Usuario creado con éxito: ", data);
-                    alert("Usuario creado con éxito.");
+                    const contentType = response.headers.get("Content-Type");
+                    let data = null;
+                    if (contentType && contentType.includes("application/json")) {
+                        data = await response.json();
+                        console.log("Usuario creado con éxito:", data);
+                    } else {
+                        console.log("Respuesta exitosa sin contenido JSON.");
+                    }
+
                     this.usernameEntered = true;
+                    this.username = enteredUsername;
+                    this.sessionManager.startHeartbeat(this.username);     // Inicia el heartbeat
                     this.shutdown()
                     submitButton.setVisible(false); 
                     return data;
@@ -126,7 +141,7 @@ class UsernameScene extends Phaser.Scene {
                 } 
         });
 
-        // Botón de comenzar partida en línea
+        // Botón de unirse a partida con código
         const join_game_button = this.add.image(centerX + buttonSpacing, 790, "join_game_button")   // Añade el botón de comenzar partida en red
             .setScale(0.2)                                              // Reducir tamaño a la mitad  
             .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
@@ -140,14 +155,33 @@ class UsernameScene extends Phaser.Scene {
         });
 
         // Botón de volver
-        const exit_button = this.add.image(centerX, 900, "return_button") // Añade el botón de comenzar partida
-            .setScale(0.2)                                              // Reducir tamaño a la mitad  
-            .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
-            .on('pointerdown', () => {                                  // Al hacer click 
+        const exit_button = this.add.image(centerX, 900, "return_button")   // Añade el botón de comenzar partida
+            .setScale(0.2)                                                  // Reducir tamaño a la mitad  
+            .setInteractive()                                               // Hace que seea interactivo y que pueda responder a eventos
+            .on('pointerdown', async () => {                                // Al hacer click 
+                
+                // Eliminar el usuario del servidor
+                if (this.username) {
+                    try {
+                        const response = await fetch(`/api/users/${this.username}`, {
+                            method: "DELETE",
+                        });
+                        if (response.ok) {
+                            console.log("Usuario eliminado con éxito");
+                        } else {
+                            const errorData = await response.json();
+                            console.error("Error al eliminar el usuario: ", errorData);
+                        }
+                    } catch (error) {
+                        console.error("Error en la solicitud DELETE: ", error);
+                    }
+                }
+
+                // Cambiar la escena
                 this.scene.stop("UsernameScene");                       // Detiene la escena actual
-                this.scene.start("IntroScene");                         // Cambia a la escena de inicio
-                console.log(game.scene.keys);
-                this.shutdown();
+                this.scene.start("IntroGame");                         // Cambia a la escena de inicio
+                this.shutdown();                                        // Elimina el cuadro de texto
+                this.sessionManager.stopHeartbeat();        // Detiene el heartbeat del usuario
         }); 
     }
 
