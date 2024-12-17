@@ -46,6 +46,8 @@ class GameScene extends Phaser.Scene {
     preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
         // Musica
         this.load.audio("background2", 'assets/Sonidos/game.mp3');
+        this.load.audio("spellPickup", 'assets/Sonidos/hechizo.mp3');
+        this.load.audio("playerDeath", 'assets/Sonidos/cogerBandera.mp3');
         
         // Fondos
         this.load.image('background_o', 'assets/Fondos/Mapa_de_otoño.png');   
@@ -164,6 +166,9 @@ class GameScene extends Phaser.Scene {
         GameScene.bgMusic.loop = true;                        // la configura para que se reproduzca en bucle
         GameScene.bgMusic.play();                             // e inicia la reproducción
 
+        // Añadir los sonidos
+        this.spellPickupSound = this.sound.add('spellPickup');
+        this.playerDeathSound = this.sound.add('playerDeath');
 
         // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
         
@@ -647,6 +652,7 @@ class GameScene extends Phaser.Scene {
     }
 
     collectVenomPlayer1(player, spell) {
+        this.spellPickupSound.play();  // Reproduce el sonido
         // Si el jugador ya tiene un hechizo, lo elimina
         if (this.player1HasDazer) {
             if (this.player1Spell2i) this.player1Spell2i.destroy();  // Elimina el icono del otro hechizo
@@ -669,6 +675,7 @@ class GameScene extends Phaser.Scene {
     }
     
     collectVenomPlayer2(player, spell) {
+        this.spellPickupSound.play();  // Reproduce el sonido
         // Si el jugador ya tiene un hechizo, lo elimina
         if (this.player2HasDazer) {
             if (this.player2Spell2i) this.player2Spell2i.destroy();  // Elimina el icono del otro hechizo
@@ -694,6 +701,7 @@ class GameScene extends Phaser.Scene {
     
 
     collectDazerPlayer1(player, spell) {
+        this.spellPickupSound.play();  // Reproduce el sonido
         // Si el jugador ya tiene un hechizo, lo elimina
         if (this.player1HasVenom) {
             if (this.player1Spelli) this.player1Spelli.destroy();    // Elimina el icono del hechizo
@@ -717,6 +725,7 @@ class GameScene extends Phaser.Scene {
     }
     
     collectDazerPlayer2(player, spell) {
+        this.spellPickupSound.play();  // Reproduce el sonido
         // Si el jugador ya tiene un hechizo, lo elimina
         if (this.player2HasVenom) {
             if (this.player2Spelli) this.player2Spelli.destroy();    // Elimina el icono del hechizo
@@ -1046,6 +1055,7 @@ class GameScene extends Phaser.Scene {
     checkWinCondition() {   // COMPRUEBA SI SE CUMPLE LA CONDICIÓN DE FIN DE PARTIDA O NUEVA RONDA ----------------------------
 
         if (this.lifePlayer1 <= 0 && this.dead) {           // Si el jugador 1 se muere
+            this.playerDeathSound.play();                   // Reproduce sonido de muerte
             this.scorePlayer2++;                            // Ej jugador 2 gana la ronda
 
             this.isMovementEnabled = false;
