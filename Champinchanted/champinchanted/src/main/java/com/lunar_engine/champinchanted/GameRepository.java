@@ -101,4 +101,18 @@ public class GameRepository {
             return false;
         }
     }
+
+    @SuppressWarnings("CallToPrintStackTrace")
+    public boolean saveGame(Game game) {
+        try {
+            String filePath = this.gamesPath + "/" + game.getCode() + ".json";
+            File file = new File(filePath);
+
+            objectMapper.writeValue(file, game);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

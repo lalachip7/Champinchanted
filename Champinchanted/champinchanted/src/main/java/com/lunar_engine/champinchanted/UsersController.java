@@ -27,6 +27,7 @@ public class UsersController {
 
     @Autowired
     private final ApiStatusService apiStatusService;    // Servicio que gestiona el estado de conexión de los usuarios
+    
 
     // CONSTRUCTOR
     public UsersController(UserRepository userRep, ApiStatusService apiStatusService) {
@@ -93,7 +94,7 @@ public class UsersController {
 
             this.userRep.updateUser(user);                          // Actualiza el repositorio de usuarios
             this.apiStatusService.setActive(user.getUsername());    // Lo marca como activo
-            
+
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "Usuario registrado con éxito."));
         }

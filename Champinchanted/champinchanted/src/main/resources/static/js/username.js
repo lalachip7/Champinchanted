@@ -103,20 +103,44 @@ class UsernameScene extends Phaser.Scene {
                     let data = null;
                     if (contentType && contentType.includes("application/json")) {
                         data = await response.json();
+                        
                         console.log("Usuario creado con éxito:", data);
                     } else {
                         console.log("Respuesta exitosa sin contenido JSON.");
                     }
 
+                    
                     this.usernameEntered = true;
                     this.username = enteredUsername;
                     this.sessionManager.startHeartbeat(this.username);     // Inicia el heartbeat
                     this.shutdown()
                     submitButton.setVisible(false); 
-                    return data;
+                    
                     
                 } catch (error) {
                     console.error("Error en la solicitud POST: ", error);
+                    alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+                }
+                
+                try {
+                    const newUsername = "" + this.username;
+                    const response = await fetch(`/api/games/${window.gameCode}/user`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify( newUsername )
+                    })
+
+                    if (!response.ok) {
+                        console.error(`Error en la respuesta del servidor: ${response.status}`);
+                        alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                    } else{
+                        console.log('Usuario añadido a la partida con éxito.');
+                    }
+
+                } catch (error) {
+                    console.error("Error en la solicitud PUT: ", error);
                     alert("Hubo un problema con la conexión. Inténtalo de nuevo");
                 }
             });
