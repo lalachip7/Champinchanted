@@ -58,11 +58,11 @@ class PersonajesGameOnline extends Phaser.Scene {
             .setStyle({ fontSize: '65px' });
 
         // Mostrar selección del jugador 1
-        this.player1SelectedImage = this.add.image(575, 275, null)
+        this.player1SelectedImage = this.add.image(805, 275, null)
             .setScale(0.8)
             .setVisible(false);
 
-        this.player1SelectedText = this.add.text(575, 375, '', this.configText).setOrigin(0.5);
+        this.player1SelectedText = this.add.text(805, 375, '', this.configText).setOrigin(0.5);
         
 
         // Jugador 1: cuadrícula y selección
