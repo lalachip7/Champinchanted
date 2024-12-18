@@ -5,29 +5,14 @@ class TutorialScene extends Phaser.Scene {
     
     
         preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------
-            this.load.image('windowBackground', 'assets/Fondos/ajustesFondo.png'); 
+            this.load.image('windowTuto', 'assets/Interfaz/Tutorial.png'); 
             this.load.image('closeIcon', 'assets/Interfaz/close.png');        
-
-            // Fuentes
-            const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
-
-            font.load().then((loadedFont) => {             // Carga la fuente y la añade al documento
-                document.fonts.add(loadedFont);
-                console.log('Fuente FantasyFont cargada');
-            }).catch((err) => {
-                console.error('Error al cargar la fuente FantasyFont:', err);
-            });
         }
     
         create() {
-            this.configText = {
-                fontFamily: 'FantasyFont, Calibri',
-                fontSize: '90px',
-                color: '#FEEFD8'
-            };
 
             // Añade el fondo de la ventana
-            const background = this.add.image(0, 0, "windowBackground")
+            const background = this.add.image(0, 0, "windowTuto")
             .setOrigin(0)                                                                                  
             background.setScale(this.scale.width / background.width, this.scale.height / background.height);
             
