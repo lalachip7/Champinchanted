@@ -294,5 +294,18 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 
 
 ## 5.6. Interfaz de usuario
-
+### 5.6.1 Pantalla de Inicio
+![Pantalla de Inicio](./Imágenes/inicial.png)
+### 5.6.2 Pantalla de Tutorial
+![Pantalla de Tutorial](./Imágenes/tuto.png)
+### 5.6.3 Pantalla de Creditos
+![Pantalla de Creditos](./Imágenes/creditos.png)
+### 5.6.4 Pantalla de usuario
+![Pantalla de Creditos](./Imágenes/creditos.png)
+### 5.6.5 Pantalla de unirse a partida
+### 5.6.6 Pantalla de mapas
+### 5.6.7 Pantalla de pausa
+### 5.6.8 Pantallas de seleccion de personajes
+5.6.8.1 Pantalla de seleccion de personajes (Local)
+5.6.8.2 Pantalla de seleccion de personajes (En red)
 
