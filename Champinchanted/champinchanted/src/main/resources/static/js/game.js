@@ -149,6 +149,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('timeMachine_i', 'assets/Interfaz/Time_machine_i.png');
 
         this.load.image('BotonSalirPausa', 'assets/Interfaz/botonSalir.PNG')
+        this.load.image('BotonReanudarPausa', 'assests/Interfaz/botonReanudar.png')
 
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
@@ -448,14 +449,11 @@ class GameScene extends Phaser.Scene {
         const bg = this.add.rectangle(0, 0, 400, 300, 0x000000, 0.8);
         this.pauseMenu.add(bg);
 
-        const resumeText = this.add.text(0, -50, 'Continuar', {
-            fontSize: '30px',
-            color: '#ffffff'
-        }).setInteractive();
-        resumeText.on('pointerdown', () => {
+        const resumeButton = this.add.image(0, -50, 'BotonReanudarPausa').setScale(0.20).setInteractive();
+        resumeButton.on('pointerdown', () => {
             this.togglePause();
         });
-        this.pauseMenu.add(resumeText);
+        this.pauseMenu.add(resumeButton);
 
         const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setScale(0.20).setInteractive();
         quitButton.on('pointerdown', () => {
@@ -1113,7 +1111,7 @@ class GameScene extends Phaser.Scene {
             this.pauseMenu.setVisible(true);
         }
     }
-    
+
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
