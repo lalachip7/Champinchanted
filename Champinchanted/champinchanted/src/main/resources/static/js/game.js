@@ -149,7 +149,8 @@ class GameScene extends Phaser.Scene {
         this.load.image('timeMachine_i', 'assets/Interfaz/Time_machine_i.png');
 
         this.load.image('BotonSalirPausa', 'assets/Interfaz/botonSalir.PNG')
-        this.load.image('BotonReanudarPausa', 'assests/Interfaz/botonReanudar.png')
+        this.load.image('BotonReanudarPausa', 'assets/Interfaz/botonReanudar.png')
+
 
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
