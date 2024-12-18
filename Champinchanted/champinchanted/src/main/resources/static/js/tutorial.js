@@ -3,14 +3,14 @@ class TutorialScene extends Phaser.Scene {
         super({ key: 'TutorialScene' });
     }
     
-    
         preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------
+            
+            this.load.image('closeIcon', 'assets/Interfaz/close.PNG');   
             this.load.image('windowTuto', 'assets/Interfaz/Tutorial.png'); 
-            this.load.image('closeIcon', 'assets/Interfaz/close.png');        
+                 
         }
     
         create() {
-
             // Añade el fondo de la ventana
             const background = this.add.image(0, 0, "windowTuto")
             .setOrigin(0)                                                                                  
@@ -23,11 +23,8 @@ class TutorialScene extends Phaser.Scene {
                 this.scene.stop("TutorialScene");
                 this.scene.resume("IntroScene");
             });
-
-            
         }
         
-    
         // Por si se quiere volver a abrir en cualquien otro punto deljuego
         openWindow() {
         }

@@ -118,9 +118,8 @@ class IntroGame extends Phaser.Scene {
             .setScale(0.2)
             .setInteractive()
             .on('pointerdown', () => {                                  // Al hacer click 
-                this.pauseScene();
                 this.scene.pause("IntroScene"); 
-                this.scene.launch("TutorialScene");                     // Cambia a la escena de créditos
+                this.scene.launch("TutorialScene");                      // Cambia a la escena de créditos
         });
 
         // Botón de salir
