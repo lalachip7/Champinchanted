@@ -472,7 +472,6 @@ class GameScene extends Phaser.Scene {
         });
         this.pauseMenu.add(resumeText);
 
-<<<<<<< HEAD
         const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setInteractive();
         quitButton.on('pointerdown', () => {
             this.scene.start('IntroGame');  
@@ -484,7 +483,6 @@ class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-ESC', () => {
             this.togglePause();
         });
-=======
         const quitText = this.add.text(0, 50, 'Salir', {
             fontSize: '30px',
             color: '#ffffff'
@@ -495,7 +493,6 @@ class GameScene extends Phaser.Scene {
         this.pauseMenu.add(quitText); */
         
 
->>>>>>> a6453079143afd50f9c450e82daa65d7b80c5b4a
 
 
         // HECHIZOS .........................................................................................................
@@ -572,9 +569,7 @@ class GameScene extends Phaser.Scene {
         this.throwKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
-<<<<<<< HEAD
 
-=======
     /*togglePause() {
         if (this.physics.world.isPaused) {
             this.physics.resume();
@@ -585,7 +580,6 @@ class GameScene extends Phaser.Scene {
         }
     }*/
     
->>>>>>> a6453079143afd50f9c450e82daa65d7b80c5b4a
     collectFlagPlayer1() {
 
         this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera

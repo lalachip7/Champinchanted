@@ -71,7 +71,6 @@ public class Game {
     }
 
     public void setCode(String code) {
-        //this.code = ThreadLocalRandom.current().nextInt(1, 10);
         this.code = code;
     }
 

@@ -100,10 +100,10 @@ public class GameController {
             Game game = optionalGame.get();
             if (game.getUsernamePlayer1() == null) {
                 game.setUsernamePlayer1(username);
+                game.setUsersConnected(1);
             } else if (game.getUsernamePlayer2() == null){
                 game.setUsernamePlayer2(username);
             } else {
-                // Si ya ambos jugadores están asignados, retornar un mensaje indicando que no es posible agregar más jugadores
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "Ya hay dos jugadores en la partida. No se pueden agregar más jugadores."));
             }
@@ -126,11 +126,16 @@ public class GameController {
             }
 
             Game game = optionalGame.get();
-            if (game.getPlayer1() != 0) {
+            if (game.getPlayer1() == 0) {
                 game.setPlayer1(playerCharacter);
             } else {
                 game.setPlayer2(playerCharacter);
             }
+
+            System.out.println("Personaje asignado: " + playerCharacter);
+            this.gameRep.saveGame(game);
+
+            System.out.println("Personaje asignado: " + playerCharacter);
             return ResponseEntity.ok().build();
         }
     }
@@ -149,6 +154,25 @@ public class GameController {
             game.setMap(map);   
 
             System.out.println("Mapa asignado: " + map);
+            this.gameRep.saveGame(game);
+
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    @PutMapping("/{code}/usersConnected")
+    public ResponseEntity<?> putUsersConnected(@RequestBody int number, @PathVariable("code") String gameCode) {
+        synchronized (this.gameRep) {
+            Optional<Game> optionalGame = this.gameRep.getGame(gameCode);
+            if (optionalGame.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Partida no encontrada."));
+            }
+
+            Game game = optionalGame.get();
+            game.setUsersConnected(number);   
+
+            System.out.println("Número de usuarios: " + number);
             this.gameRep.saveGame(game);
 
             return ResponseEntity.ok().build();

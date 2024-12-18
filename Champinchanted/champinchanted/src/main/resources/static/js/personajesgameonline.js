@@ -122,7 +122,6 @@ class PersonajesGameOnline extends Phaser.Scene {
 
     createReadyButtons() {
         let button1Ready = false;
-        let button2Ready = false;
     
         const centerX = this.scale.width / 1.435;
         const centerY = 875;
@@ -132,13 +131,36 @@ class PersonajesGameOnline extends Phaser.Scene {
         const readyButton1 = this.add.image(centerX - buttonSpacing, centerY, "ready_button1")
             .setScale(0.20)
             .setInteractive()
-            .on('pointerdown', () => {
+            .on('pointerdown', async() => {
                 if (this.selectedCharacters.player1) { // Verificar si el personaje está seleccionado
                     button1Ready = !button1Ready; // Alternar estado
                     readyButton1.setTint(button1Ready ? 0x555555 : 0xffffff); // Oscurecer o aclarar
                     this.checkReadyState(); // Verificar estado
                 } else {
                     console.log("Jugador 1 debe elegir un personaje primero.");
+                }
+
+                try {
+                    const character =  1;
+                    console.log(this.selectedCharacters.player1);
+                    const response = await fetch(`/api/games/${window.gameCode}/character`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(character)
+                    })
+    
+                    if (!response.ok) {
+                        console.error(`Error en la respuesta del servidor: ${response.status}`);
+                        alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                    } else{
+                        console.log('Personaje añadido a la partida con éxito.');
+                    }
+    
+                } catch (error) {
+                    console.error("Error en la solicitud PUT: ", error);
+                    alert("Hubo un problema con la conexión. Inténtalo de nuevo");
                 }
             });
     
@@ -148,7 +170,7 @@ class PersonajesGameOnline extends Phaser.Scene {
             if (button1Ready) {
                 // Ambos botones están oscurecidos y los personajes están seleccionados
                 this.scene.stop("PersonajesGame");
-                this.scene.start("MapaGameOnline");
+                this.scene.start("GameScene");
             }
         };
     }
