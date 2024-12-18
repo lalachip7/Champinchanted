@@ -191,7 +191,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-![Diagrama de estados](./Imágenes/Diagrama_de_estados.png)
+![Diagrama de estados](./Imágenes/diagramaEstados.png)
 
 
 # 4. Música
