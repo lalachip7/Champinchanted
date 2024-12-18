@@ -53,7 +53,7 @@ class PersonajesGameOnline extends Phaser.Scene {
             { key: 'character5', name: 'Biblioseta' },
         ];
 
-        this.selectPlayerText = this.add.text(960, 80, 'Elegid un personaje', this.configText)
+        this.selectPlayerText = this.add.text(960, 80, 'Elige un personaje', this.configText)
             .setOrigin(0.5)
             .setStyle({ fontSize: '65px' });
 
@@ -66,7 +66,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         
 
         // Jugador 1: cuadrícula y selección
-        this.createCharacterGrid(425, 500, characters, 'player1', this.player1SelectedImage, this.player1SelectedText);
+        this.createCharacterGrid(805, 500, characters, 'player1', this.player1SelectedImage, this.player1SelectedText);
 
         
         // Botones de Listo
@@ -124,7 +124,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         let button1Ready = false;
         let button2Ready = false;
     
-        const centerX = this.scale.width / 2;
+        const centerX = this.scale.width / 1.435;
         const centerY = 875;
         const buttonSpacing = 385;
     
