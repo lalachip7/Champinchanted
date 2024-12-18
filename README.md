@@ -3,7 +3,7 @@
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
 ## Video Demo
-https://drive.google.com/file/d/1s_vjopbGDhio5GkekCzgwfKwAqU-mEEJ/view?usp=drive_link
+
 
 ## Equipo de desarrollo
 Ángela Sánchez Díaz 
