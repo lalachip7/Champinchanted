@@ -5,7 +5,7 @@ class PersonajesGameOnline extends Phaser.Scene {
 
     preload() {
         // Cargar recursos
-        this.load.image("background1_image", "assets/Fondos/fondoPersonajes.png");
+        this.load.image("background2", "assets/Fondos/fondoPersonajesOnline.png");
         this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
     
 
@@ -37,12 +37,12 @@ class PersonajesGameOnline extends Phaser.Scene {
         };
         
         // Fondo
-        this.add.image(0, 0, "background1_image")
+        this.add.image(0, 0, "background2")
             .setOrigin(0)
             .setDisplaySize(this.scale.width, this.scale.height);
 
         // Variables de selección
-        this.selectedCharacters = { player1: null, player2: null };
+        this.selectedCharacters = { player1: null};
 
         // Configuración de personajes
         const characters = [
@@ -65,19 +65,10 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.player1SelectedText = this.add.text(575, 375, '', this.configText).setOrigin(0.5);
         
 
-        // Mostrar selección del jugador 2
-        this.player2SelectedImage = this.add.image(1350, 275, null)
-            .setScale(0.8)
-            .setVisible(false);
-        
-        this.player2SelectedText = this.add.text(1350, 375, '', this.configText).setOrigin(0.5);
-
         // Jugador 1: cuadrícula y selección
         this.createCharacterGrid(425, 500, characters, 'player1', this.player1SelectedImage, this.player1SelectedText);
 
-        // Jugador 2: cuadrícula y selección
-        this.createCharacterGrid(1200, 500, characters, 'player2', this.player2SelectedImage, this.player2SelectedText);
-
+        
         // Botones de Listo
         this.createReadyButtons();
     }
@@ -153,12 +144,11 @@ class PersonajesGameOnline extends Phaser.Scene {
     
 
     
-        // Verificar si ambos jugadores están listos
         this.checkReadyState = () => {
-            if (button1Ready && button2Ready && this.selectedCharacters.player1 && this.selectedCharacters.player2) {
+            if (button1Ready) {
                 // Ambos botones están oscurecidos y los personajes están seleccionados
                 this.scene.stop("PersonajesGame");
-                this.scene.start("GameScene");
+                this.scene.start("MapaGameOnline");
             }
         };
     }
