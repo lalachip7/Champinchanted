@@ -137,7 +137,7 @@ class UsernameScene extends Phaser.Scene {
                 } else {
                     this.shutdown();
                     this.scene.stop("UsernameScene");                       // Detiene la escena actual
-                    this.scene.start("MapaGameOnline");                     // Cambia a la escena de selección de personajes
+                    this.scene.start("PersonajesGameOnline");                     // Cambia a la escena de selección de personajes
                 } 
         });
 

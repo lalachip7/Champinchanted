@@ -7,7 +7,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         // Cargar recursos
         this.load.image("background1_image", "assets/Fondos/fondoPersonajes.png");
         this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
-        this.load.image("ready_button2", "assets/Interfaz/botonListo.png");
+    
 
         // Personajes
         this.load.image('character1', 'assets/Personajes/perretxiko.png');
@@ -151,19 +151,7 @@ class PersonajesGameOnline extends Phaser.Scene {
                 }
             });
     
-        // Botón Listo del Jugador 2
-        const readyButton2 = this.add.image(centerX + buttonSpacing, centerY, "ready_button2")
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => {
-                if (this.selectedCharacters.player2) { // Verificar si el personaje está seleccionado
-                    button2Ready = !button2Ready; // Alternar estado
-                    readyButton2.setTint(button2Ready ? 0x555555 : 0xffffff); // Oscurecer o aclarar
-                    this.checkReadyState(); // Verificar estado
-                } else {
-                    console.log("Jugador 2 debe elegir un personaje primero.");
-                }
-            });
+
     
         // Verificar si ambos jugadores están listos
         this.checkReadyState = () => {
