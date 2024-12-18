@@ -16,8 +16,7 @@ class IntroGame extends Phaser.Scene {
         this.load.image("credits_button", "assets/Interfaz/botonCreditos.png");                 // Botón de créditos
         this.load.image("tutorial_button", "assets/Interfaz/botonTutorial.png");                // Botón de tutorial
 
-        //boton de mierda
-        this.load.image("mierda", "assets/Interfaz/mierda.png");
+
 
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
@@ -133,19 +132,6 @@ class IntroGame extends Phaser.Scene {
         });
 
         this.buttons = [start_button_red, start_button_local, credits_button, tutorial_button, exit_button];
-
-       
-        // Botón de mierda
-        const mierda = this.add.image(centerX + buttonSpacing, 680, "start_button_online")   // Añade el botón de comenzar partida en red
-            .setScale(0.2)                                              // Reducir tamaño a la mitad  
-            .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
-            .setDepth(1)                                                // Botones en una capa más alta
-            .on('pointerdown', () => {                                  // Al hacer click 
-                this.scene.stop("IntroScene");                         // Detiene la escena actual
-                this.scene.start("PersonajesGameOnline");                     // Cambia a la escena de introducir el nombre de usuario
-        });
-
-
 
     }
 
