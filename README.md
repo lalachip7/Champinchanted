@@ -1,4 +1,4 @@
-![Logo de Lunar Engine](./Imágenes/Logo.png)
+![Logo de Lunar Engine]([./Imágenes/Logo.png](https://github.com/lalachip7/Champinchanted/tree/main/Im%C3%A1genes))
 # GDD Champinchanted
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
