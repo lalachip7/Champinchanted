@@ -149,6 +149,10 @@ class GameScene extends Phaser.Scene {
         this.load.image('timeMachine_i', 'assets/Interfaz/Time_machine_i.png');
 
         this.load.image('BotonSalirPausa', 'assets/Interfaz/botonSalir.PNG')
+        this.load.image('BotonReanudarPausa', 'assets/Interfaz/botonReanudar.png')
+        this.load.image('FondoPausa', 'assets/Fondos/FondoPausa.png')
+        
+
 
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
@@ -511,6 +515,32 @@ class GameScene extends Phaser.Scene {
 
         this.dazerSpell = this.physics.add.image(posx2, posy2, 'dazer').setScale(0.1);
         this.dazerSpell.body.allowGravity = false;
+
+        // MENU DE PAUSA--------------------------------------------------------------------------------------------------------
+
+        this.pauseMenu = this.add.container(this.scale.width / 2, this.scale.height / 2);
+        this.pauseMenu.setVisible(false);
+
+        const bg = this.add.image(0, 0,'FondoPausa');
+        this.pauseMenu.add(bg);
+
+        const resumeButton = this.add.image(0, -50, 'BotonReanudarPausa').setScale(0.20).setInteractive();
+        resumeButton.on('pointerdown', () => {
+            this.togglePause();
+        });
+        this.pauseMenu.add(resumeButton);
+
+        const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setScale(0.20).setInteractive();
+        quitButton.on('pointerdown', () => {
+            this.scene.start('IntroGame');
+            GameScene.bgMusic.stop();
+        });
+        this.pauseMenu.add(quitButton);
+
+        // Detectar la tecla "Escape"
+        this.input.keyboard.on('keydown-ESC', () => {
+            this.togglePause();
+        });
 
         // COLISIONES .........................................................................................................
 
@@ -1139,6 +1169,28 @@ class GameScene extends Phaser.Scene {
         this.player2Life3.destroy();
         this.player2Life4.destroy();
         this.player2Life5.destroy();
+    }
+
+    togglePause() {
+        if (this.physics.world.isPaused) {
+            this.physics.resume();
+            this.pauseMenu.setVisible(false);
+            this.venomSpell.setVisible(true);
+            this.dazerSpell.setVisible(true); 
+             
+        } else {
+            this.physics.pause();
+            this.pauseMenu.setVisible(true);
+            
+            if (!this.player1HasVenom && !this.player2HasVenom) {
+                this.venomSpell.setVisible(false);
+            } 
+            
+            if (!this.player1HasDazer && !this.player2HasDazer) {
+                this.dazerSpell.setVisible(false);
+            } 
+                 
+        }
     }
 
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
