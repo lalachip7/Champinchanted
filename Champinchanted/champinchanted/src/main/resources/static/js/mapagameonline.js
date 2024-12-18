@@ -40,8 +40,33 @@ class MapaGameOnline extends Phaser.Scene {
         this.add.image(this.scale.width / 2.5, this.scale.height - 600, "readyMapa2_button")    // Mapa otoño
         .setScale(0.20)
         .setInteractive()
-        .on('pointerdown', () => {
+        .on('pointerdown', async () =>  {
+            console.log("Mapa elegido");
             this.registry.set('mapa', 1);
+
+            try {
+                const map =  1;
+                const response = await fetch(`/api/games/${window.gameCode}/map`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(map)
+                })
+
+                if (!response.ok) {
+                    console.error(`Error en la respuesta del servidor: ${response.status}`);
+                    alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                } else{
+                    console.log('Mapa añadido a la partida con éxito.');
+                }
+
+            } catch (error) {
+                console.error("Error en la solicitud PUT: ", error);
+                alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+            }
+
+            
             this.scene.stop("MapaGame"); 
             this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
@@ -50,8 +75,31 @@ class MapaGameOnline extends Phaser.Scene {
         this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button")   // Mapa invierno
         .setScale(0.20)
         .setInteractive()
-        .on('pointerdown', () => {
+        .on('pointerdown', async () =>  {
             this.registry.set('mapa', 2);
+
+            try {
+                const map =  2;
+                const response = await fetch(`/api/games/${window.gameCode}/map`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(map)
+                })
+
+                if (!response.ok) {
+                    console.error(`Error en la respuesta del servidor: ${response.status}`);
+                    alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                } else{
+                    console.log('Mapa añadido a la partida con éxito.');
+                }
+
+            } catch (error) {
+                console.error("Error en la solicitud PUT: ", error);
+                alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+            }
+
             this.scene.stop("MapaGame");
             this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
@@ -60,8 +108,31 @@ class MapaGameOnline extends Phaser.Scene {
         this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button")   // Mapa primavera
         .setScale(0.20)
         .setInteractive()
-        .on('pointerdown', () => {
+        .on('pointerdown', async () =>  {
             this.registry.set('mapa', 3);
+
+            try {
+                const map =  3;
+                const response = await fetch(`/api/games/${window.gameCode}/map`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(map)
+                })
+
+                if (!response.ok) {
+                    console.error(`Error en la respuesta del servidor: ${response.status}`);
+                    alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                } else{
+                    console.log('Mapa añadido a la partida con éxito.');
+                }
+
+            } catch (error) {
+                console.error("Error en la solicitud PUT: ", error);
+                alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+            }
+
             this.scene.stop("MapaGame");
             this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
@@ -70,8 +141,31 @@ class MapaGameOnline extends Phaser.Scene {
         this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button")    // Mapa verano
         .setScale(0.20)
         .setInteractive()
-        .on('pointerdown', () => {
+        .on('pointerdown', async () =>  {
             this.registry.set('mapa', 4);
+
+            try {
+                const map =  4;
+                const response = await fetch(`/api/games/${window.gameCode}/map`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(map)
+                })
+
+                if (!response.ok) {
+                    console.error(`Error en la respuesta del servidor: ${response.status}`);
+                    alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                } else{
+                    console.log('Mapa añadido a la partida con éxito.');
+                }
+
+            } catch (error) {
+                console.error("Error en la solicitud PUT: ", error);
+                alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+            }
+
             this.scene.stop("MapaGame");
             this.scene.start("PersonajesGameOnline");
             IntroGame.bgMusic.stop();                // Para la música de fondo 
