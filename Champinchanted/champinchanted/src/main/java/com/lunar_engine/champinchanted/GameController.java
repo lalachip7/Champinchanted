@@ -100,7 +100,6 @@ public class GameController {
             Game game = optionalGame.get();
             if (game.getUsernamePlayer1() == null) {
                 game.setUsernamePlayer1(username);
-                game.setUsersConnected(1);
             } else if (game.getUsernamePlayer2() == null){
                 game.setUsernamePlayer2(username);
             } else {

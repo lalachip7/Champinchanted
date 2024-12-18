@@ -59,8 +59,9 @@
         const game = new Phaser.Game(config);   // Crea una nueva intancia del juego con la configuración definida
 
         async function startGame() {
-            const random = Math.floor(Math.random() * 1000) + 1;
-            gameCode = "partida" + random;
+            //const random = Math.floor(Math.random() * 1000) + 1;
+            //gameCode = "partida" + random;
+            gameCode = "partida";
             window.gameCode = gameCode; // Asignar globalmente
 
             try {

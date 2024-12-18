@@ -113,7 +113,7 @@ class UsernameScene extends Phaser.Scene {
                     this.usernameEntered = true;
                     this.username = enteredUsername;
                     this.sessionManager.startHeartbeat(this.username);     // Inicia el heartbeat
-                    this.shutdown(username-input)
+                    this.shutdown("username-input")
                     submitButton.setVisible(false); 
                     
                     
@@ -180,7 +180,7 @@ class UsernameScene extends Phaser.Scene {
                     alert('Por favor, introduce un nombre de usuario.');
                     return;
                 } else {
-                    this.shutdown(username-input);
+                    this.shutdown("username-input");
                     this.scene.stop("UsernameScene");                       // Detiene la escena actual
                     this.scene.start("MapaGameOnline");                     // Cambia a la escena de selección de personajes
                 } 
@@ -195,7 +195,7 @@ class UsernameScene extends Phaser.Scene {
                 if (!this.usernameEntered) {
                     alert('Por favor, introduce un nombre de usuario.');
                 } else {
-                    this.shutdown(username-input);
+                    this.shutdown("username-input");
                     const codeInput = document.createElement('input');
                     codeInput.type = 'text';
                     codeInput.id = 'code-input';
@@ -227,7 +227,50 @@ class UsernameScene extends Phaser.Scene {
                             this.scene.stop("UsernameScene"); 
                             this.scene.start("PersonajesGameOnline");
                             IntroGame.bgMusic.stop();                // Para la música de fondo 
-                            this.shutdown(code-input);
+                            this.shutdown("code-input");
+                        }
+
+                        try {
+                            const newUsername = this.username;
+                            const response = await fetch(`/api/games/${window.gameCode}/user`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(newUsername)
+                            })
+        
+                            if (!response.ok) {
+                                console.error(`Error en la respuesta del servidor: ${response.status}`);
+                                alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                            } else{
+                                console.log('Usuario añadido a la partida con éxito.');
+                            }
+        
+                        } catch (error) {
+                            console.error("Error en la solicitud PUT: ", error);
+                            alert("Hubo un problema con la conexión. Inténtalo de nuevo");
+                        }
+        
+                        try {
+                            const response = await fetch(`/api/games/${window.gameCode}/usersConnected`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(2)
+                            })
+        
+                            if (!response.ok) {
+                                console.error(`Error en la respuesta del servidor: ${response.status}`);
+                                alert(`Hubo un problema con el servidor. Código de estado: ${response.status}`);
+                            } else{
+                                console.log('Número de usuarios añadido a la partida con éxito.');
+                            }
+        
+                        } catch (error) {
+                            console.error("Error en la solicitud PUT: ", error);
+                            alert("Hubo un problema con la conexión. Inténtalo de nuevo");
                         }
                     });
                 } 
@@ -259,14 +302,14 @@ class UsernameScene extends Phaser.Scene {
                 // Cambiar la escena
                 this.scene.stop("UsernameScene");                       // Detiene la escena actual
                 this.scene.start("IntroGame");                         // Cambia a la escena de inicio
-                this.shutdown(username-input);                                        // Elimina el cuadro de texto
+                this.shutdown("username-input");                                        // Elimina el cuadro de texto
                 this.sessionManager.stopHeartbeat();        // Detiene el heartbeat del usuario
         }); 
     }
 
     shutdown(Input) {
         // Eliminar el cuadro de texto al cambiar de escena
-        const input = document.getElementById('Input');
+        const input = document.getElementById(Input);
         if (input) {
             input.remove(); // Elimina el cuadro de texto del DOM
         }
