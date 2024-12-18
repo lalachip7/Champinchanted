@@ -187,7 +187,7 @@ En el modo en línea, cada jugador utiliza su propio ordenador, por lo que los c
 
 El jugador podrá utilizar las teclas ‘A’ o (←) para desplazarse a la izquierda, las teclas ‘D’ o (→) para desplazarse a la derecha; las teclas ‘W’ o (↑) para saltar; y la barra espaciadora o la tecla ‘E’ para lanzar un hechizo.
 
-![Teclas para los controles del jugador](./Imágenes/Teclas_controles.png)
+![Teclas para los controles del jugador](Teclas_controles.png)
 
 
 ## 3.3. Acciones del jugador
