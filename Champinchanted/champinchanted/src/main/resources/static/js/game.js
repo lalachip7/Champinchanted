@@ -150,6 +150,8 @@ class GameScene extends Phaser.Scene {
 
         this.load.image('BotonSalirPausa', 'assets/Interfaz/botonSalir.PNG')
         this.load.image('BotonReanudarPausa', 'assets/Interfaz/botonReanudar.png')
+        this.load.image('FondoPausa', 'assets/Fondos/FondoPausa.png')
+        
 
 
         // Fuentes
@@ -442,12 +444,31 @@ class GameScene extends Phaser.Scene {
         this.player2Life4 = this.add.image(1785, 75, 'heart').setScale(0.7);
         this.player2Life5 = this.add.image(1825, 75, 'heart').setScale(0.7);
 
+        
+
+        // HECHIZOS .........................................................................................................
+
+        this.spellVenom = this.physics.add.group();                         // grupo para los hechizos
+        this.spellDazer = this.physics.add.group(); 
+
+        let posx = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el veneno
+        let posy = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el veneno
+
+        this.venomSpell = this.physics.add.image(posx, posy, 'venom').setScale(0.1);
+        this.venomSpell.body.allowGravity = false;
+
+        let posx2 = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el dazer
+        let posy2 = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el dazer
+
+        this.dazerSpell = this.physics.add.image(posx2, posy2, 'dazer').setScale(0.1);
+        this.dazerSpell.body.allowGravity = false;
+
         // MENU DE PAUSA--------------------------------------------------------------------------------------------------------
 
         this.pauseMenu = this.add.container(this.scale.width / 2, this.scale.height / 2);
         this.pauseMenu.setVisible(false);
 
-        const bg = this.add.rectangle(0, 0, 400, 300, 0x000000, 0.8);
+        const bg = this.add.image(0, 0,'FondoPausa');
         this.pauseMenu.add(bg);
 
         const resumeButton = this.add.image(0, -50, 'BotonReanudarPausa').setScale(0.20).setInteractive();
@@ -467,23 +488,6 @@ class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-ESC', () => {
             this.togglePause();
         });
-
-        // HECHIZOS .........................................................................................................
-
-        this.spellVenom = this.physics.add.group();                         // grupo para los hechizos
-        this.spellDazer = this.physics.add.group(); 
-
-        let posx = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el veneno
-        let posy = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el veneno
-
-        this.venomSpell = this.physics.add.image(posx, posy, 'venom').setScale(0.1);
-        this.venomSpell.body.allowGravity = false;
-
-        let posx2 = Phaser.Math.Between(100, 1800);                      // Posición x aleatoria para el dazer
-        let posy2 = Phaser.Math.Between(200, 900);                       // Posición y aleatoria para el dazer
-
-        this.dazerSpell = this.physics.add.image(posx2, posy2, 'dazer').setScale(0.1);
-        this.dazerSpell.body.allowGravity = false;
 
         // COLISIONES .........................................................................................................
 
@@ -1107,9 +1111,21 @@ class GameScene extends Phaser.Scene {
         if (this.physics.world.isPaused) {
             this.physics.resume();
             this.pauseMenu.setVisible(false);
+            this.venomSpell.setVisible(true);
+            this.dazerSpell.setVisible(true); 
+             
         } else {
             this.physics.pause();
             this.pauseMenu.setVisible(true);
+            
+            if (!this.player1HasVenom && !this.player2HasVenom) {
+                this.venomSpell.setVisible(false);
+            } 
+            
+            if (!this.player1HasDazer && !this.player2HasDazer) {
+                this.dazerSpell.setVisible(false);
+            } 
+                 
         }
     }
 
