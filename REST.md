@@ -16,12 +16,19 @@ Desconectar un usuario	POST	‘/api/users/{username}/disconnect’  	Gestiona la
 El módulo de gestión de juegos permite crear, consultar, actualizar y eliminar partidas. También facilita la asignación de usuarios, personajes y mapas a un juego específico.
 # Ruta Base: /api/games
 Funcionalidad	Método HTTP	Endpoint	Descripción
+
 Obtener información de un juego	GET	‘/api/games/{code}’	Devuelve los datos del juego especificado mediante su código.
+
 Eliminar un juego	DELETE	‘/api/games/{code}’	Elimina el juego identificado por su código.
+
 Crear un nuevo juego	POST	‘/api/games’	Permite crear una nueva partida recibiendo la información del juego en JSON.
+
 Asignar un usuario a un juego	PUT	‘/api/games/{code}/user’	Asigna un usuario al juego utilizando su nombre y el código de la partida.
+
 Asignar un personaje a un usuario	PUT	‘/api/games/{code}/character’	Asigna un personaje específico al usuario dentro del juego.
+
 Actualizar el mapa de un juego	PUT	‘/api/games/{code}/map’	Asigna un mapa específico a la partida identificada por su código.
+
 ------------------------------------------------------------------------------------------------------------------------------
 # 3. Estado de la API
 El módulo de estado de la API proporciona información sobre los usuarios conectados y el estado general del sistema.
