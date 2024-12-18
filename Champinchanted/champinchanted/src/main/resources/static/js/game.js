@@ -440,23 +440,8 @@ class GameScene extends Phaser.Scene {
         this.player2Life4 = this.add.image(1785, 75, 'heart').setScale(0.7);
         this.player2Life5 = this.add.image(1825, 75, 'heart').setScale(0.7);
 
-        //hola caracola
+        // MENU DE PAUSA--------------------------------------------------------------------------------------------------------
 
-        /*this.createOriginal();
-
-        // Crear el botón de pausa
-        this.pauseButton = this.add.text(50, 50, 'Pausa', {
-            fontFamily: 'FantasyFont',
-            fontSize: '30px',
-            color: '#ffffff',
-            backgroundColor: '#000000'
-        }).setInteractive();
-
-        this.pauseButton.on('pointerdown', () => {
-            this.togglePause();
-        });
-
-        // Crear el menú de pausa (oculto por defecto)
         this.pauseMenu = this.add.container(this.scale.width / 2, this.scale.height / 2);
         this.pauseMenu.setVisible(false);
 
@@ -472,10 +457,9 @@ class GameScene extends Phaser.Scene {
         });
         this.pauseMenu.add(resumeText);
 
-<<<<<<< HEAD
-        const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setInteractive();
+        const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setScale(0.20).setInteractive();
         quitButton.on('pointerdown', () => {
-            this.scene.start('IntroGame');  
+            this.scene.start('IntroGame');
             GameScene.bgMusic.stop();
         });
         this.pauseMenu.add(quitButton);
@@ -484,19 +468,6 @@ class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-ESC', () => {
             this.togglePause();
         });
-=======
-        const quitText = this.add.text(0, 50, 'Salir', {
-            fontSize: '30px',
-            color: '#ffffff'
-        }).setInteractive();
-        quitText.on('pointerdown', () => {
-            this.scene.start('MenuScene');
-        });
-        this.pauseMenu.add(quitText); */
-        
-
->>>>>>> a6453079143afd50f9c450e82daa65d7b80c5b4a
-
 
         // HECHIZOS .........................................................................................................
 
@@ -572,20 +543,6 @@ class GameScene extends Phaser.Scene {
         this.throwKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
-<<<<<<< HEAD
-
-=======
-    /*togglePause() {
-        if (this.physics.world.isPaused) {
-            this.physics.resume();
-            this.pauseMenu.setVisible(false);
-        } else {
-            this.physics.pause();
-            this.pauseMenu.setVisible(true);
-        }
-    }*/
-    
->>>>>>> a6453079143afd50f9c450e82daa65d7b80c5b4a
     collectFlagPlayer1() {
 
         this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
@@ -1147,6 +1104,16 @@ class GameScene extends Phaser.Scene {
         this.player2Life5.destroy();
     }
 
+    togglePause() {
+        if (this.physics.world.isPaused) {
+            this.physics.resume();
+            this.pauseMenu.setVisible(false);
+        } else {
+            this.physics.pause();
+            this.pauseMenu.setVisible(true);
+        }
+    }
+    
     update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
         this.updatePlayerMovement();
         this.checkWinCondition();
