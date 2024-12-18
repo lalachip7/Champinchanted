@@ -146,6 +146,8 @@ class GameScene extends Phaser.Scene {
         this.load.image('teleport_i', 'assets/Interfaz/Teleport_i.png');
         this.load.image('timeMachine_i', 'assets/Interfaz/Time_machine_i.png');
 
+        this.load.image('BotonSalirPausa', 'assets/Interfaz/botonSalir.PNG')
+
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
 
@@ -451,16 +453,12 @@ class GameScene extends Phaser.Scene {
         });
         this.pauseMenu.add(resumeText);
 
-        const quitText = this.add.text(0, 50, 'Salir', {
-            fontSize: '30px',
-            color: '#ffffff'
-        }).setInteractive();
-        quitText.on('pointerdown', () => { 
+        const quitButton = this.add.image(0, 50, 'BotonSalirPausa').setInteractive();
+        quitButton.on('pointerdown', () => {
             this.scene.start('IntroGame');  
             GameScene.bgMusic.stop();
         });
-
-        this.pauseMenu.add(quitText);
+        this.pauseMenu.add(quitButton);
 
         // Detectar la tecla "Escape"
         this.input.keyboard.on('keydown-ESC', () => {
@@ -542,15 +540,6 @@ class GameScene extends Phaser.Scene {
         this.throwKeyPlayer2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
-    /*togglePause() {
-        if (this.physics.world.isPaused) {
-            this.physics.resume();
-            this.pauseMenu.setVisible(false);
-        } else {
-            this.physics.pause();
-            this.pauseMenu.setVisible(true);
-        }
-    }*/
 
     collectFlagPlayer1() {
 
