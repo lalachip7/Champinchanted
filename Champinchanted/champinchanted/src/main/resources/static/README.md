@@ -2,9 +2,6 @@
 # GDD Champinchanted
 Champinchanted es un videojuego de dos jugadores, basado en el clásico juego de "Atrapa la bandera", pero renovado y con un estilo visual 2D, en el que dos setas deberán correr por un mundo de plataformas encantado para capturar la bandera y llevársela a su base.
 
-## Video Demo
-https://drive.google.com/file/d/1s_vjopbGDhio5GkekCzgwfKwAqU-mEEJ/view?usp=drive_link
-
 ## Equipo de desarrollo
 Ángela Sánchez Díaz 
 * a.sanchezdi.2022@alumnos.urjc.es   
@@ -16,7 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777   
+* Github: ratamolinera777    
 
 Laura Blázquez Pelaz   
 * l.blazquez.2022@alumnos.urjc.es   
@@ -33,42 +30,42 @@ Laura Blázquez Pelaz
 
 # 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
-Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico. 
+Champinchanted, es un videojuego diseñado para dos jugadores, ambientado en un emocionante entorno de plataformas, místico y mágico.   
 
-El objetivo del juego es capturar una bandera que aparece de forma aleatoria en diferentes puntos del mapa. Cada jugador comienza en su "casa", una base fija situada en lados opuestos del mapa. Desde allí, ambos deberán correr y saltar para llegar hasta la bandera antes que su oponente. Cuando un jugador capture la bandera, deberá regresar rápidamente a su casa para marcar un punto. El juego se compone de tres rondas y el jugador que gane más rondas será declarado vencedor.
+El objetivo del juego es capturar una bandera que aparece de forma aleatoria en diferentes puntos del mapa. Cada jugador comienza en su "casa", una base fija situada en lados opuestos del mapa. Desde allí, ambos deberán correr y saltar para llegar hasta la bandera antes que su oponente. Cuando un jugador capture la bandera, deberá regresar rápidamente a su casa para marcar un punto. El juego se compone de tres rondas y el jugador que gane más rondas será declarado vencedor.  
 
-El desafío no solo radica en capturar la bandera, sino también en sobrevivir a los obstáculos y hechizos que aparecerán aleatoriamente en el mapa. Estos hechizos y trampas están diseñados para entorpecer y complicar la tarea de los jugadores, pudiendo ser utilizados por estos de manera estratégica para ralentizar o incluso detener al oponente. 
-El juego ofrece un equilibrio perfecto entre la acción rápida de las plataformas y la estrategia de saber cuándo atacar, defender o utilizar los hechizos a tu favor. 
+El desafío no solo radica en capturar la bandera, sino también en sobrevivir a los obstáculos y hechizos que aparecerán aleatoriamente en el mapa. Estos hechizos y trampas están diseñados para entorpecer y complicar la tarea de los jugadores, pudiendo ser utilizados por estos de manera estratégica para ralentizar o incluso detener al oponente.   
 
+El juego ofrece un equilibrio perfecto entre la acción rápida de las plataformas y la estrategia de saber cuándo atacar, defender o utilizar los hechizos a tu favor.  
   
 ## 1.2. Características principales 
-Los jugadores pueden elegir entre varios personajes, cada uno con sus propios diseños. Esto aporta un toque de personalización y hace que el juego sea más atractivo visualmente.
+Los jugadores pueden elegir entre varios personajes, cada uno con sus propios diseños. Esto aporta un toque de personalización y hace que el juego sea más atractivo visualmente.  
 
-El mapa está lleno de plataformas, lo que añade un reto adicional de movimiento y salto. Los jugadores deben maniobrar hábilmente a través de los niveles para alcanzar la bandera y evitar a su oponente.
+El mapa está lleno de plataformas, lo que añade un reto adicional de movimiento y salto. Los jugadores deben maniobrar hábilmente a través de los niveles para alcanzar la bandera y evitar a su oponente.  
 
-Durante la partida, aparecen hechizos (ítems), en lugares aleatorios del mapa, que los jugadores pueden recoger y activar. Estos hechizos complican el reto, al interferir con el progreso del oponente, haciendo que aumente la dificultad de obtener la bandera.
+Durante la partida, aparecen hechizos (ítems), en lugares aleatorios del mapa, que los jugadores pueden recoger y activar. Estos hechizos complican el reto, al interferir con el progreso del oponente, haciendo que aumente la dificultad de obtener la bandera.  
 
-La posición de la bandera cambia de manera aleatoria en cada ronda, lo que obliga a los jugadores a adaptarse constantemente y evita que las estrategias se vuelvan repetitivas.
-Además, se ofrecen cuatro mapas distintos, uno por cada estación del año, evitando así, nuevamente, que el juego sea demasiado repetitivo y el jugador pierda el interés.
+La posición de la bandera cambia de manera aleatoria en cada ronda, lo que obliga a los jugadores a adaptarse constantemente y evita que las estrategias se vuelvan repetitivas.  
 
-Los controles son fáciles de aprender pero difíciles de dominar. Esto permite que tanto jugadores novatos como expertos disfruten del juego, pero también recompensa la habilidad.
-El videojuego tiene la posibilidad de jugar tanto en local como en red.
-  
+Además, se ofrecen cuatro mapas distintos, uno por cada estación del año, evitando así, nuevamente, que el juego sea demasiado repetitivo y el jugador pierda el interés.  
+
+Los controles son fáciles de aprender pero difíciles de dominar. Esto permite que tanto jugadores novatos como expertos disfruten del juego, pero también recompensa la habilidad.  
+
+El videojuego tiene la posibilidad de jugar tanto en local como en red.  
 
 ## 1.3. Género
-Es un juego de plataformas competitivas, que sigue la dinámica del “Captura la bandera”. 
+Es un juego de plataformas competitivas, que sigue la dinámica del “Captura la bandera”.   
 
-La acción se basa en las mecánicas clásicas de escenarios de plataformas donde los jugadores deben moverse, saltar y utilizar habilidades en un entorno dinámico y lleno de obstáculos. 
+La acción se basa en las mecánicas clásicas de escenarios de plataformas donde los jugadores deben moverse, saltar y utilizar habilidades en un entorno dinámico y lleno de obstáculos.  
 
-La mecánica central de capturar la bandera y llevarla a una base añade un elemento de estrategia y competición, lo que lo encuadra también dentro de los juegos competitivos locales o en línea.
+La mecánica central de capturar la bandera y llevarla a una base añade un elemento de estrategia y competición, lo que lo encuadra también dentro de los juegos competitivos locales o en línea.  
 
-Además, los hechizos y obstáculos que afectan a los jugadores aportan también acción y estrategia.
-
+Además, los hechizos y obstáculos que afectan a los jugadores aportan también acción y estrategia.  
 
 ## 1.4. Propósito y público objetivo
 El propósito del juego es ofrecer una experiencia competitiva y divertida para dos jugadores, combinando mecánicas de plataformas rápidas y acción estratégica con el clásico objetivo de captura de bandera. Los jugadores deben usar sus habilidades de movimiento, su conocimiento del mapa y los recursos que encuentren para superar a su oponente, atrapando la bandera y llevándola a su base. Además de ser un reto físico, el juego busca fomentar la estrategia y el uso inteligente del entorno, mientras mantiene un ritmo de juego dinámico y emocionante.  
 
-Por otro lado, el público objetivo son:  
+Por otro lado el público objetivo son:  
  - **Jugadores casuales** que disfrutan de partidas rápidas y dinámicas. Al ser un juego de plataformas y multijugador, atraerá a aquellos que buscan una experiencia divertida que puedan jugar con amigos en sesiones cortas.
  - **Jugadores competitivos** que valoran juegos con una mezcla de habilidades y estrategia. El formato de capturar la bandera, combinado con la posibilidad de interferir en los planes del oponente mediante hechizos, atraerá a aquellos que disfrutan de enfrentamientos directos y de mejorar sus tácticas.
  - **Jugadores que buscan juegos multijugador**. Los que disfrutan jugando en compañía de amigos encontrarán este juego particularmente atractivo.
@@ -98,10 +95,10 @@ Inicialmente ofrecerá un único modo de juego, basado en enfrentamientos direct
 La versión inicial contará con 5 personajes para elegir, cada uno con un diseño único y 4 mapas distintos, con diseños y plataformas completamente diferentes.
 
 El juego estará disponible para PC, y se podrá jugar tanto de manera local como en línea.
+
 Si bien es este el alcance inicial, el juego tiene potencial para expandirse con más modos de juego, como un modo cooperativo o competitivo con más de 2 jugadores, y la posibilidad de incluir más hechizos y mapas a través de actualizaciones. Además de un sistema de invitaciones rápidas para facilitar la jugabilidad.
 
 También en el futuro, se podrá cambiar el modelo de negocio del videojuego para poder obtener rentabilidad, por ejemplo mediante compras dentro del juego o venta de expansiones.
-
 
 ## 1.8. Motor de juego
 El videojuego usará el motor Unity, una plataforma comúnmente utilizada para videojuegos 2D y 3D. La elección del motor del juego se ha basado en las herramientas que proporciona para la creación de juegos 2D como Champinchanted, su sistema de físicas, la facilidad para crear animaciones y la gestión de multijugador, necesaria para este videojuego.
@@ -115,7 +112,7 @@ Aunque el juego está orientado a la competición 1 contra 1, la falta de modos 
 
 Además, el videojuego puede resultar algo repetitivo, a pesar de contar con varios mapas y personajes. La falta de diferenciación de estos en cuanto a habilidades, puede resultar menos interesante y contar con únicamente 4 mapas, en vez de tener varios niveles, puede también reducir el interés del jugador. 
 
-Y, por último, la limitación del videojuego a ordenadores con acceso a un navegador, puede ser una gran debilidad para jugadores que prefieran usar otras plataformas como consolas. 
+Y por último, la limitación del videojuego a ordenadores con acceso a un navegador, puede ser una gran debilidad para jugadores que prefieran usar otras plataformas como consolas. 
 
 ### 1.10.2. Amenazas
 Existen muchos juegos de plataformas multijugador competitivos, como Brawlhalla o Smash Bros. Esto puede hacer que nuestro videojuego no destaque, ante la existencia de otros con un éxito ya consolidado. Además, si el juego no se actualiza con frecuencia, los jugadores pueden cansarse y pasarse a juegos más novedosos y actualizados.
@@ -136,27 +133,19 @@ Y otros aspectos como un buen marketing o la integración en torneos online pued
 La licencia del videojuego es Apache 2.0, una licencia de código abierto que implica que los usuarios tienen libertad de usar, copiar y modificar el código del videojuego; redistribuir el software y su uso con fines comerciales, siempre y cuando den crédito a los autores. 
 
 # 2. Historia y narrativa
-## 2.1. Lore
-En el núcleo del Bosque Eterno, hace miles de años, había un árbol llamado 'El Árbol de la Sabiduría'. A lo largo de los siglos, el árbol absorbió el saber y la historia de la naturaleza. Al llegar al final de su vida, El Árbol predijo el desbalance natural que surgiría en su ausencia a falta de una conciencia colectiva que lo uniera. En un gesto de sacrificio, depositó su esencia en las raíces del bosque, generando una red mágica de hongos que vinculaba cada esquina del mundo subterráneo. De esta manera surgieron las setas, poseedoras de una conciencia primitiva, capaces de interactuar entre sí a través de esporas que se propagaban por todo el bosque.
-
-Con el paso del tiempo, estas setas empezaron a formar personalidades propias, representando elementos de su ambiente: las que se encontraban cerca del agua eran serenas, las que se encontraban en la oscuridad enigmáticas, y las que se desarrollaban al sol eran optimistas y rebosantes de energía.
-
-Conforme las setas tomaron conciencia, comprendieron que su tarea era salvaguardar y preservar la estabilidad del Bosque Eterno. A lo largo de siglos, el bosque experimentó desbalances naturales, variaciones climáticas y la aparición de seres inusuales. Para asegurar la salvaguarda del bosque, las setas de diversas facciones (dependiendo de su aspecto) se involucran en el torneo de Atrapa la Bandera. Este certamen no solo representa una costumbre cultural, sino también un examen para seleccionar a las setas más adecuadas para proteger el bienestar del bosque. A pesar de no poseer poderes mágicos, cada seta simboliza la biodiversidad y el balance de su ecosistema, y su batalla por la bandera representa su dedicación a salvaguardar su casa.
-
-
-## 2.2. Ambientación
+## 2.1. Ambientación
 El mundo del videojuego es un bosque encantado, vibrante y encantador, lleno de naturaleza, fauna y elementos mágicos. Desde grandes troncos y champiñones, hasta hechizos y criaturas del bosque. Todo esto ambientado en las cuatro estaciones del año (primavera, verano, otoño e invierno). 
 
-## 2.3. Objetivos del jugador  
+## 2.2. Objetivos del jugador  
 El objetivo del jugador y de su oponente, es llegar desde su base hasta el lugar aleatorio en el que se encuentre la bandera, ayudándose de las diversas plataformas distribuidas por el mapa, alcanzando la bandera y llevándola de vuelta a su base, sin que el otro jugador le alcance y le quite la bandera. 
 
-De esta forma, el jugador que consiga el objetivo habrá ganado la ronda. El jugador que más rondas haya ganado de entre las tres que componen una partida, será proclamado ganador.
+De esta forma, el jugador que consiga el objetivo, habrá ganado la ronda. El jugador que más rondas haya ganado de entre las tres que componen una partida, será proclamado ganador.
 
 # 3. Mecánicas del juego
 ## 3.1. Gameplay
 La jugabilidad de este juego de plataformas multijugador está diseñada para ser rápida, estratégica y dinámica, combinando elementos de competencia directa y la interacción con el entorno del mapa. 
 
-Cada jugador tiene como objetivo principal capturar la bandera, que aparece de manera aleatoria en el mapa, y llevarla de vuelta a su base. Gana la ronda el jugador que logre capturar y asegurar la bandera en su base primero. Se divide en 3 rondas y el jugador que gane más rondas es el vencedor de la partida.
+Cada jugador tiene como objetivo principal capturar la bandera, que aparece de manera aleatoria en el mapa, y llevarla de vuelta a su base . Gana la ronda el jugador que logre capturar y asegurar la bandera en su base primero. Se divide en 3 rondas y el jugador que gane más rondas es el vencedor de la partida.
 
 Antes de cada partida, los jugadores pueden elegir entre una variedad de personajes. No existen diferencias en las habilidades de estos.
 
@@ -203,7 +192,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-![Diagrama de estados](./Imágenes/Diagrama_de_estados.png)
+![Diagrama de estados](./Imágenes/diagramaEstados.png)
 
 
 # 4. Música
@@ -239,29 +228,29 @@ Tiene un toque inspirado en la naturaleza fantástica, similar a juegos como *Or
 Los personajes principales tienen un diseño único, inspirado en diferentes tipos de setas. Las paletas de colores que siguen son únicas y temáticas para cada personaje, pero manteniendo una coherencia común.  
 
 **Perretxiko**
-El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto por lo que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
+El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóxica que envenena a los insectos con los que entra en contacto, es por esto que hemos decidido representar a este personaje enfadado. Perretxiko está inspirado en la cultura vasca, con su característica “txapela” y los colores de la bandera vasca o “ikurriña”. 
 
-![Animación de Perretxiko](./Imágenes/Animación_perretxiko.png)
+![Sprites de Perretxiko](./Imágenes/Perretxiko.png)
 
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-![Animación de Champichip](./Imágenes/Animación_champichip.png)
+![Sprites de Champichip](./Imágenes/Champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-![Animación de Mariñón](./Imágenes/Animación_mariñon.png)
+![Sprites de Mariñón](./Imágenes/Mariñón.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-![Animación de Champistar](./Imágenes/Animación_champistar.png)
+![Sprites de Champistar](./Imágenes/Champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-![Animación de Biblioseta](./Imágenes/Animación_biblioseta.png)
+![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
@@ -269,64 +258,31 @@ Hay 4 tipos diferentes de mapas, cada uno inspirado en una estación. Todos los 
 
 ![Boceto del mapa de otoño](./Imágenes/Boceto_mapa_otoño.png)
 ![Mapa otoño](./Imágenes/Mapa_de_otoño.png)
-![Mapa invierno](./Imágenes/Mapa_de_invierno.png)
-![Mapa primavera](./Imágenes/Mapa_de_primavera.png)
-![Mapa verano](./Imágenes/Mapa_de_verano.png)
 
 ### 5.4.2. Diseño de niveles
 Las plataformas principales del juego son una combinación de troncos de árboles caídos y champiñones y setas gigantes. 
-
-Cada estación cuenta con sus propios elementos del juego:
-![Plataforma del nivel de otoño](./Imágenes/SetaPequeñaOtoño.png)
-![Plataforma vertical del nivel de otoño](./Imágenes/ParedOtoño.png)
-
-![Plataforma del nivel de invierno](./Imágenes/PlataformaEstalactitaInvierno.png)
-![Plataforma del nivel de invierno](./Imágenes/SetaGrandeInvierno.png)
-
-![Plataforma del nivel de primavera](./Imágenes/setoMedianoPrimavera.png)
-![Plataforma del nivel de primavera](./Imágenes/amapola.png)
-
-![Plataforma del nivel de verano](./Imágenes/hojaLateral2.png)
-![Plataforma del nivel de verano](./Imágenes/setoGrandeVerano.png)
-
-Además, hay algunos elementos especiales que son interactivos, como las setas saltarinas en las que el jugador rebota, o las setas venenosas que le quitan vida, que además tienen animación:
-![Seta saltarina](./Imágenes/SetaSaltarinaOtoño.png)
-![Seta saltarina invierno](./Imágenes/SetaSaltarinaInvierno.png)
-
-![Seta venenosa](./Imágenes/SetaVenenosaOtoño.png)
-![Seta venenosa invierno](./Imágenes/SetaVenenosaInvierno.png)
-
-Y así es como quedaría un nivel completo
-![Nivel de otoño](./Imágenes/Pantalla_juego.png)
-![Nivel de invierno](./Imágenes/Pantalla_juego_invierno.png)
+![Nivel de otoño](./Imágenes/Nivel_otoño.jpeg)
 
 ## 5.5. Diseño de ítems
 Las paletas de colores de los objetos van en consonancia con las ya antes mencionadas y la estética general del videojuego.  
 
 ### 5.5.1. Hechizos
 **Dazer**: Al utilizarse sobre el contrincante aplicará un efecto de congelamiento que durará 3s, durante ese tiempo el jugador sobre el que se ha aplicado no podrá realizar ninguna acción.
-![Hechizo Dazer](./Imágenes/Dazer.PNG)
 
 **Venom**: Al utilizarse sobre el contrincante aplicará efecto de veneno, este hará 1 de daño cada 3s y no dejará de aplicarse hasta que uno de los dos jugadores muera.
-![Hechizo Venom](./Imágenes/Venom.PNG)
 
 **Dalsy**: Al utilizarse restaura 10 puntos de vida al jugador que lo utilice.
-![Hechizo Dalsy](./Imágenes/Dalsy.PNG)
 
 **Teleport**: Al activarse, ambos jugadores se teletransportan al punto de partida. En caso de que uno de ellos tenga la bandera, ésta quedará en el suelo en el punto en el que se encontraba el jugador antes de utilizar el hechizo.
-![Hechizo Teleport](./Imágenes/Teleport.PNG)
 
 **Dash**: Al usarlo se efectuará un desplazamiento (lateral u horizontal) que atraviesa los obstáculos si los hubiera.
-![Hechizo Dash](./Imágenes/Dash.PNG)
 
-**Time machine**: Devuelve a las posiciones y los puntos de vida en las que se encontraban los jugadores e ítems 10s antes de emplearse.
-![Hechizo Time machine](./Imágenes/Time_machine.PNG)
+**Time machine**: Devuelve a las posiciones y los puntos de vida en las que se encontraban los jugadores e items 10s antes de emplearse.
 
 **Monster**: Al emplearse el jugador que la utilice recibirá una mejora en velocidad, la mejora aumentará un 15% la velocidad base del jugador y durará 12s.
-![Hechizo Monster](./Imágenes/Monster.PNG)
 
 ### 5.5.2. Banderas y casas
-Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación, se muestran los cuatro diseños.
+Las banderas son los ítems que deben capturar los jugadores. Cada estación tiene un diseño de bandera único. A continuación se muestran los cuatro diseños.
 		
 ![Bandera de verano](./Imágenes/Bandera_verano.jpeg)
 ![Bandera de otoño](./Imágenes/Bandera_otoño.jpeg)
@@ -335,48 +291,29 @@ Las banderas son los ítems que deben capturar los jugadores. Cada estación tie
 
 Las casas son las bases de las que parten los jugadores y a las que deben regresar con la bandera.
 
-![Casa de otoño](./Imágenes/Casa_otoño.PNG)
-![Casa de invierno](./Imágenes/Casa_invierno.PNG)
-![Casa de primavera](./Imágenes/Casa_primavera.PNG)
-![Casa de verano](./Imágenes/Casa_verano.PNG)
+![Casas](./Imágenes/Casa.jpeg)
 
 
 ## 5.6. Interfaz de usuario
-La interfaz del videojuego es minimalista y homogénea, integrándose en el videojuego de manera que no saque al usuario de la experiencia inmersiva. 
-
-Cuenta con botones, fondos y recuadros que siguen la estética establecida. A continuación, se muestran algunos de ellos.
-
-![Botón de jugar](./Imágenes/botonJugar.png)
-![Botón de elegir mapa](./Imágenes/botonOtoñoMapa.png)
-![Botón de salir](./Imágenes/Salir.png)
-![Botón de jugar otra vez](./Imágenes/botonJugarOtraVez.png)
-
-Además, en la pantalla de juego aparecen iconos tanto de los personajes como de los hechizos.
-![Icono champichip](./Imágenes/champichip_i.png)
-![Icono champistar](./Imágenes/champistar_i.png)
-![Icono perretxiko](./Imágenes/perretxiko_i.png)
-![Icono mariñon](./Imágenes/mariñon_i.png)
-![Icono biblioseta](./Imágenes/biblioseta_i.png)
-
-![Icono Dazer](./Imágenes/Dazer_i.png)
-![Icono Venom](./Imágenes/Venom_i.png)
-![Icono Dalsy](./Imágenes/Dalsy_i.png)
-![Icono Teleport](./Imágenes/Teleport_i.png)
-![Icono Dash](./Imágenes/Dash_i.png)
-![Icono Time machine](./Imágenes/Time_machine_i.png)
-![Icono Monster](./Imágenes/Monster_i.png)
-
-En la pantalla de partida, en la parte superior, cada jugador puede ver un recuadro donde consultar su personaje, su vida y su puntuación, así como los hechizos que tenga disponibles.
-
-![Recuadro información jugador](./Imágenes/Cuadro_información_jugador.png)
-
-Por último, mostramos todas las pantallas que componen el videojuego, según todo lo visto anteriormente:
-
-![Pantalla de inicio](./Imágenes/Pantalla_inicio.png)
-![Pantalla de selección de personajes](./Imágenes/Pantalla_selección_personajes.png)
-![Pantalla de selección de mapas](./Imágenes/Pantalla_selección_mapas.png)
-![Pantalla de partida](./Imágenes/Pantalla_juego.png)
-![Pantalla de fin de partida](./Imágenes/Pantalla_ganador.png)
+### 5.6.1 Pantalla de Inicio
+![Pantalla de Inicio](./Imágenes/inicial.png)
+### 5.6.2 Pantalla de Tutorial
+![Pantalla de Tutorial](./Imágenes/tuto.png)
+### 5.6.3 Pantalla de Creditos
+![Pantalla de Creditos](./Imágenes/creditos.png)
+### 5.6.4 Pantalla de usuario
+![Pantalla de usuario](./Imágenes/nombre.png)
+### 5.6.5 Pantalla de unirse a partida
+![Pantalla de unirse a partida](./Imágenes/unirse.png)
+### 5.6.6 Pantalla de mapas
+![Pantalla de mapas](./Imágenes/mapas.png)
+### 5.6.7 Pantalla de pausa
+![Pantalla de pausa](./Imágenes/pausa.png)
+### 5.6.8 Pantallas de seleccion de personajes
+### 5.6.8.1 Pantalla de seleccion de personajes (Local)
+![Pantalla de seleccion de personajes (Local)](./Imágenes/k.png)
+### 5.6.8.2 Pantalla de seleccion de personajes (En red)
+![Pantalla de seleccion de personajes (En red)](./Imágenes/seleccionPersonajesOnline.png)
 
 # 6. Arquitectura y guía de ejecución
 ## 6.1. Diagrama de clases
@@ -394,3 +331,4 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
+
