@@ -26,6 +26,7 @@ Laura Blázquez Pelaz
 [3. Mecánicas del juego](#mecanicas-del-juego)   
 [4. Música](#musica)   
 [5. Arte y estilo visual](#arte-y-estilo-visual)   
+[6. Arquitectura y guía de ejecución](#arquitectura-y-guia-de-ejecucion)  
 
 # 1. Introducción: Definición del juego
 ## 1.1. Concepto del juego
@@ -314,3 +315,19 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 5.6.8.2 Pantalla de seleccion de personajes (En red)
 ![Pantalla de seleccion de personajes (En red)](./Imágenes/seleccionPersonajesOnline.png)
 
+# 6. Arquitectura y guía de ejecución
+## 6.1. Diagrama de clases
+A continuación adjuntamos la explicación general de la estructura del proyecto y las relaciones entre las clases implemnentadas:
+![Diagrama de clases](./Imágenes/Diagrama_de_clases.png)
+
+Además, hemos utilizado la plantilla UsernameUpdateRequest de tipo DTO (DataTransferObject), que se usa en el controlador para actualizar el nombre de usuario. 
+
+
+## 6.2. Guía de ejecución
+Para ejecutar el videojuego se debe ejecutar el archivo JAR (*champinchanted-0.0.1-SNAPSHOT*) desde la línea de comandos utilizando el comando: java -jar champinchanted-0.0.1-SNAPSHOT.jar.
+Esto iniciará el servidor y la aplicación en el puerto configurado, que por defecto será el 8080.
+
+Para poder ejecutar el videojuego y su backend, se debe tener instalado la versión 8 de Java o superior y Maven para compilar el proyecto.
+
+Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
+Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
