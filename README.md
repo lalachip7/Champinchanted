@@ -310,9 +310,9 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 ### 5.6.7 Pantalla de pausa
 ![Pantalla de pausa](./Imágenes/pausa.png)
 ### 5.6.8 Pantallas de seleccion de personajes
-### 5.6.8.1 Pantalla de seleccion de personajes (Local)
+5.6.8.1 Pantalla de seleccion de personajes (Local)
 ![Pantalla de seleccion de personajes (Local)](./Imágenes/k.png)
-### 5.6.8.2 Pantalla de seleccion de personajes (En red)
+5.6.8.2 Pantalla de seleccion de personajes (En red)
 ![Pantalla de seleccion de personajes (En red)](./Imágenes/seleccionPersonajesOnline.png)
 
 # 6. Arquitectura y guía de ejecución
@@ -331,4 +331,3 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
-
