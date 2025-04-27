@@ -23,76 +23,89 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
     
     @Autowired
-    private final UserRepository userRep;                     // Repositorio que maneja las operaciones de los usuarios
+    private final UserRepository userRep;       // Repositorio que maneja las operaciones de 
+                                                // los usuarios
 
     @Autowired
-    private final ApiStatusService apiStatusService;    // Servicio que gestiona el estado de conexión de los usuarios
+    private final ApiStatusService apiStatusService;    // Servicio que gestiona el estado de 
+                                                        // conexión de los usuarios
     
 
-    // CONSTRUCTOR
+    // CONSTRUCTOR ..........................................................................
     public UsersController(UserRepository userRep, ApiStatusService apiStatusService) {
         this.userRep = userRep;
         this.apiStatusService = apiStatusService;
     }
 
-    /**
+    /****************************************************************************************
+     * Recupera los detalles de un usuario específico por su nombre de usuario
      * GET /api/users/{username}
-     * @param username
-     * @return
+     * @param username Nombre de usuario único
+     * @return Un ResponseEntity con el usuario encontrado o 404 si no existe
      */
     @GetMapping("/{username}")
     public ResponseEntity<User> getUser(@PathVariable String username) {
         synchronized (this.userRep) {   // Para el manejo de la concurrencia
-            Optional<User> user = this.userRep.getUser(username);   // Llamada al repositorio para buscar al usuario por su nombre de usuario
+            Optional<User> user = this.userRep.getUser(username);   
+            // Llamada al repositorio para buscar al usuario por su nombre de usuario
             // El método optional permite manejar la posibilidad de que el método no exista
 
-            if (user.isPresent()) {     // Si encuentra al usuario
-                return ResponseEntity.ok(user.get());    // devuelve un 200 con el usuario
+            if (user.isPresent()) {                         // Si encuentra al usuario
+                return ResponseEntity.ok(user.get());       // devuelve un 200 con el usuario
             } else {
                 return ResponseEntity.notFound().build();   // y si no devuelve 404 (Not Found)
             }
         }
     }
 
-    /**
+    /****************************************************************************************
+     * Elimina un usuario específico por su nombre de usuario
      * DELETE /api/users/{username}
-     * @param username
-     * @return
+     * @param username Nombre de usuario único
+     * @return Un ResponseEntity que indica si la eliminación fue exitosa o no se encontró
+     * el usuario
      */
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         synchronized (this.userRep) {
-            boolean removed = this.userRep.deleteUser(username);    // Llama al repositorio para eliminar el usuario
-            if (removed) {                                  // Si lo ha eliminado 
+            boolean removed = this.userRep.deleteUser(username);    
+            // Llama al repositorio para eliminar el usuario
+
+            if (removed) {                                      // Si lo ha eliminado 
                 this.apiStatusService.setInactive(username);
-                return ResponseEntity.ok().build();         // Devuelve 200
-            } else {                                        // Y si no
-                return ResponseEntity.notFound().build();   // Devuelve 404
+                return ResponseEntity.ok().build();             // Devuelve 200
+            } else {                                            // Y si no
+                return ResponseEntity.notFound().build();       // Devuelve 404
             }
         }
     }
 
-    /**
+    /****************************************************************************************
+     * Registra un nuevo usuario y verifica que el nombre de usuario no esté vacío ni en uso
      * POST /api/users
-     * @param user
-     * @return
+     * @param user Objeto User con los datos del nuevo usuario
+     * @return Un ResponseEntity que indica si la creación fue exitosa o fallida debido a 
+     * conflictos o errores
      */
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         System.out.println("Intentando registrar usuario: " + user.getUsername());
         synchronized (this.userRep) {
-            if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {     // Si el nombre de usuario o la contraseña están vacíos
+            // Si el nombre de usuario o la contraseña están vacíos
+            if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {     
                 return ResponseEntity.badRequest()
                     .body(Map.of("message", "El nombre de usuario no puede estar vacío."));  // Devuelve una respuesta HTTP 400
             } 
 
             Optional<User> other = this.userRep.getUser(user.getUsername());    
-            if (other.isPresent()) {                                            // Verifica si ya existe un usuario con ese nombre de usuario
+            if (other.isPresent()) {        // Verifica si ya existe un usuario con ese nombre 
+                                            // de usuario
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", "El nombre de usuario ya está en uso."));  // Y si existe devuelve un código 409 (Conflict)
+                    .body(Map.of("message", "El nombre de usuario ya está en uso."));  
+                    // Y si existe devuelve un código 409 (Conflict)
             }
 
-            this.userRep.updateUser(user);                          // Actualiza el repositorio de usuarios
+            this.userRep.updateUser(user);          // Actualiza el repositorio de usuarios
             this.apiStatusService.setActive(user.getUsername());    // Lo marca como activo
 
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -100,14 +113,17 @@ public class UsersController {
         }
     }
     
-    /**
+    /*******************************************************************************************
+     * Actualiza el nombre de usuario de un usuario existente
      * PUT /api/users/{username}
-     * @param username
-     * @param newUsernameRequest
-     * @return
+     * @param username Nombre de usuario actual
+     * @param newUsernameRequest Objeto que contiene el nuevo nombre de usuario
+     * @return Un ResponseEntity que indica si la actualización fue exitsa, no se encontró el
+     * usuario o hubo un conflicto de nombres
      */
     @PutMapping("/{username}")
-    public ResponseEntity<?> updateUsername(@PathVariable String username, @RequestBody UsernameUpdateRequest newUsernameRequest) {
+    public ResponseEntity<?> updateUsername(@PathVariable String username, @RequestBody 
+    UsernameUpdateRequest newUsernameRequest) {
         synchronized (this.userRep) {
             Optional<User> user = this.userRep.getUser(username);
             if (user.isEmpty()) {
@@ -139,14 +155,17 @@ public class UsersController {
         }
     }
 
-    /**
-     * POST /api/users/{username}/disconnect    Maneja la desconexión de un usuario
-     * @param username
-     * @return
+    /****************************************************************************************
+     * Desconecta a un usuario, cambiando su estado a inactivo
+     * POST /api/users/{username}/disconnect    
+     * @param username Nombre de usuario único
+     * @return Un ResponseEntity que indica si la desconexión fue exitosa o si el usuario no 
+     * se encontró
      */
     @PostMapping("/{username}/disconnect")
     public ResponseEntity<?> disconnectUser(@PathVariable String username) {
-        // Desactiva el usuario cuando se desconecta (por ejemplo, cuando se cierra la sesión o se recarga la página)
+        // Desactiva el usuario cuando se desconecta (por ejemplo, cuando se cierra la sesión
+        // o se recarga la página)
         synchronized (this.userRep) {
             Optional<User> user = this.userRep.getUser(username);
             if (user.isEmpty()) {
@@ -155,7 +174,8 @@ public class UsersController {
             }
 
             this.apiStatusService.setInactive(username);  // Marca al usuario como desconectado
-            return ResponseEntity.ok().body(Map.of("message", "Usuario desconectado correctamente."));
+            return ResponseEntity.ok().body(Map.of("message", 
+            "Usuario desconectado correctamente."));
         }
     }
     

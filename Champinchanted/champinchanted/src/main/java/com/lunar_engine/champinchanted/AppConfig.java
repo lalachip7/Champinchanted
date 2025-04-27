@@ -8,17 +8,17 @@ public class AppConfig {
 
     @Bean
     public long seenThreshold() {
-        return 10000;  // El valor que desees
+        return 10000;  
     }
 
     @Bean
     public String usersPath() {
-        return "src/main/resources/users";  // O cualquier otro valor que necesites
+        return "src/main/resources/users";  
     }
 
     @Bean
     public String gamesPath() {
-        return "src/main/resources/games";  // O cualquier otro valor que necesites
+        return "src/main/resources/games";  
     }
 }
 

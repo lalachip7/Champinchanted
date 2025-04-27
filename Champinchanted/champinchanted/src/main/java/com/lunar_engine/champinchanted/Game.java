@@ -9,8 +9,10 @@ public class Game {
     private String code;                // Código de partida
     private int usersConnected;         // Número de usuarios en la partida
 
-    // CONSTRUCTOR
-    public Game(String usernamePlayer1, String usernamePlayer2, int map, int player1, int player2, String code, int usersConnected) {
+    // CONSTRUCTOR ..........................................................................
+    public Game(String usernamePlayer1, String usernamePlayer2, int map, int player1, 
+                int player2, String code, int usersConnected) 
+    {
         this.usernamePlayer1 = usernamePlayer1;
         this.usernamePlayer2 = usernamePlayer2;
         this.map = map;
@@ -20,7 +22,7 @@ public class Game {
         this.usersConnected = usersConnected;
     }
 
-    // GETTERS
+    // GETTERS ..............................................................................
     public String getUsernamePlayer1() {
         return this.usernamePlayer1;
     }
@@ -49,7 +51,7 @@ public class Game {
         return this.usersConnected;
     }
 
-    // SETTERS
+    // SETTERS ..............................................................................
     public void setUsernamePlayer1(String username) {
         this.usernamePlayer1 = username;
     }

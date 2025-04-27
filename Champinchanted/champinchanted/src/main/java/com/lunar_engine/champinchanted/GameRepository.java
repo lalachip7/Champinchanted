@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Repository
 public class GameRepository {
     
-    // CONSTRUCTOR
+    // CONSTRUCTOR ..........................................................................
     @Autowired
     @Qualifier("gamesPath")
     private final String gamesPath;
@@ -28,11 +28,14 @@ public class GameRepository {
         this.gamesPath = gamesPath;
     }
 
-
-    // MÉTODO QUE CARGA Y DESERIALIZA TODOS LOS ARCHIVOS JSON DE PARTIDAS
     @Autowired
     private ObjectMapper objectMapper;
 
+    /****************************************************************************************
+     * Recupera la lista de todas las partidas desde archivos JSON
+     * @return Lista de objetos Game deserializados desde los archivos JSON
+     * @throws IOException
+     */
     @SuppressWarnings("CallToPrintStackTrace")
     public List<Game> getGames() throws IOException {
         var localOjectMapper = new ObjectMapper();
@@ -58,7 +61,11 @@ public class GameRepository {
         }
     }
 
-    // MÉTODO QUE RECUPERA UNA PARTIDA EN ESPECÍFICO
+    /****************************************************************************************
+     * Recupera una partida específica dado su código
+     * @param code Código único de la partida
+     * @return Un objeto Optional que contiene la partida encontrada o está vacío si no existe
+     */
     public Optional<Game> getGame(String code) {
         try {
             String filePath = this.gamesPath + "/" + code + ".json";
@@ -69,7 +76,11 @@ public class GameRepository {
         }
     }
 
-    // MÉTODO QUE ELIMINA UNA PARTIDA   
+    /****************************************************************************************
+     * Elimina una partida específica dado su código
+     * @param code Código único de la partida
+     * @return true si la partida fue elminada con éxito, false si no se encontró o hubo un error
+     */
     @SuppressWarnings("CallToPrintStackTrace")
     public boolean deleteGame(int code) {
         try {
@@ -88,6 +99,11 @@ public class GameRepository {
         }
     }
 
+    /****************************************************************************************
+     * Crea un nuevo archivo JSON para guardar una partida
+     * @param game Objeto Game que contiene la información de la partida a crear
+     * @return true si la partida fue guardada exitosamente, false si ocurrió un error
+     */
     @SuppressWarnings("CallToPrintStackTrace")
     public boolean createGame(Game game) {
         try {
@@ -102,6 +118,11 @@ public class GameRepository {
         }
     }
 
+    /****************************************************************************************
+     * Guarda una partida existente en un archivo JSON
+     * @param game Objeto Game que contiene la información de la partida a guardar
+     * @return true si la partida fue guardada exitosamente, false si ocurrió un error
+     */
     @SuppressWarnings("CallToPrintStackTrace")
     public boolean saveGame(Game game) {
         try {
