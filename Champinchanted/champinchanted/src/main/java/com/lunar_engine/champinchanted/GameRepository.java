@@ -24,12 +24,20 @@ public class GameRepository {
     @Qualifier("gamesPath")
     private final String gamesPath;
 
-    public GameRepository(String gamesPath) {
-        this.gamesPath = gamesPath;
-    }
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    public GameRepository(@Qualifier("gamesPath") String gamesPath, ObjectMapper objectMapper) {
+        this.gamesPath = gamesPath;
+        this.objectMapper = objectMapper;
+
+        try {
+            Files.createDirectories(Paths.get(gamesPath));
+        } catch (IOException e) {
+            System.err.println("Error al crear el directorio de partidas: " + e.getMessage());
+        }
+    }
+
 
     /****************************************************************************************
      * Recupera la lista de todas las partidas desde archivos JSON
@@ -38,7 +46,7 @@ public class GameRepository {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public List<Game> getGames() throws IOException {
-        var localOjectMapper = new ObjectMapper();
+        //var localOjectMapper = new ObjectMapper();
 
         Path path = Paths.get(gamesPath);
 
@@ -48,13 +56,14 @@ public class GameRepository {
             .filter(file -> file.toString().endsWith(".json"))
             .map(file -> {
                 try {
-                    return localOjectMapper.readValue(file.toFile(), Game.class);
+                    return objectMapper.readValue(file.toFile(), Game.class);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
                 }
             })
-            .filter(game -> game != null)
+            //.filter(game -> game != null)
+            .filter(java.util.Objects::nonNull)
             .collect(Collectors.toList());
         } catch (IOException e) {
             return new ArrayList<>();
@@ -82,7 +91,7 @@ public class GameRepository {
      * @return true si la partida fue elminada con éxito, false si no se encontró o hubo un error
      */
     @SuppressWarnings("CallToPrintStackTrace")
-    public boolean deleteGame(int code) {
+    public boolean deleteGame(String code) {
         try {
             String filePath = this.gamesPath + "/" + code + ".json";
             File file = new File(filePath);
@@ -106,16 +115,7 @@ public class GameRepository {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     public boolean createGame(Game game) {
-        try {
-            String filePath = this.gamesPath + "/" + game.getCode() + ".json";
-            File file = new File(filePath);
-
-            objectMapper.writeValue(file, game);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return saveGame(game); 
     }
 
     /****************************************************************************************

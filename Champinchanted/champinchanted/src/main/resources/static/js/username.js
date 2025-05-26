@@ -7,6 +7,8 @@ class UsernameScene extends Phaser.Scene {
         this.usernameEntered = false;
         this.username = null;
         this.sessionManager = new SessionManager();
+        this.stompClient = null; 
+        window.gameCode = null;
     }
 
     preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------

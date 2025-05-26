@@ -21,11 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameController {
 
     @Autowired
-    private final GameRepository gameRep;
+    private final GameRepository gameRepository;    // Servicio para la lógica de negocio de las partidas
+
+    @Autowired
+    private final GameService gameService;          // Repositorio para la persistencia de partidas
 
     // CONSTRUCTOR ..........................................................................
-    public GameController(GameRepository gameRep) {
-        this.gameRep = gameRep;
+    public GameController(GameService gameService, GameRepository gameRepository) {
+        this.gameService = gameService;
+        this.gameRepository = gameRepository;
     }
 
     /****************************************************************************************
@@ -36,161 +40,143 @@ public class GameController {
      */
     @GetMapping("/{code}")
     public ResponseEntity<Game> getGame(@PathVariable String code) {
-        synchronized (this.gameRep) {
-            Optional<Game> game = this.gameRep.getGame(code);
-
-            if (game.isPresent()) {
-                return ResponseEntity.ok(game.get());
-            } else {
-                return ResponseEntity.notFound().build();
+        Optional<Game> game = gameService.getGame(code); // Buscar en el servicio (memoria)
+        if (game.isPresent()) {
+            return ResponseEntity.ok(game.get());
+        } else {
+            // Si no está en memoria, intentar cargarla del repositorio (disco)
+            Optional<Game> persistedGame = gameRepository.getGame(code);
+            if (persistedGame.isPresent()) {
+                // Si se encuentra en disco, añadirla al servicio para futuras operaciones
+                gameService.addGame(persistedGame.get());
+                return ResponseEntity.ok(persistedGame.get());
             }
+            return ResponseEntity.notFound().build();
         }
     }
 
     /****************************************************************************************
-     * Elimina una partida específica dado su código
+     * Elimina una partida por su código
      * DELETE /api/games/{code}
-     * @param code Código único de la partida
-     * @return 200 OK si se eliminó, 404 Not Found si no existía
+     * @param code Código de la partida a eliminar
+     * @return 200 OK si se elimina correctamente o 404 si la partida no existe
      */
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteGame(@PathVariable int code) {
-        synchronized (this.gameRep) {
-            boolean removed = this.gameRep.deleteGame(code);
-            if (removed) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+    public ResponseEntity<?> deleteGame(@PathVariable String code) {
+        if (gameService.removeGame(code)) { // Eliminar de la memoria
+            gameRepository.deleteGame(code); // Eliminar del repositorio (disco)
+            return ResponseEntity.ok().build();
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Partida no encontrada."));
     }
     
     /****************************************************************************************
-     * Crea una nueva partida si no existe otra con el mismo código
-     * POST
-     * @param game Objeto partida recibido en el cuerpo de la petición
-     * @return 200 OK si se crea, 409 Conflict si ya existe, o 400 Bad Request si el código
-     * es inválido
+     * Crea una nueva partida
+     * POST /api/games/create
+     * @param request Un mapa que contiene el nombre de usuario del creador
+     * @return 201 Created y el objeto Game si se crea correctamente, o 400 Bad Request si el username no es válido
      */
-    @PostMapping
-    public ResponseEntity<?> createGame(@RequestBody Game game) {
-        synchronized (this.gameRep) {
-            if (game.getCode() == null) {
-                return ResponseEntity.badRequest().build();
-            }
+    @PostMapping("/create")
+    public ResponseEntity<?> createGame(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        if (username == null || username.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Username no puede estar vacío."));
+        }
 
-            Optional<Game> other = this.gameRep.getGame(game.getCode());
-            if (other.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
+        Game newGame = gameService.createGame(username);
+        if (newGame != null) {
+            // Persistir la nueva partida en el repositorio
+            gameRepository.createGame(newGame);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newGame);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "No se pudo crear la partida."));
+    }
 
-            boolean saved = this.gameRep.createGame(game);
-            if (saved) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }  
+    /****************************************************************************************
+     * Une un usuario a una partida existente
+     * POST /api/games/join
+     * @param joinMessage Mensaje con el código de partida y el nombre de usuario
+     * @return 200 OK y el objeto Game actualizado si la unión fue exitosa, o 404/400 si la partida no existe o está llena
+     */
+    @PostMapping("/join")
+    public ResponseEntity<?> joinGame(@RequestBody JoinGameMessage joinMessage) {
+        Optional<Game> updatedGame = gameService.joinGame(joinMessage.getGameCode(), joinMessage.getUsername());
+        if (updatedGame.isPresent()) {
+            // Persistir el cambio en el repositorio
+            gameRepository.saveGame(updatedGame.get());
+            return ResponseEntity.ok(updatedGame.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "No se pudo unir a la partida. Podría no existir o ya estar llena."));
         }
     }
 
     /****************************************************************************************
-     * Asocia un usuario a una partida en uno de los dos slots disponibles
-     * PUT /api/games/{code}/user
-     * @param username Nombre del usuario a registrar
+     * Actualiza el personaje del jugador 1 en una partida
+     * PUT /api/games/{code}/player1Character
+     * @param characterId ID del personaje
      * @param gameCode Código de la partida
-     * @return 201 Created si se registra, o error si la partida no exsite o ya tiene 2 jugadores
+     * @return 200 OK si se actualiza correctamente o 404 si la partida no existe
      */
-    @PutMapping("/{code}/user")
-    public ResponseEntity<?> putUser(@RequestBody String username, @PathVariable("code") 
-    String gameCode) {
-        synchronized (this.gameRep) {
-            System.out.println("Recibido PUT con username: " + username + 
-                               " y código de partida: " + gameCode);
-
-            Optional<Game> optionalGame = this.gameRep.getGame(gameCode);
-            if (optionalGame.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    @PutMapping("/{code}/player1Character")
+    public ResponseEntity<?> putPlayer1Character(@RequestBody int characterId, @PathVariable("code") String gameCode) {
+        Optional<Game> optionalGame = gameService.getGame(gameCode);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "Partida no encontrada."));
-            }
-
-            Game game = optionalGame.get();
-            if (game.getUsernamePlayer1() == null) {
-                game.setUsernamePlayer1(username);
-            } else if (game.getUsernamePlayer2() == null){
-                game.setUsernamePlayer2(username);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Ya hay dos jugadores en la partida. " + 
-                                 "No se pueden agregar más jugadores."));
-            }
-
-            this.gameRep.saveGame(game);
-
-            System.out.println("Usuario asignado: " + username);
-            return ResponseEntity.status(HttpStatus.CREATED)
-            .body(Map.of("message", "Usuario registrado en game con éxito."));
         }
+
+        Game game = optionalGame.get();
+        game.setPlayer1(characterId);
+        gameService.updateGame(game);   // Actualiza en el servicio (memoria)
+        gameRepository.saveGame(game);  // Persiste el cambio en el repositorio
+        System.out.println("Personaje del jugador 1 asignado: " + characterId);
+        return ResponseEntity.ok().build();
     }
 
     /****************************************************************************************
-     * Asigna el personaje elegido por un jugador en la partida
-     * PUT /api/games/{code}/character
-     * @param playerCharacter ID del personaje seleccionado
+     * Actualiza el personaje del jugador 2 en una partida
+     * PUT /api/games/{code}/player2Character
+     * @param characterId ID del personaje
      * @param gameCode Código de la partida
-     * @return 200 OK si se asigna correctamente o 404 si la partida no existe
+     * @return 200 OK si se actualiza correctamente o 404 si la partida no existe
      */
-    @PutMapping("/{code}/character")
-    public ResponseEntity<?> putUserCharacter(@RequestBody int playerCharacter, 
-    @PathVariable("code") String gameCode) {
-        synchronized (this.gameRep) {
-            Optional<Game> optionalGame = this.gameRep.getGame(gameCode);
-            if (optionalGame.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    @PutMapping("/{code}/player2Character")
+    public ResponseEntity<?> putPlayer2Character(@RequestBody int characterId, @PathVariable("code") String gameCode) {
+        Optional<Game> optionalGame = gameService.getGame(gameCode);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "Partida no encontrada."));
-            }
-
-            Game game = optionalGame.get();
-            if (game.getPlayer1() == 0) {
-                game.setPlayer1(playerCharacter);
-            } else {
-                game.setPlayer2(playerCharacter);
-            }
-
-            System.out.println("Personaje asignado: " + playerCharacter);
-            this.gameRep.saveGame(game);
-
-            System.out.println("Personaje asignado: " + playerCharacter);
-            return ResponseEntity.ok().build();
         }
+
+        Game game = optionalGame.get();
+        game.setPlayer2(characterId);
+        gameService.updateGame(game);   
+        gameRepository.saveGame(game); 
+        System.out.println("Personaje del jugador 2 asignado: " + characterId);
+        return ResponseEntity.ok().build();
     }
 
-    /****************************************************************************************
-     * Asigna el mapa seleccionado para una partida
+     /****************************************************************************************
+     * Actualiza el mapa de una partida
      * PUT /api/games/{code}/map
-     * @param map ID del mapa elegido
+     * @param map ID del mapa
      * @param gameCode Código de la partida
      * @return 200 OK si se actualiza correctamente o 404 si la partida no existe
      */
     @PutMapping("/{code}/map")
-    public ResponseEntity<?> putMap(@RequestBody int map, @PathVariable("code") String 
-    gameCode) {
-        synchronized (this.gameRep) {
-            System.out.println("Recibido PUT con mapa: " + map + " y código de partida: " + 
-            gameCode);
-            Optional<Game> optionalGame = this.gameRep.getGame(gameCode);
-            if (optionalGame.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> putMap(@RequestBody int map, @PathVariable("code") String gameCode) {
+        Optional<Game> optionalGame = gameService.getGame(gameCode);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "Partida no encontrada."));
-            }
-
-            Game game = optionalGame.get();
-            game.setMap(map);   
-
-            System.out.println("Mapa asignado: " + map);
-            this.gameRep.saveGame(game);
-
-            return ResponseEntity.ok().build();
         }
+
+        Game game = optionalGame.get();
+        game.setMap(map);
+        gameService.updateGame(game);   
+        gameRepository.saveGame(game); 
+        System.out.println("Mapa asignado: " + map);
+        return ResponseEntity.ok().build();
     }
 
     /****************************************************************************************
@@ -203,20 +189,64 @@ public class GameController {
     @PutMapping("/{code}/usersConnected")
     public ResponseEntity<?> putUsersConnected(@RequestBody int number, @PathVariable("code") 
     String gameCode) {
-        synchronized (this.gameRep) {
-            Optional<Game> optionalGame = this.gameRep.getGame(gameCode);
-            if (optionalGame.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        Optional<Game> optionalGame = gameService.getGame(gameCode);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "Partida no encontrada."));
-            }
+        }
 
-            Game game = optionalGame.get();
-            game.setUsersConnected(number);   
+        Game game = optionalGame.get();
+        game.setUsersConnected(number);
+        gameService.updateGame(game); // Actualizar en el servicio (memoria)
+        gameRepository.saveGame(game); // Persistir el cambio en el repositorio
+        System.out.println("Número de usuarios: " + number);
+        return ResponseEntity.ok().build();
+    }
 
-            System.out.println("Número de usuarios: " + number);
-            this.gameRep.saveGame(game);
+    /****************************************************************************************
+     * Actualiza el estado completo de un jugador en una partida
+     * PUT /api/games/{gameCode}/playerState/{username}
+     * @param gameCode Código de la partida
+     * @param username Nombre de usuario del jugador a actualizar
+     * @param playerState Objeto PlayerState con los datos actualizados del jugador
+     * @return 200 OK si se actualiza correctamente o 404 si la partida o el jugador no existen
+     */
+    @PutMapping("/{gameCode}/playerState/{username}")
+    public ResponseEntity<?> updatePlayerState(@PathVariable String gameCode, @PathVariable String username, @RequestBody PlayerState playerState) {
+        Optional<Game> optionalGame = gameService.getGame(gameCode);
+        if (optionalGame.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Partida no encontrada."));
+        }
 
+        Game game = optionalGame.get();
+        boolean updated = false;
+
+        if (game.getUsernamePlayer1() != null && game.getUsernamePlayer1().equals(username)) {
+            game.setPlayer1PositionX(playerState.getPositionX());
+            game.setPlayer1PositionY(playerState.getPositionY());
+            game.setPlayer1Score(playerState.getScore());
+            game.setPlayer1Lives(playerState.getLives());
+            game.setPlayer1SpellUsed(playerState.isSpellUsed());
+            game.setPlayer1FlagStatus(playerState.isFlagStatus());
+            updated = true;
+        } else if (game.getUsernamePlayer2() != null && game.getUsernamePlayer2().equals(username)) {
+            game.setPlayer2PositionX(playerState.getPositionX());
+            game.setPlayer2PositionY(playerState.getPositionY());
+            game.setPlayer2Score(playerState.getScore());
+            game.setPlayer2Lives(playerState.getLives());
+            game.setPlayer2SpellUsed(playerState.isSpellUsed());
+            game.setPlayer2FlagStatus(playerState.isFlagStatus());
+            updated = true;
+        }
+
+        if (updated) {
+            gameService.updateGame(game); 
+            gameRepository.saveGame(game); 
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Jugador no encontrado en la partida."));
         }
     }
 }
