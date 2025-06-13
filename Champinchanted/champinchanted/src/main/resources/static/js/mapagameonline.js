@@ -20,7 +20,7 @@ class MapaGameOnline extends Phaser.Scene {
         this.load.image("readyMapa2_button", "assets/Interfaz/botonOtoñoMapa.png");
         this.load.image("readyMapa3_button", "assets/Interfaz/botonInviernoMapa.png");
         this.load.image("readyMapa4_button", "assets/Interfaz/botonPrimaveraMapa.png");
-        this.load.image("chat_button", "assets/Interfaz/botonListo.png"); 
+        this.load.image("chat_button", "assets/Interfaz/BotonChat.png"); 
     }
 
     create() {
@@ -29,8 +29,8 @@ class MapaGameOnline extends Phaser.Scene {
         // Interfaz del Chat (se crea aquí)
         this.createChatInterface();
         
-        const chatButton = this.add.image(this.scale.width - 100, 80, "chat_button")
-            .setScale(0.20) // Igual que los botones de mapa
+        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button")
+            .setScale(0.10) // Igual que los botones de mapa
             .setInteractive()
             .on('pointerdown', () => {
                 console.log("Botón de chat pulsado");
