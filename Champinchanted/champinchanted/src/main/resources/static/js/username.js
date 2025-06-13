@@ -10,6 +10,9 @@ class UsernameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("background_image", "assets/Fondos/fondo.png");
+        this.load.image("login_button", "assets/Interfaz/iniciarSesion.png");
+        this.load.image("register_button", "assets/Interfaz/registrarse.png");
+        
         this.load.image("create_game_button", "assets/Interfaz/botonCrearPartida.png");
         this.load.image("join_game_button", "assets/Interfaz/botonUnirsePartida.png");
         this.load.image("return_button", "assets/Interfaz/botonVolver.png");
@@ -33,10 +36,12 @@ class UsernameScene extends Phaser.Scene {
         document.body.appendChild(this.submitHtmlButton);
         
         // --- Botones de Selección Inicial (Login/Register) en Phaser ---
-        const loginButtonBg = this.add.image(centerX, centerY - 50, "create_game_button").setScale(0.2).setInteractive();
+        const loginButtonBg = this.add.image(centerX, centerY - 50, "login_button").setScale(0.2).setInteractive();
         const loginText = this.add.text(centerX, centerY - 50, 'Iniciar Sesión', { fontSize: '24px', color: '#000000', fontFamily: 'FantasyFont' }).setOrigin(0.5);
-        const registerButtonBg = this.add.image(centerX, centerY + 30, "create_game_button").setScale(0.2).setInteractive();
+        
+        const registerButtonBg = this.add.image(centerX, centerY + 30, "register_button").setScale(0.2).setInteractive();
         const registerText = this.add.text(centerX, centerY + 30, 'Registrarse', { fontSize: '24px', color: '#000000', fontFamily: 'FantasyFont' }).setOrigin(0.5);
+        
         this.selectionGroup = this.add.group([loginButtonBg, loginText, registerButtonBg, registerText]);
 
         // --- Botones de Opciones de Juego (Crear y Unirse) ---
