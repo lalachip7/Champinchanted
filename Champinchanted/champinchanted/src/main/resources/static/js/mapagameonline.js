@@ -25,7 +25,15 @@ class MapaGameOnline extends Phaser.Scene {
 
     create() {
         this.add.image(0, 0, "background2_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
-        
+
+        this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, {
+            fontFamily: 'FantasyFont, Calibri',
+            fontSize: '36px',
+            color: '#FEEFD8',
+            backgroundColor: 'rgba(0,0,0,0.7)', // Fondo oscuro semitransparente para legibilidad
+            padding: { x: 15, y: 8 }
+        }).setOrigin(0.5);
+
         // Interfaz del Chat (se crea aquí)
         this.createChatInterface();
         
