@@ -5,7 +5,7 @@ class IntroGame extends Phaser.Scene {
     }
 
     preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
-        
+        //hola
         this.load.audio("background", 'assets/Sonidos/musica.mp3');
 
         this.load.image("background_image", "assets/Fondos/fondo.png");                         // Imagen de fondo
