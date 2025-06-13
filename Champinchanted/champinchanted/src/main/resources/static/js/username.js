@@ -9,7 +9,8 @@ class UsernameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("background_image", "assets/Fondos/fondo.png");
+        this.load.image("background_base", "assets/Fondos/fondo.png");
+        this.load.image("background_decor", "assets/Fondos/fondoSinChampi.png");
         this.load.image("login_button", "assets/Interfaz/inicioSesion.png");
         this.load.image("register_button", "assets/Interfaz/registrarse.png");
         
@@ -23,7 +24,10 @@ class UsernameScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.image(0, 0, "background_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+        this.add.image(0, 0, "background_base").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+        
+        this.add.image(0, 0, "background_decor").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
@@ -62,7 +66,7 @@ class UsernameScene extends Phaser.Scene {
             if(code) this.joinGame(code.trim().toUpperCase());
         });
         
-        this.add.image(centerX, centerY + 350, "return_button").setScale(0.2).setInteractive()
+        this.add.image(160, 80, "return_button").setScale(0.15).setInteractive()
             .on('pointerdown', () => {
                 this.cleanup();
                 this.scene.start("IntroGame");
@@ -79,7 +83,7 @@ class UsernameScene extends Phaser.Scene {
         Object.assign(input.style, {
             position: 'absolute', display: 'none', padding: '10px', fontSize: '20px', width: '300px', 
             fontFamily: 'FantasyFont, Calibri', border: "0", backgroundColor: "#333", color: "#fff",
-            borderRadius: "50px", boxShadow: "0 0 10px rgba(0,0,0,0.5)", textAlign: 'center'
+            borderRadius: "50px", boxShadow: "0 0 10px rgba(0,0,0,0.5)", textAlign: 'center', transform: 'translateX(-50%)'
         });
         return input;
     }
@@ -91,7 +95,7 @@ class UsernameScene extends Phaser.Scene {
         Object.assign(button.style, {
             position: 'absolute', display: 'none', padding: '10px 20px', fontSize: '20px', 
             fontFamily: 'FantasyFont, Calibri', border: "0", backgroundColor: "#4CAF50", 
-            color: "white", borderRadius: "50px", cursor: 'pointer'
+            color: "white", borderRadius: "50px", cursor: 'pointer', transform: 'translateX(-50%)'
         });
         return button;
     }
@@ -111,7 +115,7 @@ class UsernameScene extends Phaser.Scene {
     }
 
     positionAndShow(element, x, y) {
-        element.style.left = `${x - element.offsetWidth / 2}px`;
+        element.style.left = `${x}px`;
         element.style.top = `${y}px`;
         element.style.display = 'block';
     }
