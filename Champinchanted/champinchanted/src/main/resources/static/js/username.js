@@ -160,7 +160,7 @@ class UsernameScene extends Phaser.Scene {
             });
             if (!response.ok) { throw new Error(`Error: ${response.status}`); }
             const game = await response.json();
-            this.connectToWebSocketAndStart(game.code);
+            this.connectToWebSocketAndStart(game.code, true);
         } catch (error) {
             console.error('Error al crear la partida:', error);
             alert('No se pudo crear la partida.');
@@ -174,25 +174,26 @@ class UsernameScene extends Phaser.Scene {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: this.username, gameCode: gameCode })
             });
             if (!response.ok) { throw new Error(`Error: ${response.status}`); }
-            this.connectToWebSocketAndStart(gameCode);
+            this.connectToWebSocketAndStart(gameCode, false);
         } catch (error) {
             console.error('Error al unirse:', error);
             alert("No se pudo unir. Verifica el código.");
         }
     }
     
-    connectToWebSocketAndStart(gameCode) {
+    connectToWebSocketAndStart(gameCode, isHost) {
         this.gameCode = gameCode;
         const socket = new SockJS('/ws');
         this.stompClient = Stomp.over(socket);
+
         this.stompClient.connect({}, (frame) => {
             console.log('Conectado al WebSocket: ' + frame);
-            // Ya no se suscribe al chat aquí. Se hará en la siguiente escena.
             this.cleanup();
             this.scene.start('MapaGameOnline', {
                 stompClient: this.stompClient,
                 gameCode: this.gameCode,
-                username: this.username
+                username: this.username,
+                isHost: isHost
             });
         }, (error) => {
             console.error('Error de conexión WebSocket:', error);

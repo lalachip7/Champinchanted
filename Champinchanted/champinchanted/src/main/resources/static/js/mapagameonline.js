@@ -9,6 +9,7 @@ class MapaGameOnline extends Phaser.Scene {
         this.gameCode = data.gameCode;
         this.username = data.username;
         this.selectedMap = -1;
+        this.isHost = data.isHost;
         console.log(`Usuario: ${this.username}, Código de Sala: ${this.gameCode}`);
     }
 
@@ -35,7 +36,36 @@ class MapaGameOnline extends Phaser.Scene {
         const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.10).setInteractive().on('pointerdown', () => this.toggleChatWindow());
         chatButton.setDepth(10);
         const mapaButtons = [ { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
-        mapaButtons.forEach(buttonInfo => { this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key).setScale(0.20).setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId)); });
+        mapaButtons.forEach(buttonInfo => {
+            const buttonImage = this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
+                .setScale(0.20);
+
+            // ¡LÓGICA CLAVE!
+            if (this.isHost) {
+                // Si es el host, el botón es interactivo
+                buttonImage.setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId));
+            } else {
+                // Si no es el host, el botón se ve más opaco y no se puede pulsar
+                buttonImage.setAlpha(0.6);
+            }
+        });
+
+        if (!this.isHost) {
+            this.add.text(this.scale.width / 2, 950, 'Esperando a que el anfitrión elija un mapa...', {
+                fontFamily: 'FantasyFont', fontSize: '32px', color: '#FEEFD8'
+            }).setOrigin(0.5);
+        }
+
+        this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
+            // Cuando el servidor confirma la selección de mapa, ambos jugadores ejecutan esto
+            const startGameData = JSON.parse(message.body);
+            const finalMapId = startGameData.mapId;
+
+            // Antes de cambiar de escena, guardamos el mapa que el servidor ha confirmado
+            this.registry.set('mapa', finalMapId);
+
+            this.goToNextScene(finalMapId);
+        });
         
         // --- ORDEN CORREGIDO ---
 
@@ -118,20 +148,26 @@ class MapaGameOnline extends Phaser.Scene {
     
     // --- Resto de funciones del juego (sin cambios) ---
     selectMap(mapId) {
+        // Evita que el anfitrión envíe el mensaje varias veces.
         if (this.selectedMap !== -1) return;
         this.selectedMap = mapId;
-        this.registry.set('mapa', mapId);
-        const selectMapMessage = { gameCode: this.gameCode, mapId: mapId };
+
+        // Ahora, el anfitrión solo envía el mensaje. NO avanza de escena.
+        // Esperará, igual que el invitado, la respuesta del servidor.
+        const selectMapMessage = { gameCode: this.gameCode, mapId: mapId, username: this.username };
         this.stompClient.send(`/app/game.selectMap`, {}, JSON.stringify(selectMapMessage));
-        this.goToNextScene();
     }
 
-    goToNextScene() {
+    goToNextScene(finalMapId) {
+        // Guardamos en el registro el mapa que ha confirmado el servidor
+        this.registry.set('mapa', finalMapId);
+
         this.cleanup();
         this.scene.start("PersonajesGameOnline", {
             stompClient: this.stompClient,
             gameCode: this.gameCode,
-            username: this.username
+            username: this.username,
+            isHost: this.isHost
         });
     }
 
