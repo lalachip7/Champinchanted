@@ -37,14 +37,16 @@ class MapaGameOnline extends Phaser.Scene {
                 this.toggleChatWindow();
             });
         chatButton.setDepth(10); // Asegura que esté por encima del fondo
-        
-        // Botones de selección de mapa
+
+        const baseX1 = this.scale.width / 2.5 - 50;
+        const baseX2 = this.scale.width / 1.22 - 50;
+
         const mapaButtons = [
-            { key: "readyMapa2_button", x: this.scale.width / 2.5, y: this.scale.height - 600, mapId: 1 }, // Otoño
-            { key: "readyMapa3_button", x: this.scale.width / 1.22, y: this.scale.height - 600, mapId: 2 }, // Invierno
-            { key: "readyMapa4_button", x: this.scale.width / 1.22, y: this.scale.height - 110, mapId: 3 }, // Primavera
-            { key: "readyMapa1_button", x: this.scale.width / 2.5, y: this.scale.height - 110, mapId: 4 }  // Verano
-        ];
+            { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 },
+            { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 },
+            { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 },
+            { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }
+    ];
 
         mapaButtons.forEach(buttonInfo => {
             this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
