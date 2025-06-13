@@ -4,10 +4,12 @@ class MapaGameOnline extends Phaser.Scene {
     }
 
     init(data) {
+        console.log("--- MapaGameOnline: init() ---");
         this.stompClient = data.stompClient;
         this.gameCode = data.gameCode;
         this.username = data.username;
         this.selectedMap = -1;
+        console.log(`Usuario: ${this.username}, Código de Sala: ${this.gameCode}`);
     }
 
     preload() {
@@ -24,71 +26,103 @@ class MapaGameOnline extends Phaser.Scene {
     }
 
     create() {
+        console.log("--- MapaGameOnline: create() ---");
         this.add.image(0, 0, "background2_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
 
-        this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, {
-            fontFamily: 'FantasyFont, Calibri',
-            fontSize: '36px',
-            color: '#FEEFD8',
-            backgroundColor: 'rgba(0,0,0,0.7)', // Fondo oscuro semitransparente para legibilidad
-            padding: { x: 15, y: 8 }
-        }).setOrigin(0.5);
-
-        // Interfaz del Chat (se crea aquí)
+        // --- Interfaz de Usuario ---
+        this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, {fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 }}).setOrigin(0.5);
         this.createChatInterface();
+        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.10).setInteractive().on('pointerdown', () => this.toggleChatWindow());
+        chatButton.setDepth(10);
+        const mapaButtons = [ { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
+        mapaButtons.forEach(buttonInfo => { this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key).setScale(0.20).setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId)); });
         
-        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button")
-            .setScale(0.10) // Igual que los botones de mapa
-            .setInteractive()
-            .on('pointerdown', () => {
-                console.log("Botón de chat pulsado");
-                this.toggleChatWindow();
-            });
-        chatButton.setDepth(10); // Asegura que esté por encima del fondo
+        // --- ORDEN CORREGIDO ---
 
-        const baseX1 = this.scale.width / 2.5 - 50;
-        const baseX2 = this.scale.width / 1.22 - 50;
-
-        const mapaButtons = [
-            { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 },
-            { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 },
-            { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 },
-            { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }
-    ];
-
-        mapaButtons.forEach(buttonInfo => {
-            this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
-                .setScale(0.20)
-                .setInteractive()
-                .on('pointerdown', () => this.selectMap(buttonInfo.mapId));
-        });
-
-
-        // Suscripciones WebSocket
-        this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
-            const gameState = JSON.parse(message.body);
-            if (gameState.map !== -1 && this.selectedMap === -1) {
-                console.log(`Mapa ${gameState.map} ha sido seleccionado por otro jugador.`);
-                this.goToNextScene();
-            }
-        });
-
+        console.log("PASO A: Suscribiéndose al canal de chat normal...");
         this.stompClient.subscribe(`/topic/chat/${this.gameCode}`, (message) => {
+            console.log("Mensaje de CHAT NORMAL recibido:", message.body);
             const chatMessage = JSON.parse(message.body);
             this.addChatMessage(chatMessage.sender, chatMessage.content);
         });
+        console.log("PASO B: Suscrito al canal de chat normal.");
+
         
+        console.log("PASO C: Suscribiéndose al canal de NOTIFICACIONES...");
+        this.stompClient.subscribe(`/topic/notifications/${this.gameCode}`, (message) => {
+            console.log("%c¡NOTIFICACIÓN DEL SISTEMA RECIBIDA!", "color: lightblue; font-size: 14px;", message.body);
+            const notification = JSON.parse(message.body);
+            this.displaySystemMessage(notification.content);
+        });
+        console.log("PASO D: Suscrito al canal de NOTIFICACIONES.");
+        
+        // SOLO DESPUÉS de suscribirnos, enviamos el mensaje para anunciar que hemos llegado.
+        if (this.stompClient && this.stompClient.connected) {
+            console.log("PASO E: Conexión Stomp activa y suscripciones listas. Enviando mensaje de 'addUser'...");
+            this.stompClient.send(`/app/chat.addUser`, {}, JSON.stringify({ sender: this.username, gameCode: this.gameCode }));
+            console.log("PASO F: Mensaje 'addUser' enviado.");
+        } else {
+            console.error("ERROR CRÍTICO: La conexión Stomp NO está activa al entrar en create().");
+        }
+
         this.events.on('shutdown', () => this.cleanup());
     }
 
+    // --- FUNCIÓN MODIFICADA PARA LA PRUEBA ---
+    // He cambiado el color a un amarillo brillante para que destaque.
+    displaySystemMessage(content) {
+        console.log("Mostrando mensaje del sistema en el chat:", content);
+        const messagesArea = document.getElementById('chat-messages');
+        if (!messagesArea) {
+            console.error("Error al mostrar mensaje del sistema: No se encuentra el elemento 'chat-messages'.");
+            return;
+        };
+        
+        const messageElement = document.createElement('p');
+        messageElement.innerHTML = `<em>${content}</em>`;
+        Object.assign(messageElement.style, {
+            margin: '0 0 8px 0',
+            padding: '3px',
+            fontStyle: 'italic',
+            fontWeight: 'bold', // Añadido para que sea más visible
+            color: '#FFFF00',   // ¡¡CAMBIADO A AMARILLO!!
+            textAlign: 'center',
+            wordWrap: 'break-word'
+        });
+        messagesArea.appendChild(messageElement);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // Función para mostrar los mensajes normales de los jugadores.
+    addChatMessage(sender, content) {
+        const messagesArea = document.getElementById('chat-messages');
+        if (!messagesArea) return;
+
+        const messageElement = document.createElement('p');
+        const senderStyle = (sender === this.username) ? 'color: #66ff66;' : 'color: #66ccff;';
+        messageElement.innerHTML = `<strong style="${senderStyle}">${sender}:</strong> ${content}`;
+        Object.assign(messageElement.style, { margin: '0 0 5px 0', padding: '2px', wordWrap: 'break-word' });
+        messagesArea.appendChild(messageElement);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // Función para enviar un mensaje de chat.
+    sendChatMessage() {
+        const content = this.chatInput.value.trim();
+        if (content && this.stompClient) {
+            const chatMessage = { sender: this.username, content: content, gameCode: this.gameCode };
+            this.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            this.chatInput.value = '';
+        }
+    }
+    
+    // --- Resto de funciones del juego (sin cambios) ---
     selectMap(mapId) {
-        if (this.selectedMap !== -1) return; // Evita doble selección
+        if (this.selectedMap !== -1) return;
         this.selectedMap = mapId;
         this.registry.set('mapa', mapId);
-
         const selectMapMessage = { gameCode: this.gameCode, mapId: mapId };
         this.stompClient.send(`/app/game.selectMap`, {}, JSON.stringify(selectMapMessage));
-        
         this.goToNextScene();
     }
 
@@ -106,56 +140,34 @@ class MapaGameOnline extends Phaser.Scene {
         this.chatContainer.id = 'chat-container';
         Object.assign(this.chatContainer.style, {
             display: 'none', position: 'absolute', right: '20px', bottom: '20px',
-            width: '320px', height: '400px', backgroundColor: 'rgba(0,0,0,0.8)',
+            width: '320px', height: '400px', 
+            backgroundColor: 'rgba(50, 50, 50, 0.75)', // <<< ¡¡AQUÍ ESTÁ EL CAMBIO!! Fondo gris oscuro semitransparente.
             border: '2px solid #666', borderRadius: '10px', color: 'white',
             fontFamily: 'Calibri, sans-serif', flexDirection: 'column'
         });
-
         const messagesArea = document.createElement('div');
         messagesArea.id = 'chat-messages';
         Object.assign(messagesArea.style, { flexGrow: '1', padding: '10px', overflowY: 'auto', borderBottom: '1px solid #444'});
-
         const inputArea = document.createElement('div');
         Object.assign(inputArea.style, { display: 'flex', padding: '5px' });
-
         this.chatInput = document.createElement('input');
         this.chatInput.type = 'text'; this.chatInput.placeholder = 'Escribe un mensaje...';
         this.chatInput.onkeydown = (event) => { if (event.key === 'Enter') this.sendChatMessage(); };
         Object.assign(this.chatInput.style, { flexGrow: '1', padding: '8px', border: 'none', borderRadius: '5px', color: 'black' });
-
         const sendButton = document.createElement('button');
         sendButton.innerText = 'Enviar';
         sendButton.onclick = () => this.sendChatMessage();
         Object.assign(sendButton.style, { marginLeft: '5px', padding: '8px', cursor: 'pointer' });
-
-        inputArea.appendChild(this.chatInput); inputArea.appendChild(sendButton);
-        this.chatContainer.appendChild(messagesArea); this.chatContainer.appendChild(inputArea);
+        inputArea.appendChild(this.chatInput);
+        inputArea.appendChild(sendButton);
+        this.chatContainer.appendChild(messagesArea);
+        this.chatContainer.appendChild(inputArea);
         document.body.appendChild(this.chatContainer);
     }
 
     toggleChatWindow() {
         const chatDisplay = this.chatContainer.style.display;
         this.chatContainer.style.display = (chatDisplay === 'none') ? 'flex' : 'none';
-    }
-
-    addChatMessage(sender, content) {
-        const messagesArea = document.getElementById('chat-messages');
-        if (!messagesArea) return;
-        const messageElement = document.createElement('p');
-        const senderStyle = (sender === this.username) ? 'color: #66ff66;' : 'color: #66ccff;'; // Color verde para ti, azul para los demás
-        messageElement.innerHTML = `<strong style="${senderStyle}">${sender}:</strong> ${content}`;
-        Object.assign(messageElement.style, { margin: '0 0 5px 0', padding: '2px', wordWrap: 'break-word' });
-        messagesArea.appendChild(messageElement);
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-    }
-
-    sendChatMessage() {
-        const content = this.chatInput.value.trim();
-        if (content && this.stompClient) {
-            const chatMessage = { sender: this.username, content: content, gameCode: this.gameCode };
-            this.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-            this.chatInput.value = '';
-        }
     }
     
     cleanup() {

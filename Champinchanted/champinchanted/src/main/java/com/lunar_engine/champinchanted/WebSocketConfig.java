@@ -7,26 +7,26 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker       // Habilita el manejo de mensajes de WebSocket con un 
-                                    // broker de mensajes
+@EnableWebSocketMessageBroker // Habilita nuestro servidor de WebSockets
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-
-        // Habilita un broker de mensajes en memoria para enviar mensajes a los clientes
-        config.enableSimpleBroker("/topic", "/queue");
-
-        // Prefijo para los destinos de las aplicaciones donde el cliente envía mensajes al servidor
-        config.setApplicationDestinationPrefixes("/app");
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Este es el "endpoint" HTTP al que el cliente se conectará inicialmente para la comunicación WebSocket.
+        // Por ejemplo: http://localhost:8080/ws
+        // .withSockJS() es una opción de fallback para navegadores que no soportan WebSockets nativamente.
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // --- ¡¡ESTA ES LA LÍNEA CLAVE QUE FALTABA!! ---
+        // Define que los mensajes enviados desde el cliente a destinos que empiecen con "/app"
+        // deben ser enrutados a los métodos anotados con @MessageMapping en tus controladores.
+        registry.setApplicationDestinationPrefixes("/app");
 
-        // Registra el punto final WebSocket que los clientes usarán para conectarse
-        registry.addEndpoint("/ws").withSockJS();   // Se utiliza SockJS para que sea compa-
-                                                    // tible con navegadores que no soportan
-                                                    // WebSockets
+        // Define que los mensajes a los que los clientes se pueden suscribir (para recibir datos)
+        // deben empezar con "/topic". Esto habilita un "broker" de mensajes en memoria.
+        registry.enableSimpleBroker("/topic");
     }
 }

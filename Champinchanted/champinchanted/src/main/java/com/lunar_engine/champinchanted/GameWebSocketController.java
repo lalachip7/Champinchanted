@@ -18,16 +18,27 @@ public class GameWebSocketController {
         this.gameService = gameService;
     }
 
-    /****************************************************************************************
-     * NUEVO MÉTODO PARA EL CHAT
-     * Maneja un mensaje de chat enviado por un cliente.
-     * El cliente enviará mensajes a /app/chat.sendMessage
-     * @param chatMessage El mensaje de chat que contiene el remitente, el contenido y el código de la partida.
-     */
+    @MessageMapping("/chat.addUser")
+    public void addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        // --- LOG DE DEPURACIÓN EN EL SERVIDOR ---
+        System.out.println(">>> RECIBIDO en /chat.addUser: Usuario '" + chatMessage.getSender() + "' se une a la sala '" + chatMessage.getGameCode() + "'");
+
+        // 1. Guarda los datos del usuario en la sesión.
+        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        headerAccessor.getSessionAttributes().put("gameCode", chatMessage.getGameCode());
+
+        // 2. Crea y envía el AVISO DE CONEXIÓN al nuevo canal de notificaciones.
+        String notificationContent = chatMessage.getSender() + " se ha unido a la sala.";
+        NotificationMessage notification = new NotificationMessage(notificationContent);
+        
+        // --- LOG DE DEPURACIÓN EN EL SERVIDOR ---
+        System.out.println(">>> ENVIANDO a /topic/notifications/" + chatMessage.getGameCode() + " | Contenido: " + notificationContent);
+
+        messagingTemplate.convertAndSend("/topic/notifications/" + chatMessage.getGameCode(), notification);
+    }
+    
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessage chatMessage) {
-        // Retransmite el mensaje recibido al topic de chat específico de la partida.
-        // Todos los clientes suscritos a /topic/chat/{gameCode} recibirán este mensaje.
         messagingTemplate.convertAndSend("/topic/chat/" + chatMessage.getGameCode(), chatMessage);
     }
 
@@ -44,8 +55,8 @@ public class GameWebSocketController {
 
             if (game.isPlayer1Ready() && game.isPlayer2Ready() && game.getPlayer1Character() != -1 && game.getPlayer2Character() != -1 && game.getMap() != -1) {
                 StartGameMessage startGameMessage = new StartGameMessage(
-                    game.getCode(), game.getUsernamePlayer1(), game.getPlayer1Character(),
-                    game.getUsernamePlayer2(), game.getPlayer2Character(), game.getMap()
+                        game.getCode(), game.getUsernamePlayer1(), game.getPlayer1Character(),
+                        game.getUsernamePlayer2(), game.getPlayer2Character(), game.getMap()
                 );
                 messagingTemplate.convertAndSend("/topic/games/" + game.getCode() + "/start", startGameMessage);
             }
@@ -59,16 +70,22 @@ public class GameWebSocketController {
         String gameCode = (String) headerAccessor.getSessionAttributes().get("gameCode");
         
         if (username != null && gameCode != null) {
-            System.out.println("WebSocket Disconnected: " + username + " from game " + gameCode);
-            Game gameAfterDisconnect = gameService.disconnectUserFromGame(gameCode, username);
+            // --- LOG DE DEPURACIÓN EN EL SERVIDOR ---
+            System.out.println(">>> DESCONEXIÓN: Usuario '" + username + "' de la sala '" + gameCode + "'");
             
-            // Notifica a los clientes sobre la desconexión
+            String notificationContent = username + " se ha desconectado.";
+            NotificationMessage notification = new NotificationMessage(notificationContent);
+            
+            // --- LOG DE DEPURACIÓN EN EL SERVIDOR ---
+            System.out.println(">>> ENVIANDO a /topic/notifications/" + gameCode + " | Contenido: " + notificationContent);
+
+            messagingTemplate.convertAndSend("/topic/notifications/" + gameCode, notification);
+
+            // Actualizar el estado del juego.
+            Game gameAfterDisconnect = gameService.disconnectUserFromGame(gameCode, username);
             String status = (gameAfterDisconnect == null) ? "Game Over" : "Player Disconnected";
             PlayerDisconnectedMessage disconnectedMessage = new PlayerDisconnectedMessage(gameCode, username, status);
             messagingTemplate.convertAndSend("/topic/games/" + gameCode, disconnectedMessage);
         }
     }
-    
-    // El resto de los métodos (@MessageMapping) pueden quedarse como estaban en la versión anterior.
-    // Asegúrate de que llaman a los métodos correspondientes en el GameService.
 }
