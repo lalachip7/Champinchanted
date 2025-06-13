@@ -18,19 +18,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class GameRepository {
-    
-    // CONSTRUCTOR ..........................................................................
-    @Autowired
-    @Qualifier("gamesPath")
     private final String gamesPath;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
     public GameRepository(@Qualifier("gamesPath") String gamesPath, ObjectMapper objectMapper) {
         this.gamesPath = gamesPath;
         this.objectMapper = objectMapper;
-
         try {
             Files.createDirectories(Paths.get(gamesPath));
         } catch (IOException e) {
@@ -38,100 +32,52 @@ public class GameRepository {
         }
     }
 
-
-    /****************************************************************************************
-     * Recupera la lista de todas las partidas desde archivos JSON
-     * @return Lista de objetos Game deserializados desde los archivos JSON
-     * @throws IOException
-     */
-    @SuppressWarnings("CallToPrintStackTrace")
-    public List<Game> getGames() throws IOException {
-        //var localOjectMapper = new ObjectMapper();
-
+    public List<GameLobbyData> getGames() throws IOException {
         Path path = Paths.get(gamesPath);
-
-        try {
-            return Files.list(path)
-            .filter(Files::isRegularFile)
-            .filter(file -> file.toString().endsWith(".json"))
-            .map(file -> {
-                try {
-                    return objectMapper.readValue(file.toFile(), Game.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            })
-            //.filter(game -> game != null)
-            .filter(java.util.Objects::nonNull)
-            .collect(Collectors.toList());
-        } catch (IOException e) {
-            return new ArrayList<>();
+        if (!Files.exists(path)) return new ArrayList<>();
+        try (var stream = Files.list(path)) {
+            return stream
+                .filter(Files::isRegularFile)
+                .filter(file -> file.toString().endsWith(".json"))
+                .map(file -> {
+                    try {
+                        return objectMapper.readValue(file.toFile(), GameLobbyData.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(java.util.Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
-    /****************************************************************************************
-     * Recupera una partida específica dado su código
-     * @param code Código único de la partida
-     * @return Un objeto Optional que contiene la partida encontrada o está vacío si no existe
-     */
-    public Optional<Game> getGame(String code) {
+    public Optional<GameLobbyData> getGame(String code) {
+        File file = new File(gamesPath, code + ".json");
+        if (!file.exists()) return Optional.empty();
         try {
-            String filePath = this.gamesPath + "/" + code + ".json";
-            File file = new File(filePath);
-            return Optional.of(objectMapper.readValue(file, Game.class));
+            return Optional.of(objectMapper.readValue(file, GameLobbyData.class));
         } catch (IOException e) {
             return Optional.empty();
         }
     }
 
-    /****************************************************************************************
-     * Elimina una partida específica dado su código
-     * @param code Código único de la partida
-     * @return true si la partida fue elminada con éxito, false si no se encontró o hubo un error
-     */
-    @SuppressWarnings("CallToPrintStackTrace")
-    public boolean deleteGame(String code) {
+    public boolean saveGame(GameLobbyData lobbyData) {
         try {
-            String filePath = this.gamesPath + "/" + code + ".json";
-            File file = new File(filePath);
-
-            if (!file.exists()) {
-                return false;
-            }
-
-            boolean isDeleted = file.delete();
-            return isDeleted;
-        } catch (Exception e) {
+            File file = new File(gamesPath, lobbyData.getCode() + ".json");
+            objectMapper.writeValue(file, lobbyData);
+            return true;
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    /****************************************************************************************
-     * Crea un nuevo archivo JSON para guardar una partida
-     * @param game Objeto Game que contiene la información de la partida a crear
-     * @return true si la partida fue guardada exitosamente, false si ocurrió un error
-     */
-    @SuppressWarnings("CallToPrintStackTrace")
-    public boolean createGame(Game game) {
-        return saveGame(game); 
-    }
-
-    /****************************************************************************************
-     * Guarda una partida existente en un archivo JSON
-     * @param game Objeto Game que contiene la información de la partida a guardar
-     * @return true si la partida fue guardada exitosamente, false si ocurrió un error
-     */
-    @SuppressWarnings("CallToPrintStackTrace")
-    public boolean saveGame(Game game) {
+    public boolean deleteGame(String code) {
         try {
-            String filePath = this.gamesPath + "/" + game.getCode() + ".json";
-            File file = new File(filePath);
-
-            objectMapper.writeValue(file, game);
-            return true;
-        } catch (IOException e) {
+            File file = new File(gamesPath, code + ".json");
+            return file.exists() && file.delete();
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

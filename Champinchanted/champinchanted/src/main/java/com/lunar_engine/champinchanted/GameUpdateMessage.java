@@ -10,11 +10,9 @@ public class GameUpdateMessage {
     private boolean spellUsed;
     private boolean flagStatus;
 
-    public GameUpdateMessage() {}   // Constructor vacío
+    public GameUpdateMessage() {}
 
-    // Constructor con todos los campos
-    public GameUpdateMessage(String gameCode, String username, float positionX, float positionY,
-    int score, int lives, boolean spellUsed, boolean flagStatus) {
+    public GameUpdateMessage(String gameCode, String username, float positionX, float positionY, int score, int lives, boolean spellUsed, boolean flagStatus) {
         this.gameCode = gameCode;
         this.username = username;
         this.positionX = positionX;
@@ -25,30 +23,28 @@ public class GameUpdateMessage {
         this.flagStatus = flagStatus;
     }
 
-    // Getters y Setters
+    // --- GETTERS Y SETTERS ---
     public String getGameCode() { return gameCode; }
     public void setGameCode(String gameCode) { this.gameCode = gameCode; }
-
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
-
     public float getPositionX() { return positionX; }
     public void setPositionX(float positionX) { this.positionX = positionX; }
-    
     public float getPositionY() { return positionY; }
     public void setPositionY(float positionY) { this.positionY = positionY; }
-
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
-
     public int getLives() { return lives; }
     public void setLives(int lives) { this.lives = lives; }
-
     public boolean getSpellUsed() { return spellUsed; }
     public void setSpellUsed( boolean spellUsed ) { this.spellUsed = spellUsed; }
-
     public boolean getFlagStatus() { return flagStatus; }
     public void setFlagStatus( boolean flagStatus ) { this.flagStatus = flagStatus; }
+
+    public PlayerState toPlayerState() {
+        return new PlayerState(
+            this.username, this.positionX, this.positionY, this.score,
+            this.lives, this.spellUsed, this.flagStatus, 0, false
+        );
+    }
 }
-
-

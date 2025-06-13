@@ -1,130 +1,154 @@
 class MapaGameOnline extends Phaser.Scene {
     constructor() {
         super({ key: 'MapaGameOnline' });
-        this.stompClient = null; // Cliente STOMP para la comunicación WebSocket
-        this.gameCode = null;    // Código de la partida actual
-        this.username = null;    // Nombre de usuario del jugador actual
-        this.selectedMap = -1;   // Mapa seleccionado, inicializado a -1
     }
 
     init(data) {
-        this.stompClient = data.stompClient; // Recibe el cliente STOMP de la escena anterior
-        this.gameCode = data.gameCode;       // Recibe el código de la partida
-        this.username = data.username;       // Recibe el nombre de usuario
+        this.stompClient = data.stompClient;
+        this.gameCode = data.gameCode;
+        this.username = data.username;
+        this.selectedMap = -1;
     }
 
     preload() {
-        // Fondo e imágenes de los mapas
         this.load.image("background2_image", "assets/Fondos/fondoMapas.png");
-
         this.load.image('invierno', 'assets/Fondos/Mapa_de_invierno.png');
         this.load.image('primavera', 'assets/Fondos/Mapa_de_primavera.png');
         this.load.image('otoño', 'assets/Fondos/Mapa_de_otoño.png');
         this.load.image('verano', 'assets/Fondos/Mapa_de_verano.png');
-
-        this.load.image("options_button", "assets/Interfaz/ajustes.png");
         this.load.image("readyMapa1_button", "assets/Interfaz/botonVeranoMapa.png");
         this.load.image("readyMapa2_button", "assets/Interfaz/botonOtoñoMapa.png");
         this.load.image("readyMapa3_button", "assets/Interfaz/botonInviernoMapa.png");
         this.load.image("readyMapa4_button", "assets/Interfaz/botonPrimaveraMapa.png");
+        this.load.image("chat_button", "assets/Interfaz/botonListo.png"); 
     }
 
     create() {
-        // Fondo
-        this.add.image(0, 0, "background2_image")
-            .setOrigin(0)
-            .setDisplaySize(this.scale.width, this.scale.height);
-
-        // Opciones (ajustes, etc., puedes mantenerlos si son globales)
-        this.add.image(this.scale.width - 100, 80, "options_button")
-            .setScale(0.12)
-            .setInteractive();
-
-        // Imágenes de los mapas
-        this.add.image(this.scale.width / 4, this.scale.height - 600, 'verano').setScale(0.8);
-        this.add.image(this.scale.width / 4, this.scale.height - 110, 'otoño').setScale(0.8);
-        this.add.image(this.scale.width / 1.22, this.scale.height - 600, 'invierno').setScale(0.8);
-        this.add.image(this.scale.width / 1.22, this.scale.height - 110, 'primavera').setScale(0.8);
-
+        this.add.image(0, 0, "background2_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+        
+        // Interfaz del Chat (se crea aquí)
+        this.createChatInterface();
+        
+        const chatButton = this.add.image(this.scale.width - 100, 80, "chat_button")
+            .setScale(0.20) // Igual que los botones de mapa
+            .setInteractive()
+            .on('pointerdown', () => {
+                console.log("Botón de chat pulsado");
+                this.toggleChatWindow();
+            });
+        chatButton.setDepth(10); // Asegura que esté por encima del fondo
+        
         // Botones de selección de mapa
-        this.mapButtons = []; // Almacena los botones para habilitar/deshabilitar
+        const mapaButtons = [
+            { key: "readyMapa2_button", x: this.scale.width / 2.5, y: this.scale.height - 600, mapId: 1 }, // Otoño
+            { key: "readyMapa3_button", x: this.scale.width / 1.22, y: this.scale.height - 600, mapId: 2 }, // Invierno
+            { key: "readyMapa4_button", x: this.scale.width / 1.22, y: this.scale.height - 110, mapId: 3 }, // Primavera
+            { key: "readyMapa1_button", x: this.scale.width / 2.5, y: this.scale.height - 110, mapId: 4 }  // Verano
+        ];
 
-        const map1Button = this.add.image(this.scale.width / 2.5, this.scale.height - 110, "readyMapa1_button") // Mapa verano
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => this.selectMap(0)); // 0 para el mapa de Verano
+        mapaButtons.forEach(buttonInfo => {
+            this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
+                .setScale(0.20)
+                .setInteractive()
+                .on('pointerdown', () => this.selectMap(buttonInfo.mapId));
+        });
 
-        const map2Button = this.add.image(this.scale.width / 2.5, this.scale.height - 600, "readyMapa2_button") // Mapa otoño
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => this.selectMap(1)); // 1 para el mapa de Otoño
 
-        const map3Button = this.add.image(this.scale.width / 1.22, this.scale.height - 600, "readyMapa3_button") // Mapa invierno
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => this.selectMap(2)); // 2 para el mapa de Invierno
-
-        const map4Button = this.add.image(this.scale.width / 1.22, this.scale.height - 110, "readyMapa4_button") // Mapa primavera
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => this.selectMap(3)); // 3 para el mapa de Primavera
-
-        this.mapButtons.push(map1Button, map2Button, map3Button, map4Button);
-
-        // Suscribirse al tema de la partida para recibir actualizaciones del mapa
+        // Suscripciones WebSocket
         this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
             const gameState = JSON.parse(message.body);
-            console.log("Estado de partida recibido en MapaGameOnline:", gameState);
-
-            // Si el mapa ya ha sido seleccionado por alguien, inhabilita los botones de selección
-            if (gameState.mapId !== -1 && this.selectedMap === -1) {
-                this.selectedMap = gameState.mapId;
-                this.registry.set('mapa', this.selectedMap); // Actualiza el mapa en el registro local
-                this.disableMapSelection(); // Deshabilita la selección para el segundo jugador
-                console.log(`Mapa ${this.selectedMap} seleccionado por otro jugador. Pasando a selección de personajes.`);
-                this.scene.stop("MapaGameOnline");
-                this.scene.start("PersonajesGameOnline", {
-                    stompClient: this.stompClient,
-                    gameCode: this.gameCode,
-                    username: this.username
-                });
-                IntroGame.bgMusic.stop(); // Para la música de fondo
+            if (gameState.map !== -1 && this.selectedMap === -1) {
+                console.log(`Mapa ${gameState.map} ha sido seleccionado por otro jugador.`);
+                this.goToNextScene();
             }
         });
+
+        this.stompClient.subscribe(`/topic/chat/${this.gameCode}`, (message) => {
+            const chatMessage = JSON.parse(message.body);
+            this.addChatMessage(chatMessage.sender, chatMessage.content);
+        });
+        
+        this.events.on('shutdown', () => this.cleanup());
     }
 
-    // Método para seleccionar el mapa
     selectMap(mapId) {
-        if (this.selectedMap === -1) { // Solo permite seleccionar si aún no hay mapa elegido
-            this.selectedMap = mapId;
-            this.registry.set('mapa', mapId); // Almacena el mapa en el registro global de Phaser
+        if (this.selectedMap !== -1) return; // Evita doble selección
+        this.selectedMap = mapId;
+        this.registry.set('mapa', mapId);
 
-            // Envia el mensaje de selección de mapa al servidor via WebSocket
-            const selectMapMessage = {
-                gameCode: this.gameCode,
-                username: this.username,
-                mapId: mapId
-            };
-            this.stompClient.send(`/app/game.selectMap`, {}, JSON.stringify(selectMapMessage));
-            console.log(`Mapa ${mapId} seleccionado. Pasando a selección de personajes.`);
+        const selectMapMessage = { gameCode: this.gameCode, mapId: mapId };
+        this.stompClient.send(`/app/game.selectMap`, {}, JSON.stringify(selectMapMessage));
+        
+        this.goToNextScene();
+    }
 
-            this.scene.stop("MapaGameOnline");
-            this.scene.start("PersonajesGameOnline", {
-                stompClient: this.stompClient,
-                gameCode: this.gameCode,
-                username: this.username
-            });
-            IntroGame.bgMusic.stop(); // Para la música de fondo
-        } else {
-            console.warn("Ya se ha seleccionado un mapa para esta partida.");
+    goToNextScene() {
+        this.cleanup();
+        this.scene.start("PersonajesGameOnline", {
+            stompClient: this.stompClient,
+            gameCode: this.gameCode,
+            username: this.username
+        });
+    }
+
+    createChatInterface() {
+        this.chatContainer = document.createElement('div');
+        this.chatContainer.id = 'chat-container';
+        Object.assign(this.chatContainer.style, {
+            display: 'none', position: 'absolute', right: '20px', bottom: '20px',
+            width: '320px', height: '400px', backgroundColor: 'rgba(0,0,0,0.8)',
+            border: '2px solid #666', borderRadius: '10px', color: 'white',
+            fontFamily: 'Calibri, sans-serif', flexDirection: 'column'
+        });
+
+        const messagesArea = document.createElement('div');
+        messagesArea.id = 'chat-messages';
+        Object.assign(messagesArea.style, { flexGrow: '1', padding: '10px', overflowY: 'auto', borderBottom: '1px solid #444'});
+
+        const inputArea = document.createElement('div');
+        Object.assign(inputArea.style, { display: 'flex', padding: '5px' });
+
+        this.chatInput = document.createElement('input');
+        this.chatInput.type = 'text'; this.chatInput.placeholder = 'Escribe un mensaje...';
+        this.chatInput.onkeydown = (event) => { if (event.key === 'Enter') this.sendChatMessage(); };
+        Object.assign(this.chatInput.style, { flexGrow: '1', padding: '8px', border: 'none', borderRadius: '5px', color: 'black' });
+
+        const sendButton = document.createElement('button');
+        sendButton.innerText = 'Enviar';
+        sendButton.onclick = () => this.sendChatMessage();
+        Object.assign(sendButton.style, { marginLeft: '5px', padding: '8px', cursor: 'pointer' });
+
+        inputArea.appendChild(this.chatInput); inputArea.appendChild(sendButton);
+        this.chatContainer.appendChild(messagesArea); this.chatContainer.appendChild(inputArea);
+        document.body.appendChild(this.chatContainer);
+    }
+
+    toggleChatWindow() {
+        const chatDisplay = this.chatContainer.style.display;
+        this.chatContainer.style.display = (chatDisplay === 'none') ? 'flex' : 'none';
+    }
+
+    addChatMessage(sender, content) {
+        const messagesArea = document.getElementById('chat-messages');
+        if (!messagesArea) return;
+        const messageElement = document.createElement('p');
+        const senderStyle = (sender === this.username) ? 'color: #66ff66;' : 'color: #66ccff;'; // Color verde para ti, azul para los demás
+        messageElement.innerHTML = `<strong style="${senderStyle}">${sender}:</strong> ${content}`;
+        Object.assign(messageElement.style, { margin: '0 0 5px 0', padding: '2px', wordWrap: 'break-word' });
+        messagesArea.appendChild(messageElement);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    sendChatMessage() {
+        const content = this.chatInput.value.trim();
+        if (content && this.stompClient) {
+            const chatMessage = { sender: this.username, content: content, gameCode: this.gameCode };
+            this.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            this.chatInput.value = '';
         }
     }
-
-    // Deshabilita los botones de selección de mapa para el segundo jugador
-    disableMapSelection() {
-        this.mapButtons.forEach(button => {
-            button.setInteractive(false).setAlpha(0.5); // Desactiva interactividad y oscurece
-        });
-        console.log("Selección de mapa deshabilitada.");
+    
+    cleanup() {
+        if (this.chatContainer) this.chatContainer.remove();
     }
 }
