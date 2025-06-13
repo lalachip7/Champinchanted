@@ -62,6 +62,17 @@ public class Game {
         this.player2SpellUsed = false; this.player2FlagStatus = false;
     }
 
+    public int getPlayerCount() {
+        int count = 0;
+        if (this.usernamePlayer1 != null && !this.usernamePlayer1.isEmpty()) {
+            count++;
+        }
+        if (this.usernamePlayer2 != null && !this.usernamePlayer2.isEmpty()) {
+            count++;
+        }
+        return count;
+    }
+
     // --- GETTERS & SETTERS ---
     public String getUsernamePlayer1() { return usernamePlayer1; }
     public void setUsernamePlayer1(String u) { this.usernamePlayer1 = u; }

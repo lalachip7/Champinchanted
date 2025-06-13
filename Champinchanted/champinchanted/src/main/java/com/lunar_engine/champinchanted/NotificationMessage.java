@@ -3,16 +3,27 @@ package com.lunar_engine.champinchanted;
 // Una clase simple para enviar mensajes de notificación del sistema.
 public class NotificationMessage {
     private String content;
+    private int playerCount;
 
-    public NotificationMessage(String content) {
+    public NotificationMessage(String content, int playerCount) {
         this.content = content;
+        this.playerCount = playerCount;
     }
 
+    // Getters y Setters
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getPlayerCount() {
+        return this.playerCount;
+    }
+
+    public void setPlayerCount(int playerCount) {
+        this.playerCount = playerCount;
     }
 }

@@ -4,16 +4,16 @@ class MapaGameOnline extends Phaser.Scene {
     }
 
     init(data) {
-        console.log("--- MapaGameOnline: init() ---");
         this.stompClient = data.stompClient;
         this.gameCode = data.gameCode;
         this.username = data.username;
         this.selectedMap = -1;
         this.isHost = data.isHost;
-        console.log(`Usuario: ${this.username}, Código de Sala: ${this.gameCode}`);
     }
 
     preload() {
+        this.load.image('server_on', 'assets/Interfaz/serverEncendido.png');
+        this.load.image('server_off', 'assets/Interfaz/serverApagado.png');
         this.load.image("background2_image", "assets/Fondos/fondoMapas.png");
         this.load.image('invierno', 'assets/Fondos/Mapa_de_invierno.png');
         this.load.image('primavera', 'assets/Fondos/Mapa_de_primavera.png');
@@ -23,29 +23,24 @@ class MapaGameOnline extends Phaser.Scene {
         this.load.image("readyMapa2_button", "assets/Interfaz/botonOtoñoMapa.png");
         this.load.image("readyMapa3_button", "assets/Interfaz/botonInviernoMapa.png");
         this.load.image("readyMapa4_button", "assets/Interfaz/botonPrimaveraMapa.png");
-        this.load.image("chat_button", "assets/Interfaz/BotonChat.png"); 
+        this.load.image("chat_button", "assets/Interfaz/BotonChat.png");
     }
 
     create() {
-        console.log("--- MapaGameOnline: create() ---");
         this.add.image(0, 0, "background2_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
 
         // --- Interfaz de Usuario ---
-        this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, {fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 }}).setOrigin(0.5);
+        this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 } }).setOrigin(0.5);
         this.createChatInterface();
         const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.10).setInteractive().on('pointerdown', () => this.toggleChatWindow());
         chatButton.setDepth(10);
-        const mapaButtons = [ { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
+        const mapaButtons = [{ key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
         mapaButtons.forEach(buttonInfo => {
             const buttonImage = this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
                 .setScale(0.20);
-
-            // ¡LÓGICA CLAVE!
             if (this.isHost) {
-                // Si es el host, el botón es interactivo
                 buttonImage.setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId));
             } else {
-                // Si no es el host, el botón se ve más opaco y no se puede pulsar
                 buttonImage.setAlpha(0.6);
             }
         });
@@ -56,78 +51,80 @@ class MapaGameOnline extends Phaser.Scene {
             }).setOrigin(0.5);
         }
 
-        this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
-            // Cuando el servidor confirma la selección de mapa, ambos jugadores ejecutan esto
-            const startGameData = JSON.parse(message.body);
-            const finalMapId = startGameData.mapId;
-
-            // Antes de cambiar de escena, guardamos el mapa que el servidor ha confirmado
-            this.registry.set('mapa', finalMapId);
-
-            this.goToNextScene(finalMapId);
-        });
+        // --- Lógica del indicador del servidor Y CONTADOR ---
+        this.serverStatusIcon = this.add.image(60, 60, 'server_off').setScale(0.1);
         
-        // --- ORDEN CORREGIDO ---
+        // Se crea el texto para el contador de jugadores a la derecha del icono.
+        this.playerCountText = this.add.text(100, 45, '?/2', {
+            fontFamily: 'FantasyFont, Calibri',
+            fontSize: '24px',
+            color: '#FFFFFF',
+            stroke: '#000000',
+            strokeThickness: 4
+        });
 
-        console.log("PASO A: Suscribiéndose al canal de chat normal...");
+        if (this.stompClient && this.stompClient.connected) {
+            this.serverStatusIcon.setTexture('server_on');
+        }
+        if (this.stompClient) {
+            this.stompClient.ws.onclose = () => this.events.emit('server_disconnected');
+        }
+        this.events.on('server_disconnected', () => { 
+            if (this.serverStatusIcon) { this.serverStatusIcon.setTexture('server_off'); }
+            // Si nos desconectamos, el contador también se resetea.
+            if (this.playerCountText) { this.playerCountText.setText('0/2'); }
+        }, this);
+
+
+        // --- Lógica de Suscripciones ---
+        this.stompClient.subscribe(`/topic/games/${this.gameCode}/mapSelected`, (message) => {
+            const mapData = JSON.parse(message.body);
+            this.goToNextScene(mapData.mapId);
+        });
+
         this.stompClient.subscribe(`/topic/chat/${this.gameCode}`, (message) => {
-            console.log("Mensaje de CHAT NORMAL recibido:", message.body);
             const chatMessage = JSON.parse(message.body);
             this.addChatMessage(chatMessage.sender, chatMessage.content);
         });
-        console.log("PASO B: Suscrito al canal de chat normal.");
 
-        
-        console.log("PASO C: Suscribiéndose al canal de NOTIFICACIONES...");
+        // La suscripción a notificaciones ahora también actualiza el contador.
         this.stompClient.subscribe(`/topic/notifications/${this.gameCode}`, (message) => {
-            console.log("%c¡NOTIFICACIÓN DEL SISTEMA RECIBIDA!", "color: lightblue; font-size: 14px;", message.body);
             const notification = JSON.parse(message.body);
+
+            // Muestra el mensaje de sistema (unión/desconexión).
             this.displaySystemMessage(notification.content);
+
+            // Actualiza el contador de jugadores si la información viene en el mensaje.
+            if (notification.playerCount !== undefined) {
+                this.playerCountText.setText(`${notification.playerCount}/2`);
+            }
         });
-        console.log("PASO D: Suscrito al canal de NOTIFICACIONES.");
-        
-        // SOLO DESPUÉS de suscribirnos, enviamos el mensaje para anunciar que hemos llegado.
+
+        // Se envía el mensaje de addUser DESPUÉS de suscribirse a todo.
         if (this.stompClient && this.stompClient.connected) {
-            console.log("PASO E: Conexión Stomp activa y suscripciones listas. Enviando mensaje de 'addUser'...");
             this.stompClient.send(`/app/chat.addUser`, {}, JSON.stringify({ sender: this.username, gameCode: this.gameCode }));
-            console.log("PASO F: Mensaje 'addUser' enviado.");
-        } else {
-            console.error("ERROR CRÍTICO: La conexión Stomp NO está activa al entrar en create().");
         }
 
         this.events.on('shutdown', () => this.cleanup());
     }
 
-    // --- FUNCIÓN MODIFICADA PARA LA PRUEBA ---
-    // He cambiado el color a un amarillo brillante para que destaque.
     displaySystemMessage(content) {
-        console.log("Mostrando mensaje del sistema en el chat:", content);
         const messagesArea = document.getElementById('chat-messages');
-        if (!messagesArea) {
-            console.error("Error al mostrar mensaje del sistema: No se encuentra el elemento 'chat-messages'.");
-            return;
-        };
-        
+        if (!messagesArea) return;
         const messageElement = document.createElement('p');
         messageElement.innerHTML = `<em>${content}</em>`;
         Object.assign(messageElement.style, {
-            margin: '0 0 8px 0',
-            padding: '3px',
-            fontStyle: 'italic',
-            fontWeight: 'bold', // Añadido para que sea más visible
-            color: '#FFFF00',   // ¡¡CAMBIADO A AMARILLO!!
-            textAlign: 'center',
+            margin: '0 0 8px 0', padding: '3px', fontStyle: 'italic',
+            fontWeight: 'bold', color: '#FFFF00', textAlign: 'center',
             wordWrap: 'break-word'
         });
         messagesArea.appendChild(messageElement);
         messagesArea.scrollTop = messagesArea.scrollHeight;
     }
 
-    // Función para mostrar los mensajes normales de los jugadores.
     addChatMessage(sender, content) {
         const messagesArea = document.getElementById('chat-messages');
         if (!messagesArea) return;
-
         const messageElement = document.createElement('p');
         const senderStyle = (sender === this.username) ? 'color: #66ff66;' : 'color: #66ccff;';
         messageElement.innerHTML = `<strong style="${senderStyle}">${sender}:</strong> ${content}`;
@@ -136,7 +133,6 @@ class MapaGameOnline extends Phaser.Scene {
         messagesArea.scrollTop = messagesArea.scrollHeight;
     }
 
-    // Función para enviar un mensaje de chat.
     sendChatMessage() {
         const content = this.chatInput.value.trim();
         if (content && this.stompClient) {
@@ -145,23 +141,16 @@ class MapaGameOnline extends Phaser.Scene {
             this.chatInput.value = '';
         }
     }
-    
-    // --- Resto de funciones del juego (sin cambios) ---
+
     selectMap(mapId) {
-        // Evita que el anfitrión envíe el mensaje varias veces.
         if (this.selectedMap !== -1) return;
         this.selectedMap = mapId;
-
-        // Ahora, el anfitrión solo envía el mensaje. NO avanza de escena.
-        // Esperará, igual que el invitado, la respuesta del servidor.
         const selectMapMessage = { gameCode: this.gameCode, mapId: mapId, username: this.username };
-        this.stompClient.send(`/app/game.selectMap`, {}, JSON.stringify(selectMapMessage));
+        this.stompClient.send("/app/game.selectMap", {}, JSON.stringify(selectMapMessage));
     }
 
     goToNextScene(finalMapId) {
-        // Guardamos en el registro el mapa que ha confirmado el servidor
         this.registry.set('mapa', finalMapId);
-
         this.cleanup();
         this.scene.start("PersonajesGameOnline", {
             stompClient: this.stompClient,
@@ -176,14 +165,14 @@ class MapaGameOnline extends Phaser.Scene {
         this.chatContainer.id = 'chat-container';
         Object.assign(this.chatContainer.style, {
             display: 'none', position: 'absolute', right: '20px', bottom: '20px',
-            width: '320px', height: '400px', 
-            backgroundColor: 'rgba(50, 50, 50, 0.75)', // <<< ¡¡AQUÍ ESTÁ EL CAMBIO!! Fondo gris oscuro semitransparente.
+            width: '320px', height: '400px',
+            backgroundColor: 'rgba(50, 50, 50, 0.75)',
             border: '2px solid #666', borderRadius: '10px', color: 'white',
             fontFamily: 'Calibri, sans-serif', flexDirection: 'column'
         });
         const messagesArea = document.createElement('div');
         messagesArea.id = 'chat-messages';
-        Object.assign(messagesArea.style, { flexGrow: '1', padding: '10px', overflowY: 'auto', borderBottom: '1px solid #444'});
+        Object.assign(messagesArea.style, { flexGrow: '1', padding: '10px', overflowY: 'auto', borderBottom: '1px solid #444' });
         const inputArea = document.createElement('div');
         Object.assign(inputArea.style, { display: 'flex', padding: '5px' });
         this.chatInput = document.createElement('input');
@@ -205,8 +194,11 @@ class MapaGameOnline extends Phaser.Scene {
         const chatDisplay = this.chatContainer.style.display;
         this.chatContainer.style.display = (chatDisplay === 'none') ? 'flex' : 'none';
     }
-    
+
     cleanup() {
-        if (this.chatContainer) this.chatContainer.remove();
+        this.events.off('server_disconnected');
+        if (this.chatContainer) {
+            this.chatContainer.remove();
+        }
     }
 }
