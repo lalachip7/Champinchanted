@@ -10,7 +10,7 @@ class UsernameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("background_image", "assets/Fondos/fondo.png");
-        this.load.image("login_button", "assets/Interfaz/iniciarSesion.png");
+        this.load.image("login_button", "assets/Interfaz/inicioSesion.png");
         this.load.image("register_button", "assets/Interfaz/registrarse.png");
         
         this.load.image("create_game_button", "assets/Interfaz/botonCrearPartida.png");
