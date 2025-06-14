@@ -128,7 +128,7 @@ public class GameWebSocketController {
                 });
         System.out.println("--- [DEBUG] Fin del procesamiento del mensaje ---\n");
     }
-
+    //HOLA
     /**
      * Se ejecuta cuando un jugador pulsa el botón "Listo".
      */
