@@ -38,7 +38,7 @@ class PersonajesGameOnline extends Phaser.Scene {
 
     preload() {
         // Cargar recursos
-        this.load.image("background2", "assets/Fondos/fondoPersonajesOnline.png");
+        this.load.image("background2", "assets/Fondos/fondoPersonajes.png");
         this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
 
 
@@ -48,6 +48,8 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.load.image('character3', 'assets/Personajes/champistar.png');
         this.load.image('character4', 'assets/Personajes/mariñon.png');
         this.load.image('character5', 'assets/Personajes/biblioseta.png');
+        this.load.image('eleccion', 'assets/Personajes/eleccion.png');
+        this.load.image('fondoSetas', 'assets/Interfaz/fondoSetasIncreible.png');
         this.load.image("highlight", "assets/Botones/highlight.png");
         this.load.image("highlight", "assets/Interfaz/highlight.png");
 
@@ -68,7 +70,9 @@ class PersonajesGameOnline extends Phaser.Scene {
 
         // --- DIBUJAR LA INTERFAZ GRÁFICA ---
         this.createPlayerSlot(this.player1Username, this.scale.width * 0.25, 'P1');
-        this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.75, 'P2');
+        this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.65, 'P2');
+         this.add.image(this.scale.width / 2, 800, 'fondoSetas').setOrigin(0.5).setScale(0.5);
+
         this.createCharacterSelectionGrid();
 
         // --- LÓGICA DE WEBSOCKETS ---
@@ -77,9 +81,9 @@ class PersonajesGameOnline extends Phaser.Scene {
 
     createPlayerSlot(playerName, positionX, playerKey) {
         const slotY = 350;
-        const nameText = this.add.text(positionX, slotY - 180, playerName, { fontFamily: 'FantasyFont', fontSize: '40px', color: '#FEEFD8' }).setOrigin(0.5);
+        const nameText = this.add.text(positionX+95, slotY - 155, playerName, { fontFamily: 'FantasyFont', fontSize: '40px', color: '#FEEFD8' }).setOrigin(0.5);
 
-        const readyButton = this.add.image(positionX, slotY + 180, 'ready_button1').setScale(0.25);
+        const readyButton = this.add.image(positionX, slotY + 180, 'ready_button1').setScale(0.2).setOrigin(0.25);
 
         if (playerName === this.username || (playerKey === 'P1' && this.isHost)) {
             // Permite hacer clic si es nuestro propio slot
@@ -94,9 +98,9 @@ class PersonajesGameOnline extends Phaser.Scene {
 
         this.playerSlots[playerKey] = {
             nameText: nameText, // Guardamos la referencia al texto del nombre
-            characterImage: this.add.image(positionX, slotY, null).setScale(1).setVisible(false),
+            characterImage: this.add.image(positionX+100, slotY, 'eleccion').setScale(1).setVisible(true),
             readyButton: readyButton,
-            readyCheck: this.add.text(positionX, slotY + 180, '¡LISTO!', { fontFamily: 'FantasyFont', fontSize: '40px', color: '#90EE90' }).setOrigin(0.5).setVisible(false)
+            readyCheck: this.add.text(positionX+40, slotY + 180, '¡LISTO!', { fontFamily: 'FantasyFont', fontSize: '40px', color: '#90EE90' }).setVisible(false)
         };
     }
 
@@ -124,7 +128,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.stompClient.subscribe(`/topic/games/${this.gameCode}/gameplay_start`, (message) => {
             const gameData = JSON.parse(message.body);
 
-            // CAMBIO
+            
             this.scene.start('GameSceneOnline', {
                 stompClient: this.stompClient,
                 gameCode: this.gameCode,
