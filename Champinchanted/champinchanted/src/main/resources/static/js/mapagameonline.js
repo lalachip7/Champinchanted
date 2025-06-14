@@ -32,12 +32,16 @@ class MapaGameOnline extends Phaser.Scene {
         // --- Interfaz de Usuario ---
         this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 } }).setOrigin(0.5);
         this.createChatInterface();
-        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.10).setInteractive().on('pointerdown', () => this.toggleChatWindow());
+        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.08).setInteractive().on('pointerdown', () => this.toggleChatWindow());
         chatButton.setDepth(10);
+        this.add.image(550, 305, 'otoño').setScale(0.4).setDepth(1);
+        this.add.image(1350, 305, 'invierno').setScale(0.4).setDepth(1);
+        this.add.image(1350, 785, 'primavera').setScale(0.4).setDepth(1);
+        this.add.image(550, 785, 'verano').setScale(0.4).setDepth(1);
         const mapaButtons = [{ key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
         mapaButtons.forEach(buttonInfo => {
             const buttonImage = this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
-                .setScale(0.20);
+                .setScale(0.20).setDepth(2);
             if (this.isHost) {
                 buttonImage.setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId));
             } else {

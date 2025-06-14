@@ -15,6 +15,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.readyButtonP2 = null;
 
         this.characters = {};
+        this.playerSlots = {};
     }
 
     init(data) {
@@ -22,7 +23,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.gameCode = data.gameCode;
         this.username = data.username;
 
-        // En la función init() de personajesgameonline.js
+        this.isHost = data.isHost;
         this.player1Username = data.player1Username;
         this.player2Username = data.player2Username;
 
@@ -62,127 +63,104 @@ class PersonajesGameOnline extends Phaser.Scene {
     }
 
     create() {
-        // Fondo
-        this.add.image(0, 0, "background2")
-            .setOrigin(0)
-            .setDisplaySize(this.scale.width, this.scale.height);
+    this.add.image(0, 0, "background2").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+    this.add.text(this.scale.width / 2, 60, `Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont', fontSize: '52px', color: '#FEEFD8' }).setOrigin(0.5);
 
-        // Crear highlights ocultos inicialmente
-        this.highlightP1 = this.add.image(0, 0, "highlight").setVisible(false).setScale(0.8);
-        this.highlightP2 = this.add.image(0, 0, "highlight").setVisible(false).setScale(0.8);
+    // --- DIBUJAR LA INTERFAZ GRÁFICA ---
+    this.createPlayerSlot(this.player1Username, this.scale.width * 0.25, 'P1');
+    this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.75, 'P2');
+    this.createCharacterSelectionGrid();
 
-        // Posiciones de los personajes
-        const charPositions = [
-            { id: 1, key: 'character2', x: 200, y: 300 }, // Champichip
-            { id: 2, key: 'character3', x: 450, y: 300 }, // Champistar
-            { id: 3, key: 'character1', x: 700, y: 300 }, // Perretxiko
-            { id: 4, key: 'character4', x: 950, y: 300 }, // Mariñon
-            { id: 5, key: 'character5', x: 1200, y: 300 } // Biblioseta
-        ];
+    // --- LÓGICA DE WEBSOCKETS ---
+    this.subscribeToGameUpdates();
+}
 
-        // Añadir personajes y hacerlos interactivos
-        charPositions.forEach(char => {
-            const characterImage = this.add.image(char.x, char.y, char.key)
-                .setScale(0.5)
-                .setInteractive()
-                .on('pointerdown', () => this.selectCharacter(char.id, characterImage));
-            this.characters[char.id] = { image: characterImage, x: char.x, y: char.y };
+    createPlayerSlot(playerName, positionX, playerKey) {
+    const slotY = 350;
+    this.add.image(positionX, slotY, 'slot_background').setScale(1.2);
+    this.add.text(positionX, slotY - 180, playerName, { fontFamily: 'FantasyFont', fontSize: '40px', color: '#FEEFD8' }).setOrigin(0.5);
+
+    const readyButton = this.add.image(positionX, slotY + 180, 'ready_button1').setScale(0.25);
+
+    if (playerName === this.username) {
+        readyButton.setInteractive().on('pointerdown', () => {
+            this.stompClient.send("/app/game.ready", {}, JSON.stringify({ gameCode: this.gameCode, username: this.username }));
+            readyButton.disableInteractive().setTint(0x808080);
         });
+    } else {
+        readyButton.setAlpha(0.6); 
+    }
 
-        // Botones de listo para cada jugador
-        // El botón del jugador actual será interactivo, el del otro jugador no
-        this.readyButtonP1 = this.add.image(this.scale.width / 2.5, this.scale.height - 100, "ready_button")
-            .setScale(0.20)
-            .setInteractive()
-            .on('pointerdown', () => this.setPlayerReady());
+    this.playerSlots[playerKey] = {
+        characterImage: this.add.image(positionX, slotY, null).setScale(1).setVisible(false),
+        readyButton: readyButton,
+        readyCheck: this.add.text(positionX, slotY + 180, '¡LISTO!', { fontFamily: 'FantasyFont', fontSize: '40px', color: '#90EE90' }).setOrigin(0.5).setVisible(false)
+    };
+}
 
-        this.readyButtonP2 = this.add.image(this.scale.width / 1.5, this.scale.height - 100, "ready_button")
-            .setScale(0.20)
-            .setAlpha(0.5); // Inicialmente semitransparente, no interactivo
+    createCharacterSelectionGrid() {
+    const characterData = [
+        { id: 3, key: 'character1' }, { id: 1, key: 'character2' }, { id: 2, key: 'character3' },
+        { id: 4, key: 'character4' }, { id: 5, key: 'character5' }
+    ];
+    const startX = this.scale.width / 2 - (characterData.length * 180) / 2 + 90;
+    const yPos = 800;
 
-        // Texto de información de la partida
-        this.add.text(this.scale.width / 2, 50, `Sala: ${this.gameCode}`, {
-            fontFamily: 'FantasyFont',
-            fontSize: '60px',
-            color: '#FEEFD8'
-        }).setOrigin(0.5);
+    characterData.forEach((char, index) => {
+        const charImage = this.add.image(startX + (index * 180), yPos, char.key).setScale(0.8).setInteractive();
+        charImage.on('pointerdown', () => this.selectCharacter(char.id));
+        this.characters[char.id] = { image: charImage };
+    });
+}
 
-        // Suscribirse al tema de la partida para recibir actualizaciones de personajes
-        this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
-            const gameState = JSON.parse(message.body);
-            console.log("Estado de partida recibido en PersonajesGameOnline:", gameState);
+subscribeToGameUpdates() {
+    this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
+        const lobbyData = JSON.parse(message.body);
+        this.updateUI(lobbyData);
+    });
 
-            // Determinar si somos el jugador 1 o el jugador 2 para actualizar el estado del otro
-            if (gameState.player1State.username === this.username) {
-                // Somos el jugador 1, actualizamos el estado del jugador 2
-                this.player2Character = gameState.player2State.characterId;
-                this.isPlayer2Ready = gameState.player2State.isReady; // Asume un campo 'isReady' en PlayerState
-                this.updateCharacterSelectionDisplay(this.player2Character, this.highlightP2);
-                this.updateReadyButtonDisplay(this.readyButtonP2, this.isPlayer2Ready);
-            } else if (gameState.player2State.username === this.username) {
-                // Somos el jugador 2, actualizamos el estado del jugador 1
-                this.player1Character = gameState.player1State.characterId;
-                this.isPlayer1Ready = gameState.player1State.isReady; // Asume un campo 'isReady' en PlayerState
-                this.updateCharacterSelectionDisplay(this.player1Character, this.highlightP1);
-                this.updateReadyButtonDisplay(this.readyButtonP1, this.isPlayer1Ready);
-            } else {
-                // Esto puede ocurrir si un tercer jugador se une o si hay una desincronización
-                console.warn("Mensaje de estado de juego recibido sin un username coincidente.");
+    this.stompClient.subscribe(`/topic/games/${this.gameCode}/gameplay_start`, (message) => {
+        const gameData = JSON.parse(message.body);
+        this.registry.set('personajeJ1', gameData.player1Character);
+        this.registry.set('personajeJ2', gameData.player2Character);
+        this.scene.start('GameScene'); // O GameSceneOnline si es diferente
+    });
+}
+
+    updateUI(lobbyData) {
+        if (lobbyData.player1Character && lobbyData.player1Character !== -1) {
+            const charAsset = this.characters[lobbyData.player1Character];
+            if (charAsset) {
+                this.playerSlots.P1.characterImage.setTexture(charAsset.image.texture.key).setVisible(true);
             }
+        }
 
-            // Si ambos jugadores están listos, iniciar el juego
-            if (this.isPlayer1Ready && this.isPlayer2Ready) {
-                console.log("Ambos jugadores están listos. Iniciando GameScene...");
-                this.registry.set('personajeJ1', this.player1Character);
-                this.registry.set('personajeJ2', this.player2Character);
-                this.scene.stop("PersonajesGameOnline");
-                this.scene.start("GameScene", {
-                    stompClient: this.stompClient,
-                    gameCode: this.gameCode,
-                    username: this.username,
-                    player1Character: this.player1Character,
-                    player2Character: this.player2Character,
-                    mapId: this.registry.get('mapa') // Asegúrate de que el mapa ya se haya establecido
-                });
+        if (lobbyData.player2Username && lobbyData.player2Character && lobbyData.player2Character !== -1) {
+            const charAsset = this.characters[lobbyData.player2Character];
+            if (charAsset) {
+                this.playerSlots.P2.characterImage.setTexture(charAsset.image.texture.key).setVisible(true);
             }
-        });
+        }
 
-        // Suscribirse al tema de inicio de partida (en caso de que el otro jugador ya estuviera listo)
-        this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
-            const startGameMessage = JSON.parse(message.body);
-            console.log("Mensaje de inicio de partida recibido:", startGameMessage);
-            // Esto es redundante con el chequeo de isPlayer1Ready && isPlayer2Ready, pero asegura el inicio
-            this.registry.set('personajeJ1', startGameMessage.player1Character);
-            this.registry.set('personajeJ2', startGameMessage.player2Character);
-            this.registry.set('mapa', startGameMessage.mapId);
-            this.scene.stop("PersonajesGameOnline");
-            this.scene.start("GameScene", {
-                stompClient: this.stompClient,
-                gameCode: this.gameCode,
-                username: this.username,
-                player1Character: startGameMessage.player1Character,
-                player2Character: startGameMessage.player2Character,
-                mapId: startGameMessage.mapId
-            });
-        });
+        if (lobbyData.player1Ready) {
+            this.playerSlots.P1.readyButton.setVisible(false);
+            this.playerSlots.P1.readyCheck.setVisible(true);
+        }
 
-        // Solicitar el estado actual de la partida al iniciar la escena para sincronizar
-        // Esto es útil si un jugador se une a una partida ya existente
-        this.stompClient.send(`/app/game.requestState`, {}, JSON.stringify({ gameCode: this.gameCode }));
+        if (lobbyData.player2Ready) {
+            this.playerSlots.P2.readyButton.setVisible(false);
+            this.playerSlots.P2.readyCheck.setVisible(true);
+        }
     }
 
     // Método para seleccionar un personaje
-    selectCharacter(characterId, characterImage) {
-        if (this.username === this.player1Username) {
-            this.player1Character = characterId;
-            this.updateCharacterSelectionDisplay(this.player1Character, this.highlightP1);
-            this.sendCharacterSelection(characterId);
-        } else if (this.username === this.player2Username) {
-            this.player2Character = characterId;
-            this.updateCharacterSelectionDisplay(this.player2Character, this.highlightP2);
-            this.sendCharacterSelection(characterId);
-        }
-    }
+    selectCharacter(characterId) {
+    this.stompClient.send(`/app/game.selectCharacter`, {}, JSON.stringify({
+        gameCode: this.gameCode,
+        username: this.username,
+        characterId: characterId
+    }));
+}
 
     // Actualiza la posición del highlight para el personaje seleccionado
     updateCharacterSelectionDisplay(characterId, highlightObject) {
