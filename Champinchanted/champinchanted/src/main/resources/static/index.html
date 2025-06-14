@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">           
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">  
+    <meta charset="UTF-8">
     <title>Champinchanted</title>
 
     <!-- LIBRERÍAS PARA WEBSOCKETS -->
@@ -12,7 +13,7 @@
     <script src="//cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.js"></script>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.86.0/phaser.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.86.0/phaser.min.js"></script>
     <script src="js/intro.js"></script>
     <script src="js/game.js"></script>
     <script src="js/endgame.js"></script>
@@ -23,12 +24,14 @@
     <script src="js/username.js"></script>
     <script src="js/mapagameonline.js"></script>
     <script src="js/personajesgameonline.js"></script>
+    <script src="js/gameonline.js"></script>
     <script src="js/sessionManager.js"></script>
-    
+
 
 </head>
+
 <body>
-    <div id="game-canvas"></div>        <!-- Canvas del juego controlado por Phaser -->
+    <div id="game-canvas"></div> <!-- Canvas del juego controlado por Phaser -->
     <script>
         var gameCode = "";
         // Configuración de Phaser -----------------------------------------------------------------------------------------
@@ -40,22 +43,23 @@
             backgroundColor: '#000000', // Color del fondo
 
             physics: {                  // FÍSICAS DEL JUEGO ---------------------------------------------------------------
-                default: 'arcade',      
+                default: 'arcade',
                 arcade: {
                     debug: false,        // Activa el modo de depuración mostrando colisiones y bordes
                     gravity: { y: 1900 } // Aplica la gravedad vertical
                 }
             },
             scene: [IntroGame,          // ESCENAS DEL JUEGO ---------------------------------------------------------------
-                GameScene, 
+                GameScene,
                 UsernameScene,
-                EndGame, 
+                EndGame,
                 CreditsScene,
                 TutorialScene,
                 PersonajesGame,
                 PersonajesGameOnline,
                 MapaGameOnline,
-                MapaGame],
+                MapaGame,
+                GameSceneOnline],
 
             scale: {
                 mode: Phaser.Scale.FIT,                 // Escala el juego para ajustarse a la ventana
@@ -84,7 +88,7 @@
                 if (response.ok) {
                     console.log('Juego iniciado correctamente');
                     return true;
-                } else if(response.status === 409) {
+                } else if (response.status === 409) {
                     console.log('El código de partida ya existe, creando uno nuevo');
                     return startGame();
                 } else {
@@ -119,24 +123,24 @@
                         'Content-Type': 'application/json',
                     }
                 })
-                .then(response => {
-                    if (response.ok) {
-                        console.log("Usuario eliminado con éxito.");
-                    } else {
-                        console.error("Hubo un problema al eliminar el usuario.");
-                        alert("Hubo un error al intentar eliminar tu cuenta. Por favor, intenta nuevamente.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error en la solicitud: ", error);
-                    alert("No se pudo eliminar el usuario debido a un problema de conexión. Por favor, revisa tu conexión a internet.");
-                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Usuario eliminado con éxito.");
+                        } else {
+                            console.error("Hubo un problema al eliminar el usuario.");
+                            alert("Hubo un error al intentar eliminar tu cuenta. Por favor, intenta nuevamente.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud: ", error);
+                        alert("No se pudo eliminar el usuario debido a un problema de conexión. Por favor, revisa tu conexión a internet.");
+                    })
             } else {
                 console.error("No se ha encontrado el nombre de usuario.");
             }
         }
 
-        window.addEventListener("beforeunload", function(event) {
+        window.addEventListener("beforeunload", function (event) {
             if (sessionManager && sessionManager.stopHeartbeat && sessionManager.getUsername()) {
                 sessionManager.stopHeartbeat();  // Detén el heartbeat si está definido
             }
@@ -147,4 +151,5 @@
 
     </script>
 </body>
+
 </html>

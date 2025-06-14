@@ -87,30 +87,46 @@ public class GameWebSocketController {
      */
     @MessageMapping("/game.selectCharacter")
     public void selectCharacter(@Payload SelectCharacterMessage message) {
-        gameService.getGame(message.getGameCode()).ifPresent(game -> {
+        System.out.println("\n--- [DEBUG] Se recibió un mensaje de selección de personaje ---");
+        System.out.println("[DEBUG] Partida: " + message.getGameCode() + ", Usuario del mensaje: '"
+                + message.getUsername() + "', Personaje ID: " + message.getCharacterId());
 
-            // --- LÓGICA CORREGIDA Y MÁS SEGURA ---
-            int playerNumber = 0; // Por defecto es 0 (inválido)
+        gameService.getGame(message.getGameCode()).ifPresentOrElse(game -> {
+            System.out.println("[DEBUG] Partida encontrada. Estado actual en el servidor:");
+            System.out.println("  - Jugador 1 guardado: '" + game.getUsernamePlayer1() + "'");
+            System.out.println(
+                    "  - Jugador 2 guardado: '" + game.getUsernamePlayer2() + "'   <-- ¡¡ESTA LÍNEA ES CLAVE!!");
 
+            boolean identified = false;
+
+            // Comparamos con el jugador 1
             if (message.getUsername().equals(game.getUsernamePlayer1())) {
-                playerNumber = 1;
-            } else if (message.getUsername().equals(game.getUsernamePlayer2())) {
-                playerNumber = 2;
+                System.out.println("[DEBUG] >> Coincidencia: El usuario es el Jugador 1.");
+                game.setPlayer1Character(message.getCharacterId());
+                identified = true;
+            }
+            // Comparamos con el jugador 2
+            else if (message.getUsername().equals(game.getUsernamePlayer2())) {
+                System.out.println("[DEBUG] >> Coincidencia: El usuario es el Jugador 2.");
+                game.setPlayer2Character(message.getCharacterId());
+                identified = true;
             }
 
-            // Solo procedemos si hemos identificado al jugador correctamente
-            if (playerNumber > 0) {
-                // Actualizamos la selección en el estado del juego en el servidor
-                gameService.setPlayerCharacter(message.getGameCode(), playerNumber, message.getCharacterId());
-
-                // ¡CLAVE! Retransmitimos el estado actualizado a TODOS en la sala.
-                // Así, el otro jugador se entera de la selección.
+            if (identified) {
+                System.out.println("[DEBUG] >> Jugador identificado. Guardando y retransmitiendo estado...");
+                gameService.updateGame(game);
                 messagingTemplate.convertAndSend("/topic/games/" + game.getCode(), game.toLobbyData());
+                System.out.println("[DEBUG] >> Estado retransmitido con éxito.");
             } else {
-                System.err.println("Error: No se pudo identificar al jugador '" + message.getUsername()
-                        + "' en la partida " + message.getGameCode());
+                System.err.println("[DEBUG] !! ERROR CRÍTICO: No se pudo identificar al jugador '"
+                        + message.getUsername() + "' en la partida. No se retransmite nada.");
             }
-        });
+        },
+                () -> {
+                    System.err.println("[DEBUG] !! ERROR CRÍTICO: No se encontró ninguna partida con el código: "
+                            + message.getGameCode());
+                });
+        System.out.println("--- [DEBUG] Fin del procesamiento del mensaje ---\n");
     }
 
     /**
@@ -144,6 +160,18 @@ public class GameWebSocketController {
                 messagingTemplate.convertAndSend("/topic/games/" + game.getCode() + "/gameplay_start",
                         startGameMessage);
             }
+        });
+    }
+
+    @MessageMapping("/game.updateState")
+    public void updateState(@Payload GameUpdateMessage message) {
+        // Usamos el GameService para actualizar el estado del jugador en el servidor
+        gameService.updatePlayerState(message.getGameCode(), message.getUsername(), message.toPlayerState());
+
+        // Retransmitimos el estado COMPLETO y actualizado de la partida a ambos
+        // jugadores
+        gameService.getGame(message.getGameCode()).ifPresent(game -> {
+            messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
         });
     }
 }

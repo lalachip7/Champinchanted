@@ -63,90 +63,106 @@ class PersonajesGameOnline extends Phaser.Scene {
     }
 
     create() {
-    this.add.image(0, 0, "background2").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
-    this.add.text(this.scale.width / 2, 60, `Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont', fontSize: '52px', color: '#FEEFD8' }).setOrigin(0.5);
+        this.add.image(0, 0, "background2").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
+        this.add.text(this.scale.width / 2, 60, `Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont', fontSize: '52px', color: '#FEEFD8' }).setOrigin(0.5);
 
-    // --- DIBUJAR LA INTERFAZ GRÁFICA ---
-    this.createPlayerSlot(this.player1Username, this.scale.width * 0.25, 'P1');
-    this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.75, 'P2');
-    this.createCharacterSelectionGrid();
+        // --- DIBUJAR LA INTERFAZ GRÁFICA ---
+        this.createPlayerSlot(this.player1Username, this.scale.width * 0.25, 'P1');
+        this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.75, 'P2');
+        this.createCharacterSelectionGrid();
 
-    // --- LÓGICA DE WEBSOCKETS ---
-    this.subscribeToGameUpdates();
-}
-
-    createPlayerSlot(playerName, positionX, playerKey) {
-    const slotY = 350;
-    this.add.image(positionX, slotY, 'slot_background').setScale(1.2);
-    this.add.text(positionX, slotY - 180, playerName, { fontFamily: 'FantasyFont', fontSize: '40px', color: '#FEEFD8' }).setOrigin(0.5);
-
-    const readyButton = this.add.image(positionX, slotY + 180, 'ready_button1').setScale(0.25);
-
-    if (playerName === this.username) {
-        readyButton.setInteractive().on('pointerdown', () => {
-            this.stompClient.send("/app/game.ready", {}, JSON.stringify({ gameCode: this.gameCode, username: this.username }));
-            readyButton.disableInteractive().setTint(0x808080);
-        });
-    } else {
-        readyButton.setAlpha(0.6); 
+        // --- LÓGICA DE WEBSOCKETS ---
+        this.subscribeToGameUpdates();
     }
 
-    this.playerSlots[playerKey] = {
-        characterImage: this.add.image(positionX, slotY, null).setScale(1).setVisible(false),
-        readyButton: readyButton,
-        readyCheck: this.add.text(positionX, slotY + 180, '¡LISTO!', { fontFamily: 'FantasyFont', fontSize: '40px', color: '#90EE90' }).setOrigin(0.5).setVisible(false)
-    };
-}
+    createPlayerSlot(playerName, positionX, playerKey) {
+        const slotY = 350;
+        const nameText = this.add.text(positionX, slotY - 180, playerName, { fontFamily: 'FantasyFont', fontSize: '40px', color: '#FEEFD8' }).setOrigin(0.5);
+
+        const readyButton = this.add.image(positionX, slotY + 180, 'ready_button1').setScale(0.25);
+
+        if (playerName === this.username || (playerKey === 'P1' && this.isHost)) {
+            // Permite hacer clic si es nuestro propio slot
+            readyButton.setInteractive().on('pointerdown', () => {
+                this.stompClient.send("/app/game.ready", {}, JSON.stringify({ gameCode: this.gameCode, username: this.username }));
+                readyButton.disableInteractive().setTint(0x808080);
+            });
+        } else {
+            // Botón del otro jugador, no interactivo
+            readyButton.setAlpha(0.6);
+        }
+
+        this.playerSlots[playerKey] = {
+            nameText: nameText, // Guardamos la referencia al texto del nombre
+            characterImage: this.add.image(positionX, slotY, null).setScale(1).setVisible(false),
+            readyButton: readyButton,
+            readyCheck: this.add.text(positionX, slotY + 180, '¡LISTO!', { fontFamily: 'FantasyFont', fontSize: '40px', color: '#90EE90' }).setOrigin(0.5).setVisible(false)
+        };
+    }
 
     createCharacterSelectionGrid() {
-    const characterData = [
-        { id: 3, key: 'character1' }, { id: 1, key: 'character2' }, { id: 2, key: 'character3' },
-        { id: 4, key: 'character4' }, { id: 5, key: 'character5' }
-    ];
-    const startX = this.scale.width / 2 - (characterData.length * 180) / 2 + 90;
-    const yPos = 800;
+        const characterData = [
+            { id: 3, key: 'character1' }, { id: 1, key: 'character2' }, { id: 2, key: 'character3' },
+            { id: 4, key: 'character4' }, { id: 5, key: 'character5' }
+        ];
+        const startX = this.scale.width / 2 - (characterData.length * 180) / 2 + 90;
+        const yPos = 800;
 
-    characterData.forEach((char, index) => {
-        const charImage = this.add.image(startX + (index * 180), yPos, char.key).setScale(0.8).setInteractive();
-        charImage.on('pointerdown', () => this.selectCharacter(char.id));
-        this.characters[char.id] = { image: charImage };
-    });
-}
+        characterData.forEach((char, index) => {
+            const charImage = this.add.image(startX + (index * 180), yPos, char.key).setScale(0.8).setInteractive();
+            charImage.on('pointerdown', () => this.selectCharacter(char.id));
+            this.characters[char.id] = { image: charImage };
+        });
+    }
 
-subscribeToGameUpdates() {
-    this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
-        const lobbyData = JSON.parse(message.body);
-        this.updateUI(lobbyData);
-    });
+    subscribeToGameUpdates() {
+        this.stompClient.subscribe(`/topic/games/${this.gameCode}`, (message) => {
+            const lobbyData = JSON.parse(message.body);
+            this.updateUI(lobbyData);
+        });
 
-    this.stompClient.subscribe(`/topic/games/${this.gameCode}/gameplay_start`, (message) => {
-        const gameData = JSON.parse(message.body);
-        this.registry.set('personajeJ1', gameData.player1Character);
-        this.registry.set('personajeJ2', gameData.player2Character);
-        this.scene.start('GameScene'); // O GameSceneOnline si es diferente
-    });
-}
+        this.stompClient.subscribe(`/topic/games/${this.gameCode}/gameplay_start`, (message) => {
+            const gameData = JSON.parse(message.body);
+
+            // CAMBIO
+            this.scene.start('GameSceneOnline', {
+                stompClient: this.stompClient,
+                gameCode: this.gameCode,
+                username: this.username,
+                player1Username: gameData.player1Username,
+                player2Username: gameData.player2Username,
+                j1: gameData.player1Character,
+                j2: gameData.player2Character,
+                mapa: this.registry.get('mapa')
+            });
+        });
+    }
 
     updateUI(lobbyData) {
-        if (lobbyData.player1Character && lobbyData.player1Character !== -1) {
-            const charAsset = this.characters[lobbyData.player1Character];
-            if (charAsset) {
-                this.playerSlots.P1.characterImage.setTexture(charAsset.image.texture.key).setVisible(true);
+        // --- Actualizar Imagen de Personaje del Jugador 1 ---
+        if (lobbyData.player1Character && lobbyData.player1Character > 0) {
+            const charAssetP1 = this.characters[lobbyData.player1Character];
+            if (charAssetP1) {
+                this.playerSlots.P1.characterImage.setTexture(charAssetP1.image.texture.key).setVisible(true);
             }
         }
 
-        if (lobbyData.player2Username && lobbyData.player2Character && lobbyData.player2Character !== -1) {
-            const charAsset = this.characters[lobbyData.player2Character];
-            if (charAsset) {
-                this.playerSlots.P2.characterImage.setTexture(charAsset.image.texture.key).setVisible(true);
+        // --- Actualizar Imagen de Personaje del Jugador 2 ---
+        // ¡VERSIÓN CORREGIDA! Usando "usernamePlayer2" con "P" mayúscula.
+        if (lobbyData.usernamePlayer2 && lobbyData.player2Character && lobbyData.player2Character > 0) {
+            const charAssetP2 = this.characters[lobbyData.player2Character];
+            if (charAssetP2) {
+                this.playerSlots.P2.characterImage.setTexture(charAssetP2.image.texture.key).setVisible(true);
             }
         }
 
+        // --- Actualizar Estado "LISTO" del Jugador 1 ---
         if (lobbyData.player1Ready) {
             this.playerSlots.P1.readyButton.setVisible(false);
             this.playerSlots.P1.readyCheck.setVisible(true);
         }
 
+        // --- Actualizar Estado "LISTO" del Jugador 2 ---
         if (lobbyData.player2Ready) {
             this.playerSlots.P2.readyButton.setVisible(false);
             this.playerSlots.P2.readyCheck.setVisible(true);
@@ -155,12 +171,12 @@ subscribeToGameUpdates() {
 
     // Método para seleccionar un personaje
     selectCharacter(characterId) {
-    this.stompClient.send(`/app/game.selectCharacter`, {}, JSON.stringify({
-        gameCode: this.gameCode,
-        username: this.username,
-        characterId: characterId
-    }));
-}
+        this.stompClient.send(`/app/game.selectCharacter`, {}, JSON.stringify({
+            gameCode: this.gameCode,
+            username: this.username,
+            characterId: characterId
+        }));
+    }
 
     // Actualiza la posición del highlight para el personaje seleccionado
     updateCharacterSelectionDisplay(characterId, highlightObject) {

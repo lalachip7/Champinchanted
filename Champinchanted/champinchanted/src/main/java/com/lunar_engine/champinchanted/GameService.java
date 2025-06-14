@@ -113,15 +113,6 @@ public class GameService {
         return Optional.ofNullable(activeGames.get(gameCode));
     }
 
-    public Optional<Game> setPlayerCharacter(String gameCode, int playerNumber, int characterId) {
-        return getGame(gameCode).map(game -> {
-            if (playerNumber == 1) game.setPlayer1Character(characterId);
-            else if (playerNumber == 2) game.setPlayer2Character(characterId);
-            updateGame(game);
-            return game;
-        });
-    }
-
     public Optional<Game> setGameMap(String gameCode, int mapId) {
         return getGame(gameCode).map(game -> {
             game.setMap(mapId);
