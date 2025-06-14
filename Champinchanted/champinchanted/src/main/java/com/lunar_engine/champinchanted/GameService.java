@@ -123,7 +123,23 @@ public class GameService {
 
     public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
         getGame(gameCode).ifPresent(game -> {
-            // Lógica futura para actualizar estado en tiempo real
+            // Comprueba si el update es del Jugador 1
+            if (username.equals(game.getUsernamePlayer1())) {
+                game.setPlayer1PositionX(playerState.getPositionX());
+                game.setPlayer1PositionY(playerState.getPositionY());
+                // Aquí podrías actualizar también vidas, puntuación, etc. si lo envías
+                // game.setPlayer1Lives(playerState.getLives());
+                // game.setPlayer1Score(playerState.getScore());
+
+            // Comprueba si el update es del Jugador 2
+            } else if (username.equals(game.getUsernamePlayer2())) {
+                game.setPlayer2PositionX(playerState.getPositionX());
+                game.setPlayer2PositionY(playerState.getPositionY());
+                // game.setPlayer2Lives(playerState.getLives());
+                // game.setPlayer2Score(playerState.getScore());
+            }
+            // No es necesario llamar a updateGame(game) aquí, porque el GameWebSocketController
+            // ya se encarga de coger el estado actualizado y retransmitirlo.
         });
     }
 }

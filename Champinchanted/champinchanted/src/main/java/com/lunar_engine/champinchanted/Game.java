@@ -93,6 +93,11 @@ public class Game {
     public boolean isPlayer2Ready() { return player2Ready; }
     public void setPlayer2Ready(boolean r) { this.player2Ready = r; }
     
+    public void setPlayer1PositionX(float x) { this.player1PositionX = x; }
+    public void setPlayer1PositionY(float y) { this.player1PositionY = y; }
+    public void setPlayer2PositionX(float x) { this.player2PositionX = x; }
+    public void setPlayer2PositionY(float y) { this.player2PositionY = y; }
+
     @JsonIgnore
     public GameStateMessage toGameStateMessage() {
         PlayerState p1State = new PlayerState(this.usernamePlayer1, this.player1PositionX, this.player1PositionY, this.player1Score, this.player1Lives, this.player1SpellUsed, this.player1FlagStatus, this.player1Character, this.player1Ready);
