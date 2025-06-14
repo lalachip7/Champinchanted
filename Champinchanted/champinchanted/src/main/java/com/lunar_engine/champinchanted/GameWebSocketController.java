@@ -162,11 +162,20 @@ public class GameWebSocketController {
         });
     }
 
-    @MessageMapping("/game.collectFlag")
+        @MessageMapping("/game.collectFlag")
     public void collectFlag(@Payload Map<String, String> payload) {
         String gameCode = payload.get("gameCode");
         String username = payload.get("username");
         gameService.collectFlag(gameCode, username);
+    }
+
+    // ▼▼▼ AÑADE ESTE MÉTODO ▼▼▼
+    @MessageMapping("/game.collectSpell")
+    public void collectSpell(@Payload Map<String, String> payload) {
+        String gameCode = payload.get("gameCode");
+        String username = payload.get("username");
+        String spellType = payload.get("spellType");
+        gameService.collectSpell(gameCode, username, spellType);
     }
 
     @MessageMapping("/game.updateState")

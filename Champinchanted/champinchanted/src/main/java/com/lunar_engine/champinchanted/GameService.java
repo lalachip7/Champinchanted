@@ -127,13 +127,14 @@ public class GameService {
 
     public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
         getGame(gameCode).ifPresent(game -> {
-            
+
             // --- INICIO DE DEPURACIÓN ---
             // Imprimimos la información que recibimos y la que tenemos guardada
             System.out.println("--- Recibida actualización de estado ---");
             System.out.println("Partida: " + gameCode);
             System.out.println("Usuario que envía: '" + username + "'");
-            System.out.println("Posición enviada: X=" + playerState.getPositionX() + ", Y=" + playerState.getPositionY());
+            System.out
+                    .println("Posición enviada: X=" + playerState.getPositionX() + ", Y=" + playerState.getPositionY());
             System.out.println("Servidor tiene a P1 como: '" + game.getUsernamePlayer1() + "'");
             System.out.println("Servidor tiene a P2 como: '" + game.getUsernamePlayer2() + "'");
             // --- FIN DE DEPURACIÓN ---
@@ -147,7 +148,7 @@ public class GameService {
                 System.out.println(">> Jugador 1 reconocido y actualizado.");
                 playerRecognized = true;
 
-            // Comprueba si el update es del Jugador 2
+                // Comprueba si el update es del Jugador 2
             } else if (username.equals(game.getUsernamePlayer2())) {
                 game.setPlayer2PositionX(playerState.getPositionX());
                 game.setPlayer2PositionY(playerState.getPositionY());
@@ -156,7 +157,8 @@ public class GameService {
             }
 
             if (!playerRecognized) {
-                System.err.println("!! ADVERTENCIA: El usuario '" + username + "' no coincide con ningún jugador de la partida.");
+                System.err.println(
+                        "!! ADVERTENCIA: El usuario '" + username + "' no coincide con ningún jugador de la partida.");
             }
         });
     }
@@ -179,6 +181,25 @@ public class GameService {
     public void broadcastGameState(String gameCode) {
         getGame(gameCode).ifPresent(game -> {
             messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
+        });
+    }
+
+    public void collectSpell(String gameCode, String username, String spellType) {
+        getGame(gameCode).ifPresent(game -> {
+            boolean isPlayer1 = username.equals(game.getUsernamePlayer1());
+
+            if (spellType.equals("venom") && game.isVenomSpellVisible()) {
+                game.setVenomSpellVisible(false); // El hechizo desaparece del mapa
+                if (isPlayer1) {
+                    game.setPlayer1HeldSpell(1); // 1 = Venom
+                } else {
+                    game.setPlayer2HeldSpell(1);
+                }
+                System.out.println("Jugador " + username + " ha cogido VENOM.");
+            }
+            // Aquí podrías añadir la lógica para otros hechizos con "else if"
+
+            broadcastGameState(gameCode); // Notifica a todos los clientes del cambio
         });
     }
 }

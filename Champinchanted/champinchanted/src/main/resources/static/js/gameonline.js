@@ -29,6 +29,9 @@ class GameSceneOnline extends Phaser.Scene {
         this.house1Sprite = null;
         this.house2Sprite = null;
         this.venomSpellSprite = null;
+
+        this.player1SpellUI = {};
+        this.player2SpellUI = {};
     }
 
     preload() {
@@ -137,8 +140,15 @@ class GameSceneOnline extends Phaser.Scene {
 
         // La bandera y los hechizos son sprites simples, el servidor controla su posición
         let flagKey = this.getAssetKey('flag');
-        this.flagSprite = this.add.sprite(0, 0, flagKey).setScale(0.2).setVisible(false); // Invisible hasta que el servidor dé su posición
-        this.venomSpellSprite = this.add.sprite(0, 0, 'venom').setScale(0.1).setVisible(false);
+        // 1. Crear como sprite de físicas
+        this.flagSprite = this.physics.add.sprite(0, 0, flagKey).setScale(0.2).setVisible(false);
+        // 2. Desactivar su gravedad
+        this.flagSprite.body.setAllowGravity(false);
+
+        // 1. Crear como sprite de físicas
+        this.venomSpellSprite = this.physics.add.sprite(0, 0, 'venom').setScale(0.1).setVisible(false);
+        // 2. Desactivar su gravedad
+        this.venomSpellSprite.body.setAllowGravity(false);
 
         // --- CREACIÓN DE LOS JUGADORES ---
         const j1_id = this.registry.get('personajeJ1');
@@ -161,11 +171,21 @@ class GameSceneOnline extends Phaser.Scene {
         this.physics.add.collider(this.player, platforms);
 
         this.physics.add.overlap(this.player, this.flagSprite, () => {
-            // ...si está visible, informamos al servidor.
             if (this.flagSprite.visible) {
                 this.stompClient.send("/app/game.collectFlag", {}, JSON.stringify({
                     gameCode: this.gameCode,
                     username: this.username
+                }));
+            }
+        }, null, this);
+
+        this.physics.add.overlap(this.player, this.venomSpellSprite, () => {
+            if (this.venomSpellSprite.visible) { // Solo reacciona si el hechizo está visible
+                console.log("Player overlapped with venom spell, sending message..."); // Mensaje de depuración
+                this.stompClient.send("/app/game.collectSpell", {}, JSON.stringify({
+                    gameCode: this.gameCode,
+                    username: this.username,
+                    spellType: "venom" // Importante: decimos qué hechizo hemos cogido
                 }));
             }
         }, null, this);
@@ -180,7 +200,8 @@ class GameSceneOnline extends Phaser.Scene {
         }
 
         // --- CREACIÓN DE LA INTERFAZ (UI) ---
-        this.createUI();
+        this.createSpellUI();
+        this.createMainUI();
 
         // --- LÓGICA DE RED ---
         this.subscribeToGameUpdates();
@@ -251,6 +272,7 @@ class GameSceneOnline extends Phaser.Scene {
             return;
         }
 
+
         const { player1State, player2State } = this.serverState;
 
         // Determinar qué estado pertenece al oponente
@@ -303,6 +325,8 @@ class GameSceneOnline extends Phaser.Scene {
                 this.venomSpellSprite.setPosition(this.serverState.venomSpellX, this.serverState.venomSpellY);
             }
         }
+        this.updatePlayerSpellUI(this.player1SpellUI, this.serverState.player1HeldSpell);
+        this.updatePlayerSpellUI(this.player2SpellUI, this.serverState.player2HeldSpell);
     }
     getAssetKey(baseName) {
         const mundo = this.registry.get('mapa');
@@ -310,8 +334,43 @@ class GameSceneOnline extends Phaser.Scene {
         return baseName + (suffixMap[mundo] || '_o');
     }
 
+    createSpellUI() {
+        const p1_ui = {
+            rect: this.add.image(160, 200, 'rectangle').setScale(0.8).setVisible(false),
+            icon: this.add.image(75, 200, null).setScale(0.5).setVisible(false),
+            text: this.add.text(135, 145, '', { fontFamily: 'FantasyFont', color: '#35221E', fontSize: '25px' }).setVisible(false)
+        };
+        this.player1SpellUI = p1_ui;
+
+        const p2_ui = {
+            rect: this.add.image(1760, 200, 'rectangle').setScale(0.8).setVisible(false),
+            icon: this.add.image(1685, 200, null).setScale(0.5).setVisible(false),
+            text: this.add.text(1735, 145, '', { fontFamily: 'FantasyFont', color: '#35221E', fontSize: '25px' }).setVisible(false)
+        };
+        this.player2SpellUI = p2_ui;
+    }
+
+    // Muestra u oculta la UI de hechizo de un jugador y la configura
+    updatePlayerSpellUI(spellUI, spellId) {
+        const spellData = {
+            1: { key: 'venom_i', text: 'Poción veneno:\nquita 1 vida\ncada 5 seg.' },
+            // 2: { key: 'dazer_i', text: 'Dazer:\ncongela 3 seg.' }
+        };
+
+        if (spellId > 0 && spellData[spellId]) {
+            const data = spellData[spellId];
+            spellUI.rect.setVisible(true);
+            spellUI.icon.setTexture(data.key).setVisible(true);
+            spellUI.text.setText(data.text).setVisible(true);
+        } else {
+            spellUI.rect.setVisible(false);
+            spellUI.icon.setVisible(false);
+            spellUI.text.setVisible(false);
+        }
+    }
+
     // --- FUNCIONES AUXILIARES (iguales que en local) ---
-    createUI() {
+    createMainUI() {
         const j1_id = this.registry.get('personajeJ1');
         const j2_id = this.registry.get('personajeJ2');
         const p1_icon_key = this.getCharacterKey(j1_id) + '_i';

@@ -24,6 +24,9 @@ public class Game {
     private float venomSpellX, venomSpellY;
     private boolean venomSpellVisible = true;
 
+    private int player1HeldSpell = 0; // 0:ninguno, 1:venom, 2:dazer, etc.
+    private int player2HeldSpell = 0;
+
     public Game() {
     }
 
@@ -59,6 +62,8 @@ public class Game {
         this.venomSpellX = 400; // Posición inicial del hechizo
         this.venomSpellY = 500;
         this.venomSpellVisible = true;
+        this.player1HeldSpell = 0;
+        this.player2HeldSpell = 0;
     }
 
     public GameLobbyData toLobbyData() {
@@ -246,15 +251,37 @@ public class Game {
         this.venomSpellVisible = venomSpellVisible;
     }
 
+    public int getPlayer1HeldSpell() {
+        return player1HeldSpell;
+    }
+
+    public void setPlayer1HeldSpell(int spellId) {
+        this.player1HeldSpell = spellId;
+    }
+
+    public int getPlayer2HeldSpell() {
+        return player2HeldSpell;
+    }
+
+    public void setPlayer2HeldSpell(int spellId) {
+        this.player2HeldSpell = spellId;
+    }
+
     @JsonIgnore
     public GameStateMessage toGameStateMessage() {
 
         // Asegúrate de que los constructores de PlayerState estén completos
-        PlayerState p1State = new PlayerState(this.usernamePlayer1, this.player1PositionX, this.player1PositionY, this.player1Score, this.player1Lives, this.player1SpellUsed, this.player1FlagStatus, this.player1Character, this.player1Ready);
-        PlayerState p2State = new PlayerState(this.usernamePlayer2, this.player2PositionX, this.player2PositionY, this.player2Score, this.player2Lives, this.player2SpellUsed, this.player2FlagStatus, this.player2Character, this.player2Ready);
-
+        PlayerState p1State = new PlayerState(this.usernamePlayer1, this.player1PositionX, this.player1PositionY,
+                this.player1Score, this.player1Lives, this.player1SpellUsed, this.player1FlagStatus,
+                this.player1Character, this.player1Ready);
+        PlayerState p2State = new PlayerState(this.usernamePlayer2, this.player2PositionX, this.player2PositionY,
+                this.player2Score, this.player2Lives, this.player2SpellUsed, this.player2FlagStatus,
+                this.player2Character, this.player2Ready);
 
         GameStateMessage message = new GameStateMessage(this.code, p1State, p2State, this.map);
+
+        message.setPlayer1HeldSpell(this.player1HeldSpell);
+        message.setPlayer2HeldSpell(this.player2HeldSpell);
 
         // --- Asignación de datos de la bandera ---
         message.setFlagPositionX(this.flagPositionX);
