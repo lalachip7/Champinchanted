@@ -2,15 +2,9 @@ package com.lunar_engine.champinchanted;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/games")
@@ -44,24 +38,5 @@ public class GameController {
                 .<ResponseEntity<Object>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(Map.of("message", "No se pudo unir a la partida. Podría no existir o ya estar llena.")));
-    }
-
-    @GetMapping("/{gameCode}/status")
-    public ResponseEntity<Object> getGameStatus(@PathVariable String gameCode) {
-        Optional<Game> gameOpt = gameService.getGame(gameCode);
-
-        if (gameOpt.isPresent()) {
-            Game game = gameOpt.get();
-            // Creamos un mapa simple para devolver solo la información que necesitamos
-            Map<String, Object> gameStatus = Map.of(
-                "gameCode", game.getCode(),
-                "playerCount", game.getUsersConnected()
-                // podrías añadir más datos aquí si los necesitaras en el futuro
-            );
-            return ResponseEntity.ok(gameStatus);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "La partida no fue encontrada."));
-        }
     }
 }
