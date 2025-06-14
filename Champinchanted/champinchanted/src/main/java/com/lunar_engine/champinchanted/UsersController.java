@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,6 +73,98 @@ public class UsersController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Usuario o contraseña incorrectos."));
+        }
+    }
+
+    @PostMapping("/heartbeat")
+    public ResponseEntity<Void> handleHeartbeat(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+
+        if (username == null || username.trim().isEmpty()) {
+            // Si no se proporciona un nombre de usuario, es una mala petición.
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Se utiliza el servicio ApiStatusService, que ya está inyectado en el
+        // controlador,
+        // para registrar la actividad del usuario.
+        this.apiStatusService.hasSeen(username);
+
+        // Se devuelve una respuesta HTTP 200 OK sin contenido para indicar que todo ha
+        // ido bien.
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<Object> updatePassword(
+            @PathVariable String username,
+            @RequestBody Map<String, String> payload) {
+
+        // 1. Buscamos si el usuario existe en el repositorio.
+        Optional<User> userOpt = this.userRep.getUser(username); //
+
+        if (userOpt.isEmpty()) {
+            // Si el usuario no existe, devolvemos un error 404 (Not Found).
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "El usuario no fue encontrado."));
+        }
+
+        // 2. Extraemos la nueva contraseña del cuerpo de la petición.
+        String oldPassword = payload.get("oldPassword");
+        String newPassword = payload.get("newPassword");
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            // Si no se envía una contraseña, devolvemos un error 400 (Bad Request).
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "La nueva contraseña no puede estar vacía."));
+        }
+
+        // 3. Obtenemos el usuario y actualizamos su contraseña.
+        User userToUpdate = userOpt.get();
+
+        if (!passwordEncoder.matches(oldPassword, userToUpdate.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "La contraseña antigua es incorrecta."));
+        }
+
+        // Es MUY IMPORTANTE codificar la nueva contraseña antes de guardarla.
+        String encodedPassword = this.passwordEncoder.encode(newPassword);
+        userToUpdate.setPassword(encodedPassword);
+        this.userRep.updateUser(userToUpdate);
+
+        // 4. Guardamos los cambios en el repositorio.
+        this.userRep.updateUser(userToUpdate); //
+
+        // 5. Devolvemos una respuesta de éxito.
+        return ResponseEntity.ok(Map.of("message", "Contraseña actualizada con éxito."));
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Object> deleteUser(
+            @PathVariable String username,
+            @RequestBody Map<String, String> payload) { // Pedimos el cuerpo de la petición
+
+        // Buscamos al usuario
+        Optional<User> userOpt = this.userRep.getUser(username);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "El usuario no fue encontrado."));
+        }
+
+        // Verificamos la contraseña
+        String password = payload.get("password");
+        if (password == null || !passwordEncoder.matches(password, userOpt.get().getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED) // Error 401 No Autorizado
+                    .body(Map.of("message", "La contraseña es incorrecta."));
+        }
+
+        // Si la contraseña es correcta, procedemos a borrar
+        boolean isDeleted = this.userRep.deleteUser(username);
+        if (isDeleted) {
+            this.apiStatusService.setInactive(username);
+            return ResponseEntity.ok(Map.of("message", "Usuario eliminado correctamente."));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "No se pudo eliminar el usuario."));
         }
     }
 }

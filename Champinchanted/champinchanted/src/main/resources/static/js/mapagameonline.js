@@ -32,16 +32,20 @@ class MapaGameOnline extends Phaser.Scene {
         // --- Interfaz de Usuario ---
         this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 } }).setOrigin(0.5);
         this.createChatInterface();
-        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.10).setInteractive().on('pointerdown', () => this.toggleChatWindow());
+        const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.08).setInteractive().on('pointerdown', () => this.toggleChatWindow());
         chatButton.setDepth(10);
+        this.add.image(550, 305, 'otoño').setScale(0.4).setDepth(1);
+        this.add.image(1350, 305, 'invierno').setScale(0.4).setDepth(1);
+        this.add.image(1350, 785, 'primavera').setScale(0.4).setDepth(1);
+        this.add.image(550, 785, 'verano').setScale(0.4).setDepth(1);
         const mapaButtons = [{ key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
         mapaButtons.forEach(buttonInfo => {
             const buttonImage = this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
-                .setScale(0.20);
+                .setScale(0.20).setDepth(2);
             if (this.isHost) {
                 buttonImage.setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId));
             } else {
-                buttonImage.setAlpha(0.6);
+                buttonImage.setAlpha(0.75);
             }
         });
 
@@ -53,14 +57,21 @@ class MapaGameOnline extends Phaser.Scene {
 
         // --- Lógica del indicador del servidor Y CONTADOR ---
         this.serverStatusIcon = this.add.image(60, 60, 'server_off').setScale(0.1);
-        
+
         // Se crea el texto para el contador de jugadores a la derecha del icono.
-        this.playerCountText = this.add.text(100, 45, '?/2', {
+        this.playerCountText = this.add.text(100, 45, '0/2', {
             fontFamily: 'FantasyFont, Calibri',
             fontSize: '24px',
             color: '#FFFFFF',
             stroke: '#000000',
             strokeThickness: 4
+        });
+
+        this.playerCountPoll = this.time.addEvent({
+            delay: 3000, // Preguntar cada 3 segundos
+            callback: this.updatePlayerCountViaAPI, // La función que hará la llamada
+            callbackScope: this,
+            loop: true
         });
 
         if (this.stompClient && this.stompClient.connected) {
@@ -69,7 +80,7 @@ class MapaGameOnline extends Phaser.Scene {
         if (this.stompClient) {
             this.stompClient.ws.onclose = () => this.events.emit('server_disconnected');
         }
-        this.events.on('server_disconnected', () => { 
+        this.events.on('server_disconnected', () => {
             if (this.serverStatusIcon) { this.serverStatusIcon.setTexture('server_off'); }
             // Si nos desconectamos, el contador también se resetea.
             if (this.playerCountText) { this.playerCountText.setText('0/2'); }
@@ -94,10 +105,7 @@ class MapaGameOnline extends Phaser.Scene {
             // Muestra el mensaje de sistema (unión/desconexión).
             this.displaySystemMessage(notification.content);
 
-            // Actualiza el contador de jugadores si la información viene en el mensaje.
-            if (notification.playerCount !== undefined) {
-                this.playerCountText.setText(`${notification.playerCount}/2`);
-            }
+            // HEMOS QUITADO LA LÓGICA PARA ACTUALIZAR EL CONTADOR DESDE AQUÍ
         });
 
         // Se envía el mensaje de addUser DESPUÉS de suscribirse a todo.
@@ -108,6 +116,25 @@ class MapaGameOnline extends Phaser.Scene {
         this.events.on('shutdown', () => this.cleanup());
     }
 
+    async updatePlayerCountViaAPI() {
+        // Si por alguna razón no tenemos código de juego, no hacemos nada
+        if (!this.gameCode) return;
+
+        try {
+            const response = await fetch(`/api/games/${this.gameCode}/status`);
+            if (response.ok) {
+                const data = await response.json();
+                // Actualizamos el texto del contador con la respuesta del servidor
+                if (this.playerCountText) {
+                    this.playerCountText.setText(`${data.playerCount}/2`);
+                }
+            }
+        } catch (error) {
+            console.error("Error al actualizar el contador de jugadores:", error);
+            // Podríamos querer detener el sondeo si hay un error persistente
+            this.playerCountPoll.destroy();
+        }
+    }
     displaySystemMessage(content) {
         const messagesArea = document.getElementById('chat-messages');
         if (!messagesArea) return;
@@ -199,6 +226,11 @@ class MapaGameOnline extends Phaser.Scene {
         this.events.off('server_disconnected');
         if (this.chatContainer) {
             this.chatContainer.remove();
+        }
+
+        // AÑADIR ESTA LÍNEA para detener el sondeo
+        if (this.playerCountPoll) {
+            this.playerCountPoll.destroy();
         }
     }
 }
