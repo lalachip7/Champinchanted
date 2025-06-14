@@ -7,6 +7,12 @@ public class GameStateMessage {
     private PlayerState player2State;
     private int mapId;
 
+    private float flagPositionX, flagPositionY;
+    private boolean flagVisible;
+    private String flagHolderUsername;
+    private float venomSpellX, venomSpellY;
+    private boolean venomSpellVisible;
+
     public GameStateMessage() {}
 
     // Constructor con todos los parámetros
@@ -29,4 +35,25 @@ public class GameStateMessage {
 
     public int getMapId() { return mapId; }
     public void setMapId(int mapId) { this.mapId = mapId; }
+
+    public float getFlagPositionX() { return flagPositionX; }
+    public void setFlagPositionX(float flagPositionX) { this.flagPositionX = flagPositionX; }
+
+    public float getFlagPositionY() { return flagPositionY; }
+    public void setFlagPositionY(float flagPositionY) { this.flagPositionY = flagPositionY; }
+
+    public boolean isFlagVisible() { return flagVisible; }
+    public void setFlagVisible(boolean flagVisible) { this.flagVisible = flagVisible; }
+
+    public String getFlagHolderUsername() { return flagHolderUsername; }
+    public void setFlagHolderUsername(String flagHolderUsername) { this.flagHolderUsername = flagHolderUsername; }
+
+    public float getVenomSpellX() { return venomSpellX; }
+    public void setVenomSpellX(float venomSpellX) { this.venomSpellX = venomSpellX; }
+
+    public float getVenomSpellY() { return venomSpellY; }
+    public void setVenomSpellY(float venomSpellY) { this.venomSpellY = venomSpellY; }
+
+    public boolean isVenomSpellVisible() { return venomSpellVisible; }
+    public void setVenomSpellVisible(boolean venomSpellVisible) { this.venomSpellVisible = venomSpellVisible; }
 }

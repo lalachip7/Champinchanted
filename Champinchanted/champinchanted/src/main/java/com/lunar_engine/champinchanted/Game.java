@@ -17,13 +17,22 @@ public class Game {
     private int player2Score, player2Lives;
     private boolean player2SpellUsed, player2FlagStatus;
 
-    public Game() {}
+    private float flagPositionX, flagPositionY;
+    private boolean flagVisible = true;
+    private String flagHolderUsername = null; // Quién tiene la bandera
+
+    private float venomSpellX, venomSpellY;
+    private boolean venomSpellVisible = true;
+
+    public Game() {
+    }
 
     public Game(String usernamePlayer1, String code) {
         this.usernamePlayer1 = usernamePlayer1;
         this.code = code;
         this.usersConnected = 1;
         resetInGameStats();
+        initializeRound();
     }
 
     public Game(GameLobbyData lobbyData) {
@@ -37,6 +46,19 @@ public class Game {
         this.player2Ready = lobbyData.isPlayer2Ready();
         this.usersConnected = lobbyData.getUsersConnected();
         resetInGameStats();
+        initializeRound();
+    }
+
+    // Método para inicializar/resetear objetos de la ronda
+    public void initializeRound() {
+        this.flagPositionX = 960; // Posición inicial de la bandera
+        this.flagPositionY = 150;
+        this.flagVisible = true;
+        this.flagHolderUsername = null;
+
+        this.venomSpellX = 400; // Posición inicial del hechizo
+        this.venomSpellY = 500;
+        this.venomSpellVisible = true;
     }
 
     public GameLobbyData toLobbyData() {
@@ -54,12 +76,18 @@ public class Game {
     }
 
     public void resetInGameStats() {
-        this.player1PositionX = 0.0f; this.player1PositionY = 0.0f;
-        this.player1Score = 0; this.player1Lives = 5;
-        this.player1SpellUsed = false; this.player1FlagStatus = false;
-        this.player2PositionX = 0.0f; this.player2PositionY = 0.0f;
-        this.player2Score = 0; this.player2Lives = 5;
-        this.player2SpellUsed = false; this.player2FlagStatus = false;
+        this.player1PositionX = 0.0f;
+        this.player1PositionY = 0.0f;
+        this.player1Score = 0;
+        this.player1Lives = 5;
+        this.player1SpellUsed = false;
+        this.player1FlagStatus = false;
+        this.player2PositionX = 0.0f;
+        this.player2PositionY = 0.0f;
+        this.player2Score = 0;
+        this.player2Lives = 5;
+        this.player2SpellUsed = false;
+        this.player2FlagStatus = false;
     }
 
     public int getPlayerCount() {
@@ -74,34 +102,171 @@ public class Game {
     }
 
     // --- GETTERS & SETTERS ---
-    public String getUsernamePlayer1() { return usernamePlayer1; }
-    public void setUsernamePlayer1(String u) { this.usernamePlayer1 = u; }
-    public String getUsernamePlayer2() { return usernamePlayer2; }
-    public void setUsernamePlayer2(String u) { this.usernamePlayer2 = u; }
-    public int getMap() { return map; }
-    public void setMap(int m) { this.map = m; }
-    public int getPlayer1Character() { return player1Character; }
-    public void setPlayer1Character(int c) { this.player1Character = c; }
-    public int getPlayer2Character() { return player2Character; }
-    public void setPlayer2Character(int c) { this.player2Character = c; }
-    public String getCode() { return code; }
-    public void setCode(String c) { this.code = c; }
-    public int getUsersConnected() { return usersConnected; }
-    public void setUsersConnected(int u) { this.usersConnected = u; }
-    public boolean isPlayer1Ready() { return player1Ready; }
-    public void setPlayer1Ready(boolean r) { this.player1Ready = r; }
-    public boolean isPlayer2Ready() { return player2Ready; }
-    public void setPlayer2Ready(boolean r) { this.player2Ready = r; }
-    
-    public void setPlayer1PositionX(float x) { this.player1PositionX = x; }
-    public void setPlayer1PositionY(float y) { this.player1PositionY = y; }
-    public void setPlayer2PositionX(float x) { this.player2PositionX = x; }
-    public void setPlayer2PositionY(float y) { this.player2PositionY = y; }
+    public String getUsernamePlayer1() {
+        return usernamePlayer1;
+    }
+
+    public void setUsernamePlayer1(String u) {
+        this.usernamePlayer1 = u;
+    }
+
+    public String getUsernamePlayer2() {
+        return usernamePlayer2;
+    }
+
+    public void setUsernamePlayer2(String u) {
+        this.usernamePlayer2 = u;
+    }
+
+    public int getMap() {
+        return map;
+    }
+
+    public void setMap(int m) {
+        this.map = m;
+    }
+
+    public int getPlayer1Character() {
+        return player1Character;
+    }
+
+    public void setPlayer1Character(int c) {
+        this.player1Character = c;
+    }
+
+    public int getPlayer2Character() {
+        return player2Character;
+    }
+
+    public void setPlayer2Character(int c) {
+        this.player2Character = c;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String c) {
+        this.code = c;
+    }
+
+    public int getUsersConnected() {
+        return usersConnected;
+    }
+
+    public void setUsersConnected(int u) {
+        this.usersConnected = u;
+    }
+
+    public boolean isPlayer1Ready() {
+        return player1Ready;
+    }
+
+    public void setPlayer1Ready(boolean r) {
+        this.player1Ready = r;
+    }
+
+    public boolean isPlayer2Ready() {
+        return player2Ready;
+    }
+
+    public void setPlayer2Ready(boolean r) {
+        this.player2Ready = r;
+    }
+
+    public void setPlayer1PositionX(float x) {
+        this.player1PositionX = x;
+    }
+
+    public void setPlayer1PositionY(float y) {
+        this.player1PositionY = y;
+    }
+
+    public void setPlayer2PositionX(float x) {
+        this.player2PositionX = x;
+    }
+
+    public void setPlayer2PositionY(float y) {
+        this.player2PositionY = y;
+    }
+
+    public float getFlagPositionX() {
+        return flagPositionX;
+    }
+
+    public void setFlagPositionX(float flagPositionX) {
+        this.flagPositionX = flagPositionX;
+    }
+
+    public float getFlagPositionY() {
+        return flagPositionY;
+    }
+
+    public void setFlagPositionY(float flagPositionY) {
+        this.flagPositionY = flagPositionY;
+    }
+
+    public boolean isFlagVisible() {
+        return flagVisible;
+    }
+
+    public void setFlagVisible(boolean flagVisible) {
+        this.flagVisible = flagVisible;
+    }
+
+    public String getFlagHolderUsername() {
+        return flagHolderUsername;
+    }
+
+    public void setFlagHolderUsername(String flagHolderUsername) {
+        this.flagHolderUsername = flagHolderUsername;
+    }
+
+    public float getVenomSpellX() {
+        return venomSpellX;
+    }
+
+    public void setVenomSpellX(float venomSpellX) {
+        this.venomSpellX = venomSpellX;
+    }
+
+    public float getVenomSpellY() {
+        return venomSpellY;
+    }
+
+    public void setVenomSpellY(float venomSpellY) {
+        this.venomSpellY = venomSpellY;
+    }
+
+    public boolean isVenomSpellVisible() {
+        return venomSpellVisible;
+    }
+
+    public void setVenomSpellVisible(boolean venomSpellVisible) {
+        this.venomSpellVisible = venomSpellVisible;
+    }
 
     @JsonIgnore
     public GameStateMessage toGameStateMessage() {
+
+        // Asegúrate de que los constructores de PlayerState estén completos
         PlayerState p1State = new PlayerState(this.usernamePlayer1, this.player1PositionX, this.player1PositionY, this.player1Score, this.player1Lives, this.player1SpellUsed, this.player1FlagStatus, this.player1Character, this.player1Ready);
         PlayerState p2State = new PlayerState(this.usernamePlayer2, this.player2PositionX, this.player2PositionY, this.player2Score, this.player2Lives, this.player2SpellUsed, this.player2FlagStatus, this.player2Character, this.player2Ready);
-        return new GameStateMessage(this.code, p1State, p2State, this.map);
+
+
+        GameStateMessage message = new GameStateMessage(this.code, p1State, p2State, this.map);
+
+        // --- Asignación de datos de la bandera ---
+        message.setFlagPositionX(this.flagPositionX);
+        message.setFlagPositionY(this.flagPositionY);
+        message.setFlagVisible(this.flagVisible);
+        message.setFlagHolderUsername(this.flagHolderUsername);
+
+        // --- Asignación de datos del hechizo ---
+        message.setVenomSpellX(this.venomSpellX);
+        message.setVenomSpellY(this.venomSpellY);
+        message.setVenomSpellVisible(this.venomSpellVisible);
+
+        return message;
     }
 }

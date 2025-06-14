@@ -24,6 +24,11 @@ class GameSceneOnline extends Phaser.Scene {
 
         this.keys = null;
         this.isMovementEnabled = true;
+
+        this.flagSprite = null;
+        this.house1Sprite = null;
+        this.house2Sprite = null;
+        this.venomSpellSprite = null;
     }
 
     preload() {
@@ -125,6 +130,16 @@ class GameSceneOnline extends Phaser.Scene {
         platforms.create(960, 950, pequena).setSize(70, 40).setOffset(10, 15).refreshBody();
         platforms.create(1600, 350, mediana).setSize(150, 40).refreshBody();
 
+        // Las casas son estáticas, podemos usar physics para las colisiones locales
+        let casaKey = this.getAssetKey('house'); // Helper para obtener la key de la estación
+        this.house1Sprite = this.physics.add.staticImage(175, 875, casaKey).setScale(0.4).refreshBody();
+        this.house2Sprite = this.physics.add.staticImage(1750, 875, casaKey).setScale(0.4).refreshBody();
+
+        // La bandera y los hechizos son sprites simples, el servidor controla su posición
+        let flagKey = this.getAssetKey('flag');
+        this.flagSprite = this.add.sprite(0, 0, flagKey).setScale(0.2).setVisible(false); // Invisible hasta que el servidor dé su posición
+        this.venomSpellSprite = this.add.sprite(0, 0, 'venom').setScale(0.1).setVisible(false);
+
         // --- CREACIÓN DE LOS JUGADORES ---
         const j1_id = this.registry.get('personajeJ1');
         const j2_id = this.registry.get('personajeJ2');
@@ -144,6 +159,16 @@ class GameSceneOnline extends Phaser.Scene {
         this.player.setBounce(0.1).setCollideWorldBounds(true);
         this.physics.add.collider(this.player, ground);
         this.physics.add.collider(this.player, platforms);
+
+        this.physics.add.overlap(this.player, this.flagSprite, () => {
+            // ...si está visible, informamos al servidor.
+            if (this.flagSprite.visible) {
+                this.stompClient.send("/app/game.collectFlag", {}, JSON.stringify({
+                    gameCode: this.gameCode,
+                    username: this.username
+                }));
+            }
+        }, null, this);
 
         // --- DEFINICIÓN DE TECLAS ---
         this.keys = this.input.keyboard.createCursorKeys();
@@ -183,6 +208,19 @@ class GameSceneOnline extends Phaser.Scene {
         } else {
             this.player.setVelocityX(0);
         }
+        // ▼▼▼ LÓGICA DE LA BANDERA PEGADA AL JUGADOR ▼▼▼
+        if (this.serverState && this.serverState.flagHolderUsername) {
+            let holder = null;
+            if (this.serverState.flagHolderUsername === this.username) {
+                holder = this.player;
+            } else {
+                holder = this.opponent;
+            }
+            if (holder) {
+                // Hacemos que la bandera siga al jugador que la tiene
+                this.flagSprite.setPosition(holder.x + (holder.flipX ? -25 : 25), holder.y - 40);
+            }
+        }
     }
 
     // --- FUNCIONES DE RED ---
@@ -207,7 +245,7 @@ class GameSceneOnline extends Phaser.Scene {
         }
     }
 
-     updateVisuals() {
+    updateVisuals() {
         // Asegurarse de que tenemos datos del servidor
         if (!this.serverState || !this.serverState.player1State || !this.serverState.player2State || !this.opponent) {
             return;
@@ -217,7 +255,7 @@ class GameSceneOnline extends Phaser.Scene {
 
         // Determinar qué estado pertenece al oponente
         const opponentState = (this.username === player1State.username) ? player2State : player1State;
-        
+
         // Guardamos la posición anterior para determinar la dirección
         const oldOpponentX = this.opponent.x;
 
@@ -240,7 +278,7 @@ class GameSceneOnline extends Phaser.Scene {
 
         // Actualizar UI (vidas y puntuación)
         if (this.scoreText) {
-             this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
+            this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
         }
         if (this.player1LifeImages) {
             this.updatePlayerLives(this.player1LifeImages, player1State.lives);
@@ -248,6 +286,28 @@ class GameSceneOnline extends Phaser.Scene {
         if (this.player2LifeImages) {
             this.updatePlayerLives(this.player2LifeImages, player2State.lives);
         }
+        // --- Bandera ---
+        if (this.flagSprite) {
+            // La bandera solo es visible en el mapa si NADIE la tiene.
+            const isFlagOnMap = this.serverState.flagVisible && !this.serverState.flagHolderUsername;
+            this.flagSprite.setVisible(isFlagOnMap);
+            if (isFlagOnMap) {
+                this.flagSprite.setPosition(this.serverState.flagPositionX, this.serverState.flagPositionY);
+            }
+        }
+
+        // --- Hechizo de Veneno ---
+        if (this.venomSpellSprite) {
+            this.venomSpellSprite.setVisible(this.serverState.venomSpellVisible);
+            if (this.serverState.venomSpellVisible) {
+                this.venomSpellSprite.setPosition(this.serverState.venomSpellX, this.serverState.venomSpellY);
+            }
+        }
+    }
+    getAssetKey(baseName) {
+        const mundo = this.registry.get('mapa');
+        const suffixMap = { 1: '_o', 2: '_i', 3: '_p', 4: '_v' };
+        return baseName + (suffixMap[mundo] || '_o');
     }
 
     // --- FUNCIONES AUXILIARES (iguales que en local) ---

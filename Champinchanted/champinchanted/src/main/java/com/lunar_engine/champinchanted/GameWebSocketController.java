@@ -162,6 +162,13 @@ public class GameWebSocketController {
         });
     }
 
+    @MessageMapping("/game.collectFlag")
+    public void collectFlag(@Payload Map<String, String> payload) {
+        String gameCode = payload.get("gameCode");
+        String username = payload.get("username");
+        gameService.collectFlag(gameCode, username);
+    }
+
     @MessageMapping("/game.updateState")
     public void updateState(@Payload GameUpdateMessage message) {
         // Usamos el GameService para actualizar el estado del jugador en el servidor

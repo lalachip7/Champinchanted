@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -15,10 +16,12 @@ public class GameService {
 
     private final Map<String, Game> activeGames;
     private final GameRepository gameRepository;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, SimpMessageSendingOperations messagingTemplate) {
         this.activeGames = new ConcurrentHashMap<>();
         this.gameRepository = gameRepository;
+        this.messagingTemplate = messagingTemplate; // Asignarlo aquí
     }
 
     @PostConstruct
@@ -64,7 +67,7 @@ public class GameService {
             gameRepository.saveGame(game.toLobbyData());
         }
     }
-    
+
     public Game disconnectUserFromGame(String gameCode, String username) {
         Game game = activeGames.get(gameCode);
         if (game != null) {
@@ -74,7 +77,7 @@ public class GameService {
                 game.setUsernamePlayer1(null);
                 game.setUsersConnected(game.getUsersConnected() - 1);
                 playerLeft = true;
-            } 
+            }
             // Si se va el jugador 2
             else if (username.equals(game.getUsernamePlayer2())) {
                 game.setUsernamePlayer2(null);
@@ -89,11 +92,12 @@ public class GameService {
                     gameRepository.deleteGame(gameCode);
                     System.out.println("Partida " + gameCode + " eliminada por estar vacía.");
                     return null; // Devuelve null para indicar que la partida ya no existe.
-                } 
+                }
                 // Si queda al menos un jugador, se actualiza el estado en memoria y en disco.
                 else {
                     updateGame(game);
-                    System.out.println("Jugador " + username + " desconectado de " + gameCode + ". Jugadores restantes: " + game.getUsersConnected());
+                    System.out.println("Jugador " + username + " desconectado de " + gameCode
+                            + ". Jugadores restantes: " + game.getUsersConnected());
                     return game;
                 }
             }
@@ -108,7 +112,7 @@ public class GameService {
         } while (gameRepository.getGame(code).isPresent());
         return code;
     }
-    
+
     public Optional<Game> getGame(String gameCode) {
         return Optional.ofNullable(activeGames.get(gameCode));
     }
@@ -123,23 +127,58 @@ public class GameService {
 
     public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
         getGame(gameCode).ifPresent(game -> {
+            
+            // --- INICIO DE DEPURACIÓN ---
+            // Imprimimos la información que recibimos y la que tenemos guardada
+            System.out.println("--- Recibida actualización de estado ---");
+            System.out.println("Partida: " + gameCode);
+            System.out.println("Usuario que envía: '" + username + "'");
+            System.out.println("Posición enviada: X=" + playerState.getPositionX() + ", Y=" + playerState.getPositionY());
+            System.out.println("Servidor tiene a P1 como: '" + game.getUsernamePlayer1() + "'");
+            System.out.println("Servidor tiene a P2 como: '" + game.getUsernamePlayer2() + "'");
+            // --- FIN DE DEPURACIÓN ---
+
+            boolean playerRecognized = false;
+
             // Comprueba si el update es del Jugador 1
             if (username.equals(game.getUsernamePlayer1())) {
                 game.setPlayer1PositionX(playerState.getPositionX());
                 game.setPlayer1PositionY(playerState.getPositionY());
-                // Aquí podrías actualizar también vidas, puntuación, etc. si lo envías
-                // game.setPlayer1Lives(playerState.getLives());
-                // game.setPlayer1Score(playerState.getScore());
+                System.out.println(">> Jugador 1 reconocido y actualizado.");
+                playerRecognized = true;
 
             // Comprueba si el update es del Jugador 2
             } else if (username.equals(game.getUsernamePlayer2())) {
                 game.setPlayer2PositionX(playerState.getPositionX());
                 game.setPlayer2PositionY(playerState.getPositionY());
-                // game.setPlayer2Lives(playerState.getLives());
-                // game.setPlayer2Score(playerState.getScore());
+                System.out.println(">> Jugador 2 reconocido y actualizado.");
+                playerRecognized = true;
             }
-            // No es necesario llamar a updateGame(game) aquí, porque el GameWebSocketController
-            // ya se encarga de coger el estado actualizado y retransmitirlo.
+
+            if (!playerRecognized) {
+                System.err.println("!! ADVERTENCIA: El usuario '" + username + "' no coincide con ningún jugador de la partida.");
+            }
+        });
+    }
+
+    public void collectFlag(String gameCode, String username) {
+        getGame(gameCode).ifPresent(game -> {
+            // Solo se puede coger si está visible y nadie la tiene
+            if (game.isFlagVisible() && game.getFlagHolderUsername() == null) {
+                game.setFlagHolderUsername(username);
+                game.setFlagVisible(false); // La bandera ya no está en el mapa, la tiene el jugador
+
+                // Retransmitimos el nuevo estado a todos
+                broadcastGameState(gameCode);
+                System.out.println("Jugador " + username + " ha cogido la bandera en la partida " + gameCode);
+            }
+        });
+    }
+
+    // Helper para no repetir código
+    public void broadcastGameState(String gameCode) {
+        getGame(gameCode).ifPresent(game -> {
+            messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
         });
     }
 }
