@@ -14,13 +14,17 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.readyButtonP1 = null;
         this.readyButtonP2 = null;
 
-        this.characters = {}; 
+        this.characters = {};
     }
 
     init(data) {
         this.stompClient = data.stompClient;
         this.gameCode = data.gameCode;
         this.username = data.username;
+
+        // En la función init() de personajesgameonline.js
+        this.player1Username = data.player1Username;
+        this.player2Username = data.player2Username;
 
         // Limpiar el estado de los personajes al iniciar la escena
         this.registry.set('personajeJ1', -1);
@@ -35,7 +39,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         // Cargar recursos
         this.load.image("background2", "assets/Fondos/fondoPersonajesOnline.png");
         this.load.image("ready_button1", "assets/Interfaz/botonListo.png");
-    
+
 
         // Personajes
         this.load.image('character1', 'assets/Personajes/perretxiko.png');
@@ -57,7 +61,7 @@ class PersonajesGameOnline extends Phaser.Scene {
         });
     }
 
-   create() {
+    create() {
         // Fondo
         this.add.image(0, 0, "background2")
             .setOrigin(0)
@@ -169,18 +173,14 @@ class PersonajesGameOnline extends Phaser.Scene {
 
     // Método para seleccionar un personaje
     selectCharacter(characterId, characterImage) {
-        if (this.username === this.registry.get('player1Username')) { // Asumimos que guardas el username del P1 en el registro
+        if (this.username === this.player1Username) {
             this.player1Character = characterId;
             this.updateCharacterSelectionDisplay(this.player1Character, this.highlightP1);
-            this.registry.set('personajeJ1', characterId); // Actualizar el registro local
             this.sendCharacterSelection(characterId);
-        } else if (this.username === this.registry.get('player2Username')) { // Asumimos que guardas el username del P2 en el registro
+        } else if (this.username === this.player2Username) {
             this.player2Character = characterId;
             this.updateCharacterSelectionDisplay(this.player2Character, this.highlightP2);
-            this.registry.set('personajeJ2', characterId); // Actualizar el registro local
             this.sendCharacterSelection(characterId);
-        } else {
-            console.warn("No se pudo determinar si eres el jugador 1 o 2 para seleccionar personaje.");
         }
     }
 

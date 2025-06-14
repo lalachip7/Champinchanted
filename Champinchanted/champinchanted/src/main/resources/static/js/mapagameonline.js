@@ -53,7 +53,7 @@ class MapaGameOnline extends Phaser.Scene {
 
         // --- Lógica del indicador del servidor Y CONTADOR ---
         this.serverStatusIcon = this.add.image(60, 60, 'server_off').setScale(0.1);
-        
+
         // Se crea el texto para el contador de jugadores a la derecha del icono.
         this.playerCountText = this.add.text(100, 45, '?/2', {
             fontFamily: 'FantasyFont, Calibri',
@@ -69,7 +69,7 @@ class MapaGameOnline extends Phaser.Scene {
         if (this.stompClient) {
             this.stompClient.ws.onclose = () => this.events.emit('server_disconnected');
         }
-        this.events.on('server_disconnected', () => { 
+        this.events.on('server_disconnected', () => {
             if (this.serverStatusIcon) { this.serverStatusIcon.setTexture('server_off'); }
             // Si nos desconectamos, el contador también se resetea.
             if (this.playerCountText) { this.playerCountText.setText('0/2'); }
@@ -77,9 +77,12 @@ class MapaGameOnline extends Phaser.Scene {
 
 
         // --- Lógica de Suscripciones ---
-        this.stompClient.subscribe(`/topic/games/${this.gameCode}/mapSelected`, (message) => {
-            const mapData = JSON.parse(message.body);
-            this.goToNextScene(mapData.mapId);
+        this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
+            // Cuando el servidor da la orden, ambos jugadores reciben el mensaje completo
+            const startGameData = JSON.parse(message.body);
+
+            // Llamamos a la siguiente función pasándole TODOS los datos recibidos
+            this.goToNextScene(startGameData);
         });
 
         this.stompClient.subscribe(`/topic/chat/${this.gameCode}`, (message) => {
@@ -149,14 +152,21 @@ class MapaGameOnline extends Phaser.Scene {
         this.stompClient.send("/app/game.selectMap", {}, JSON.stringify(selectMapMessage));
     }
 
-    goToNextScene(finalMapId) {
-        this.registry.set('mapa', finalMapId);
+    goToNextScene(startGameData) {
+        // Guardamos en el registro el mapa que ha confirmado el servidor
+        this.registry.set('mapa', startGameData.mapId);
+
         this.cleanup();
+
+        // Iniciamos la siguiente escena pasando toda la información necesaria
         this.scene.start("PersonajesGameOnline", {
             stompClient: this.stompClient,
             gameCode: this.gameCode,
             username: this.username,
-            isHost: this.isHost
+            isHost: this.isHost,
+            // ¡Aquí está la clave! Pasamos los nombres de usuario
+            player1Username: startGameData.player1Username,
+            player2Username: startGameData.player2Username
         });
     }
 
