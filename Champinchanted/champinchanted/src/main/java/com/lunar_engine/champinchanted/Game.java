@@ -27,6 +27,11 @@ public class Game {
     private int player1HeldSpell = 0; // 0:ninguno, 1:venom, 2:dazer, etc.
     private int player2HeldSpell = 0;
 
+    private static final float P1_START_X = 180;
+    private static final float P1_START_Y = 700;
+    private static final float P2_START_X = 1750;
+    private static final float P2_START_Y = 700;
+
     public Game() {
     }
 
@@ -34,7 +39,11 @@ public class Game {
         this.usernamePlayer1 = usernamePlayer1;
         this.code = code;
         this.usersConnected = 1;
-        resetInGameStats();
+        // Asignamos posiciones iniciales correctas
+        this.player1PositionX = P1_START_X;
+        this.player1PositionY = P1_START_Y;
+        this.player2PositionX = P2_START_X;
+        this.player2PositionY = P2_START_Y;
         initializeRound();
     }
 
@@ -48,6 +57,12 @@ public class Game {
         this.player1Ready = lobbyData.isPlayer1Ready();
         this.player2Ready = lobbyData.isPlayer2Ready();
         this.usersConnected = lobbyData.getUsersConnected();
+
+        this.player1PositionX = P1_START_X;
+        this.player1PositionY = P1_START_Y;
+        this.player2PositionX = P2_START_X;
+        this.player2PositionY = P2_START_Y;
+
         resetInGameStats();
         initializeRound();
     }
@@ -64,6 +79,16 @@ public class Game {
         this.venomSpellVisible = true;
         this.player1HeldSpell = 0;
         this.player2HeldSpell = 0;
+    }
+
+    public void resetForNewRound() {
+        // Resetea la bandera y hechizos
+        initializeRound();
+        // Resetea las posiciones de los jugadores a sus puntos de inicio
+        this.player1PositionX = P1_START_X;
+        this.player1PositionY = P1_START_Y;
+        this.player2PositionX = P2_START_X;
+        this.player2PositionY = P2_START_Y;
     }
 
     public GameLobbyData toLobbyData() {
@@ -267,10 +292,41 @@ public class Game {
         this.player2HeldSpell = spellId;
     }
 
+    public int getPlayer1Score() {
+        return player1Score;
+    }
+
+    public void setPlayer1Score(int score) {
+        this.player1Score = score;
+    }
+
+    public int getPlayer2Score() {
+        return player2Score;
+    }
+
+    public void setPlayer2Score(int score) {
+        this.player2Score = score;
+    }
+
+    public float getPlayer1PositionX() {
+        return player1PositionX;
+    }
+
+    public float getPlayer1PositionY() {
+        return player1PositionY;
+    }
+
+    public float getPlayer2PositionX() {
+        return player2PositionX;
+    }
+
+    public float getPlayer2PositionY() {
+        return player2PositionY;
+    }
+
     @JsonIgnore
     public GameStateMessage toGameStateMessage() {
 
-        // Asegúrate de que los constructores de PlayerState estén completos
         PlayerState p1State = new PlayerState(this.usernamePlayer1, this.player1PositionX, this.player1PositionY,
                 this.player1Score, this.player1Lives, this.player1SpellUsed, this.player1FlagStatus,
                 this.player1Character, this.player1Ready);

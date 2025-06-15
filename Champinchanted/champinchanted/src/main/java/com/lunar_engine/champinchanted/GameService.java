@@ -17,6 +17,7 @@ public class GameService {
     private final Map<String, Game> activeGames;
     private final GameRepository gameRepository;
     private final SimpMessageSendingOperations messagingTemplate;
+    private static final double PLAYER_COLLISION_DISTANCE = 75.0;
 
     public GameService(GameRepository gameRepository, SimpMessageSendingOperations messagingTemplate) {
         this.activeGames = new ConcurrentHashMap<>();
@@ -128,8 +129,6 @@ public class GameService {
     public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
         getGame(gameCode).ifPresent(game -> {
 
-            // --- INICIO DE DEPURACIÓN ---
-            // Imprimimos la información que recibimos y la que tenemos guardada
             System.out.println("--- Recibida actualización de estado ---");
             System.out.println("Partida: " + gameCode);
             System.out.println("Usuario que envía: '" + username + "'");
@@ -137,7 +136,6 @@ public class GameService {
                     .println("Posición enviada: X=" + playerState.getPositionX() + ", Y=" + playerState.getPositionY());
             System.out.println("Servidor tiene a P1 como: '" + game.getUsernamePlayer1() + "'");
             System.out.println("Servidor tiene a P2 como: '" + game.getUsernamePlayer2() + "'");
-            // --- FIN DE DEPURACIÓN ---
 
             boolean playerRecognized = false;
 
@@ -160,6 +158,7 @@ public class GameService {
                 System.err.println(
                         "!! ADVERTENCIA: El usuario '" + username + "' no coincide con ningún jugador de la partida.");
             }
+            checkPlayerCollisionAndSteal(game);
         });
     }
 
@@ -200,6 +199,54 @@ public class GameService {
             // Aquí podrías añadir la lógica para otros hechizos con "else if"
 
             broadcastGameState(gameCode); // Notifica a todos los clientes del cambio
+        });
+    }
+
+    private void checkPlayerCollisionAndSteal(Game game) {
+        if (game.getFlagHolderUsername() == null) {
+            return; // Nadie tiene la bandera, no se puede robar
+        }
+
+        double dx = game.getPlayer1PositionX() - game.getPlayer2PositionX();
+        double dy = game.getPlayer1PositionY() - game.getPlayer2PositionY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < PLAYER_COLLISION_DISTANCE) {
+            String holder = game.getFlagHolderUsername();
+            String p1 = game.getUsernamePlayer1();
+            String p2 = game.getUsernamePlayer2();
+
+            if (holder.equals(p1)) {
+                game.setFlagHolderUsername(p2); // P2 roba la bandera
+                System.out.println("Partida " + game.getCode() + ": Jugador 2 ha robado la bandera.");
+            } else if (holder.equals(p2)) {
+                game.setFlagHolderUsername(p1); // P1 roba la bandera
+                System.out.println("Partida " + game.getCode() + ": Jugador 1 ha robado la bandera.");
+            }
+            broadcastGameState(game.getCode());
+        }
+    }
+
+    public void scorePointAndResetRound(String gameCode, String username) {
+        getGame(gameCode).ifPresent(game -> {
+            // Validación: ¿El jugador que intenta marcar es quien tiene la bandera?
+            if (username.equals(game.getFlagHolderUsername())) {
+                // Sumar punto
+                if (username.equals(game.getUsernamePlayer1())) {
+                    game.setPlayer1Score(game.getPlayer1Score() + 1);
+                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
+                } else {
+                    game.setPlayer2Score(game.getPlayer2Score() + 1);
+                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
+                }
+
+                // Reiniciar la ronda
+                game.resetForNewRound();
+
+                // Notificar a todos del nuevo estado (puntuación actualizada y objetos
+                // reseteados)
+                broadcastGameState(gameCode);
+            }
         });
     }
 }

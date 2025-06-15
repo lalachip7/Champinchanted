@@ -128,6 +128,7 @@ public class GameWebSocketController {
                 });
         System.out.println("--- [DEBUG] Fin del procesamiento del mensaje ---\n");
     }
+
     /**
      * Se ejecuta cuando un jugador pulsa el botón "Listo".
      */
@@ -162,7 +163,7 @@ public class GameWebSocketController {
         });
     }
 
-        @MessageMapping("/game.collectFlag")
+    @MessageMapping("/game.collectFlag")
     public void collectFlag(@Payload Map<String, String> payload) {
         String gameCode = payload.get("gameCode");
         String username = payload.get("username");
@@ -188,5 +189,12 @@ public class GameWebSocketController {
         gameService.getGame(message.getGameCode()).ifPresent(game -> {
             messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
         });
+    }
+
+    @MessageMapping("/game.scorePoint")
+    public void scorePoint(@Payload Map<String, String> payload) {
+        String gameCode = payload.get("gameCode");
+        String username = payload.get("username");
+        gameService.scorePointAndResetRound(gameCode, username);
     }
 }

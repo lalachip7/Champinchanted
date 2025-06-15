@@ -32,6 +32,8 @@ class GameSceneOnline extends Phaser.Scene {
 
         this.player1SpellUI = {};
         this.player2SpellUI = {};
+
+        this.roundResetting = false;
     }
 
     preload() {
@@ -133,21 +135,22 @@ class GameSceneOnline extends Phaser.Scene {
         platforms.create(960, 950, pequena).setSize(70, 40).setOffset(10, 15).refreshBody();
         platforms.create(1600, 350, mediana).setSize(150, 40).refreshBody();
 
-        // Las casas son estáticas, podemos usar physics para las colisiones locales
-        let casaKey = this.getAssetKey('house'); // Helper para obtener la key de la estación
-        this.house1Sprite = this.physics.add.staticImage(175, 875, casaKey).setScale(0.4).refreshBody();
-        this.house2Sprite = this.physics.add.staticImage(1750, 875, casaKey).setScale(0.4).refreshBody();
+        // --- CORRECCIÓN: Crear casas como sprites no sólidos ---
+        let casaKey = this.getAssetKey('house');
+        this.house1Sprite = this.physics.add.sprite(175, 875, casaKey).setScale(0.4);
+        this.house1Sprite.body.setAllowGravity(false);
+        this.house1Sprite.body.setImmovable(true);
 
-        // La bandera y los hechizos son sprites simples, el servidor controla su posición
+        this.house2Sprite = this.physics.add.sprite(1750, 875, casaKey).setScale(0.4);
+        this.house2Sprite.body.setAllowGravity(false);
+        this.house2Sprite.body.setImmovable(true);
+
+        // --- Crear bandera y hechizos con físicas ---
         let flagKey = this.getAssetKey('flag');
-        // 1. Crear como sprite de físicas
         this.flagSprite = this.physics.add.sprite(0, 0, flagKey).setScale(0.2).setVisible(false);
-        // 2. Desactivar su gravedad
         this.flagSprite.body.setAllowGravity(false);
 
-        // 1. Crear como sprite de físicas
         this.venomSpellSprite = this.physics.add.sprite(0, 0, 'venom').setScale(0.1).setVisible(false);
-        // 2. Desactivar su gravedad
         this.venomSpellSprite.body.setAllowGravity(false);
 
         // --- CREACIÓN DE LOS JUGADORES ---
@@ -158,7 +161,7 @@ class GameSceneOnline extends Phaser.Scene {
 
         if (this.username === this.player1Username) {
             this.player = this.physics.add.sprite(180, 700, personajeKey1);
-            this.opponent = this.add.sprite(1750, 700, personajeKey2); // El oponente es un sprite simple
+            this.opponent = this.add.sprite(1750, 700, personajeKey2);
             this.playerState.username = this.player1Username;
         } else {
             this.player = this.physics.add.sprite(1750, 700, personajeKey2);
@@ -166,10 +169,29 @@ class GameSceneOnline extends Phaser.Scene {
             this.playerState.username = this.player2Username;
         }
 
+        // --- CONFIGURACIÓN DE FÍSICAS Y COLISIONES (AHORA EN EL ORDEN CORRECTO) ---
         this.player.setBounce(0.1).setCollideWorldBounds(true);
         this.physics.add.collider(this.player, ground);
         this.physics.add.collider(this.player, platforms);
 
+        // --- CORRECCIÓN: Asignar la casa correcta y crear la superposición DESPUÉS de crear al jugador ---
+        let myHouse;
+        if (this.username === this.player1Username) {
+            myHouse = this.house1Sprite;
+        } else {
+            myHouse = this.house2Sprite;
+        }
+
+        this.physics.add.overlap(this.player, myHouse, () => {
+            if (this.serverState && this.serverState.flagHolderUsername === this.username) {
+                this.stompClient.send("/app/game.scorePoint", {}, JSON.stringify({
+                    gameCode: this.gameCode,
+                    username: this.username
+                }));
+            }
+        }, null, this);
+
+        // Superposiciones con bandera y hechizo
         this.physics.add.overlap(this.player, this.flagSprite, () => {
             if (this.flagSprite.visible) {
                 this.stompClient.send("/app/game.collectFlag", {}, JSON.stringify({
@@ -180,12 +202,11 @@ class GameSceneOnline extends Phaser.Scene {
         }, null, this);
 
         this.physics.add.overlap(this.player, this.venomSpellSprite, () => {
-            if (this.venomSpellSprite.visible) { // Solo reacciona si el hechizo está visible
-                console.log("Player overlapped with venom spell, sending message..."); // Mensaje de depuración
+            if (this.venomSpellSprite.visible) {
                 this.stompClient.send("/app/game.collectSpell", {}, JSON.stringify({
                     gameCode: this.gameCode,
                     username: this.username,
-                    spellType: "venom" // Importante: decimos qué hechizo hemos cogido
+                    spellType: "venom"
                 }));
             }
         }, null, this);
@@ -199,13 +220,11 @@ class GameSceneOnline extends Phaser.Scene {
             this.keys.right = wasd.D;
         }
 
-        // --- CREACIÓN DE LA INTERFAZ (UI) ---
+        // --- CREACIÓN DE LA INTERFAZ (UI) Y RED ---
         this.createSpellUI();
         this.createMainUI();
-
-        // --- LÓGICA DE RED ---
         this.subscribeToGameUpdates();
-        this.time.addEvent({ delay: 50, callback: this.sendPlayerState, callbackScope: this, loop: true }); // 20 updates/sec
+        this.time.addEvent({ delay: 50, callback: this.sendPlayerState, callbackScope: this, loop: true });
     }
 
     update() {
@@ -266,68 +285,67 @@ class GameSceneOnline extends Phaser.Scene {
         }
     }
 
-    updateVisuals() {
-        // Asegurarse de que tenemos datos del servidor
-        if (!this.serverState || !this.serverState.player1State || !this.serverState.player2State || !this.opponent) {
-            return;
-        }
-
-
-        const { player1State, player2State } = this.serverState;
-
-        // Determinar qué estado pertenece al oponente
-        const opponentState = (this.username === player1State.username) ? player2State : player1State;
-
-        // Guardamos la posición anterior para determinar la dirección
-        const oldOpponentX = this.opponent.x;
-
-        // Mover el sprite del oponente suavemente a su nueva posición
-        // Esto evita que el movimiento se vea a saltos (jitter)
-        this.tweens.add({
-            targets: this.opponent,
-            x: opponentState.positionX,
-            y: opponentState.positionY,
-            duration: 60, // Duración corta para que sea casi instantáneo pero suave
-            ease: 'Linear'
-        });
-
-        // Actualizar la dirección del sprite del oponente (flipX)
-        if (this.opponent.x > oldOpponentX) {
-            this.opponent.flipX = true; // Se mueve a la derecha
-        } else if (this.opponent.x < oldOpponentX) {
-            this.opponent.flipX = false; // Se mueve a la izquierda
-        }
-
-        // Actualizar UI (vidas y puntuación)
-        if (this.scoreText) {
-            this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
-        }
-        if (this.player1LifeImages) {
-            this.updatePlayerLives(this.player1LifeImages, player1State.lives);
-        }
-        if (this.player2LifeImages) {
-            this.updatePlayerLives(this.player2LifeImages, player2State.lives);
-        }
-        // --- Bandera ---
-        if (this.flagSprite) {
-            // La bandera solo es visible en el mapa si NADIE la tiene.
-            const isFlagOnMap = this.serverState.flagVisible && !this.serverState.flagHolderUsername;
-            this.flagSprite.setVisible(isFlagOnMap);
-            if (isFlagOnMap) {
-                this.flagSprite.setPosition(this.serverState.flagPositionX, this.serverState.flagPositionY);
-            }
-        }
-
-        // --- Hechizo de Veneno ---
-        if (this.venomSpellSprite) {
-            this.venomSpellSprite.setVisible(this.serverState.venomSpellVisible);
-            if (this.serverState.venomSpellVisible) {
-                this.venomSpellSprite.setPosition(this.serverState.venomSpellX, this.serverState.venomSpellY);
-            }
-        }
-        this.updatePlayerSpellUI(this.player1SpellUI, this.serverState.player1HeldSpell);
-        this.updatePlayerSpellUI(this.player2SpellUI, this.serverState.player2HeldSpell);
+    resetPlayerPosition() {
+        const startX = (this.username === this.player1Username) ? 180 : 1750;
+        const startY = 700;
+        this.player.setPosition(startX, startY);
+        console.log("Posición del jugador reseteada al inicio de la ronda.");
     }
+
+    updateVisuals() {
+    // Guardamos el estado anterior de la bandera ANTES de actualizar this.serverState
+    const wasFlagHeld = this.serverState ? (this.serverState.flagHolderUsername !== null) : false;
+
+    // Recibimos y guardamos el nuevo estado del servidor
+    const gameState = this.serverState;
+    if (!gameState || !gameState.player1State || !gameState.player2State || !this.opponent) {
+        return;
+    }
+    
+    // Actualizar oponente y UI (vidas, puntuación)
+    const { player1State, player2State } = gameState;
+    const opponentState = (this.username === player1State.username) ? player2State : player1State;
+
+    this.tweens.add({
+        targets: this.opponent,
+        x: opponentState.positionX,
+        y: opponentState.positionY,
+        duration: 60,
+        ease: 'Linear'
+    });
+    
+    if (this.opponent.x > opponentState.x) { this.opponent.flipX = false; }
+    else if (this.opponent.x < opponentState.x) { this.opponent.flipX = true; }
+    
+    if (this.scoreText) { this.scoreText.setText(`${player1State.score} / ${player2State.score}`); }
+    if (this.player1LifeImages) { this.updatePlayerLives(this.player1LifeImages, player1State.lives); }
+    if (this.player2LifeImages) { this.updatePlayerLives(this.player2LifeImages, player2State.lives); }
+
+    // --- CORRECCIÓN: Lógica de reseteo de ronda ---
+    const isFlagNowOnMap = gameState.flagVisible && gameState.flagHolderUsername === null;
+    // Si antes la bandera estaba cogida y ahora no, significa que se ha marcado un punto y la ronda se ha reiniciado.
+    if (wasFlagHeld && isFlagNowOnMap) {
+        this.resetPlayerPosition();
+    }
+
+    // --- Actualizar bandera ---
+    if (this.flagSprite) {
+        this.flagSprite.setVisible(isFlagNowOnMap);
+        if (isFlagNowOnMap) {
+            this.flagSprite.setPosition(gameState.flagPositionX, gameState.flagPositionY);
+        }
+    }
+
+    // --- Actualizar hechizos y su UI ---
+    if (this.venomSpellSprite) {
+        this.venomSpellSprite.setVisible(gameState.venomSpellVisible);
+        if (gameState.venomSpellVisible) {
+            this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
+        }
+    }
+    this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
+    this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
+}
     getAssetKey(baseName) {
         const mundo = this.registry.get('mapa');
         const suffixMap = { 1: '_o', 2: '_i', 3: '_p', 4: '_v' };
