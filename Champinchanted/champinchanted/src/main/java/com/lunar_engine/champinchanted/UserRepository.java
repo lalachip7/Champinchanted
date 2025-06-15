@@ -21,7 +21,6 @@ public class UserRepository {
     private final String usersPath;
     private final ObjectMapper objectMapper;
 
-    // Se utiliza un único constructor para inyectar todas las dependencias.
     public UserRepository(@Qualifier("usersPath") String usersPath, ObjectMapper objectMapper) {
         this.usersPath = usersPath;
         this.objectMapper = objectMapper;
@@ -42,7 +41,6 @@ public class UserRepository {
             .filter(file -> file.toString().endsWith(".json"))
             .map(file -> {
                 try {
-                    // Se usa la instancia de objectMapper inyectada por Spring.
                     return this.objectMapper.readValue(file.toFile(), User.class);   
                 } catch (IOException e) {
                     e.printStackTrace();

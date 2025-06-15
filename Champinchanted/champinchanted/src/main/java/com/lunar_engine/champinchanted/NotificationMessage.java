@@ -1,6 +1,5 @@
 package com.lunar_engine.champinchanted;
 
-// Una clase simple para enviar mensajes de notificación del sistema.
 public class NotificationMessage {
     private String content;
     private int playerCount;

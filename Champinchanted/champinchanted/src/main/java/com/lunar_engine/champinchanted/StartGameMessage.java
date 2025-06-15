@@ -1,10 +1,5 @@
 package com.lunar_engine.champinchanted;
 
-/**
- * DTO que encapsula la información que el servidor enviará a los clientes cuando una partida
- * esté lista para comenzar
- */
-
 public class StartGameMessage {
     
     private String gameCode;
@@ -14,9 +9,8 @@ public class StartGameMessage {
     private int player2Character;
     private int mapId; 
 
-    public StartGameMessage() {}    // Constructor vacío
+    public StartGameMessage() {}
 
-    // Constructor con todos los campos
     public StartGameMessage(String gameCode, String player1Username, int player1Character,
     String player2Username, int player2Character, int mapId) {
         this.gameCode = gameCode;
