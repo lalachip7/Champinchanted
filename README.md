@@ -13,11 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777    
-
-Laura Blázquez Pelaz   
-* l.blazquez.2022@alumnos.urjc.es   
-* lalachip7   
+* Github: ratamolinera777     
 
 
 # Índice
@@ -192,7 +188,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-![Diagrama de estados](./Imágenes/diagramaEstados.png)
+![Diagrama de estados](./Imágenes/diagramaEstadosFase3.png)
 
 
 # 4. Música
@@ -235,22 +231,22 @@ El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóx
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-![Sprites de Champichip](./Imágenes/Champichip.png)
+![Sprites de Champichip](./Imágenes/Animación_champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-![Sprites de Mariñón](./Imágenes/Mariñón.png)
+![Sprites de Mariñón](./Imágenes/Animación_mariñon.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-![Sprites de Champistar](./Imágenes/Champistar.png)
+![Sprites de Champistar](./Imágenes/Animación_champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
+![Sprites de Biblioseta](./Imágenes/Animación_biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
@@ -296,17 +292,21 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 
 ## 5.6. Interfaz de usuario
 ### 5.6.1 Pantalla de Inicio
-![Pantalla de Inicio](./Imágenes/inicial.png)
+![Pantalla de Inicio](./Imágenes/pantallaInicioFase3.png)
 ### 5.6.2 Pantalla de Tutorial
 ![Pantalla de Tutorial](./Imágenes/tuto.png)
 ### 5.6.3 Pantalla de Creditos
-![Pantalla de Creditos](./Imágenes/creditos.png)
+![Pantalla de Creditos](./Imágenes/creditos2.png)
 ### 5.6.4 Pantalla de usuario
-![Pantalla de usuario](./Imágenes/nombre.png)
+![Pantalla de usuario](./Imágenes/pantallaUsuarios.png)
+### 5.6.4.1 Pantalla de usuario - Inicio de sesión
+![Pantalla de usuario](./Imágenes/inicioSesionNombre.png)
+### 5.6.4.2 Pantalla de usuario - Registro
+![Pantalla de usuario](./Imágenes/registro.png)
 ### 5.6.5 Pantalla de unirse a partida
-![Pantalla de unirse a partida](./Imágenes/unirse.png)
+![Pantalla de unirse a partida](./Imágenes/unirse2.png)
 ### 5.6.6 Pantalla de mapas
-![Pantalla de mapas](./Imágenes/mapas.png)
+![Pantalla de mapas](./Imágenes/mapa2.png)
 ### 5.6.7 Pantalla de pausa
 ![Pantalla de pausa](./Imágenes/pausa.png)
 ### 5.6.8 Pantallas de seleccion de personajes
@@ -314,6 +314,8 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 ![Pantalla de seleccion de personajes (Local)](./Imágenes/k.png)
 5.6.8.2 Pantalla de seleccion de personajes (En red)
 ![Pantalla de seleccion de personajes (En red)](./Imágenes/seleccionPersonajesOnline.png)
+### 5.6.7 Pantalla de chat
+![Pantalla de pausa](./Imágenes/chat.png)
 
 # 6. Arquitectura y guía de ejecución
 ## 6.1. Diagrama de clases
@@ -331,3 +333,20 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
+
+#7. Implementación Back-end
+En esta tercera fase del desarrollo de Champinchanted, nos enfocaremos en la inclusión de un back-end robusto que potencie las funcionalidades del juego y permita la persistencia de datos.
+
+##7.1. Desarrollo del Back-end REST
+El back-end de Champinchanted se construirá siguiendo los principios de la arquitectura REST (Representational State Transfer) para asegurar una comunicación eficiente y escalable entre el cliente (el juego en el navegador) y el servidor. Este componente clave permitirá:
+
+Comunicación Cliente-Servidor: Establecer un canal de comunicación fluido entre la aplicación del juego y el servidor, utilizando un servicio RESTful para el intercambio de información.
+Definición de la API REST: Se diseñará una API REST clara y bien documentada que servirá como la interfaz para todas las interacciones del cliente con el servidor. Esta API definirá los recursos disponibles y las operaciones permitidas sobre ellos (GET, POST, PUT, DELETE, etc.).
+Gestión de Datos y Funciones del Juego: El back-end se encargará de la gestión de diversos datos cruciales para la experiencia de juego, incluyendo:
+Puntuaciones: Almacenamiento y recuperación de las puntuaciones de los jugadores.
+Usuario/Contraseña: Gestión de la autenticación y autorización de usuarios.
+Perfiles de Usuario: Creación, actualización y consulta de perfiles de jugador.
+Configuración de la Partida: Persistencia y carga de las preferencias de configuración de las partidas.
+En general, todas las funciones relacionadas con la gestión y persistencia de los aspectos esenciales del juego.
+Almacenamiento Persistente de Datos: El servidor garantizará que parte de los datos mencionados, como perfiles de usuario y puntuaciones, se almacenen de manera permanente, permitiendo su disponibilidad y utilización en futuras sesiones de juego.
+
