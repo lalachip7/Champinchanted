@@ -257,7 +257,8 @@ public class GameService {
                 TimerTask poisonTask = new TimerTask() {
                     @Override
                     public void run() {
-                        if (ticks.incrementAndGet() > 3 || (targetIsP1 && game.getPlayer1Lives() <= 1) || (!targetIsP1 && game.getPlayer2Lives() <= 1)) {
+                        // La condición de parada ahora solo depende de los ticks
+                        if (ticks.incrementAndGet() > 3) {
                             if (targetIsP1) {
                                 game.setPlayer1Poisoned(false);
                                 if(game.getPlayer1PoisonTimer() != null) game.getPlayer1PoisonTimer().cancel();
@@ -269,20 +270,51 @@ public class GameService {
                             }
                             System.out.println("Efecto de veneno terminado.");
                             broadcastGameState(gameCode);
-                            this.cancel(); // Detiene esta tarea
+                            this.cancel();
                             return;
                         }
+                        
+                        // Aplicar daño
                         if (targetIsP1) {
                             game.setPlayer1Lives(game.getPlayer1Lives() - 1);
                         } else {
                             game.setPlayer2Lives(game.getPlayer2Lives() - 1);
                         }
                         System.out.println("Daño de veneno aplicado.");
-                        broadcastGameState(gameCode);
+                        
+                        // Después de aplicar el daño, comprobamos si alguien ha muerto
+                        checkAndHandleDeath(game);
                     }
                 };
                 poisonTimer.schedule(poisonTask, 5000, 5000);
             }
         });
+    }
+
+    /**
+     * Nuevo método para centralizar la lógica de muerte.
+     * Comprueba si algún jugador tiene 0 o menos vidas y, si es así,
+     * otorga un punto al oponente y reinicia la ronda.
+     */
+    private void checkAndHandleDeath(Game game) {
+        boolean roundShouldReset = false;
+        
+        if (game.getPlayer1Lives() <= 0) {
+            game.setPlayer2Score(game.getPlayer2Score() + 1);
+            System.out.println(game.getUsernamePlayer1() + " ha muerto. Punto para " + game.getUsernamePlayer2());
+            roundShouldReset = true;
+        } else if (game.getPlayer2Lives() <= 0) {
+            game.setPlayer1Score(game.getPlayer1Score() + 1);
+            System.out.println(game.getUsernamePlayer2() + " ha muerto. Punto para " + game.getUsernamePlayer1());
+            roundShouldReset = true;
+        }
+
+        if (roundShouldReset) {
+            game.resetForNewRound();
+            broadcastGameState(game.getCode());
+        } else {
+            // Si nadie murió, simplemente enviamos la actualización de las vidas.
+            broadcastGameState(game.getCode());
+        }
     }
 }

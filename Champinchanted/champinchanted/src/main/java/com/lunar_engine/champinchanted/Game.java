@@ -18,37 +18,28 @@ public class Game {
     private float player2PositionX, player2PositionY;
     private int player2Score, player2Lives;
     private boolean player2SpellUsed, player2FlagStatus;
-
     private float flagPositionX, flagPositionY;
     private boolean flagVisible = true;
-    private String flagHolderUsername = null; // Quién tiene la bandera
-
+    private String flagHolderUsername = null;
     private float venomSpellX, venomSpellY;
     private boolean venomSpellVisible = true;
-
     private float dazerSpellX, dazerSpellY;
     private boolean dazerSpellVisible = true;
-
     private boolean player1Frozen = false;
     private boolean player2Frozen = false;
-
     private boolean player1Poisoned = false;
     private boolean player2Poisoned = false;
-    private transient Timer player1PoisonTimer; // transient para no guardarlo en JSON
+    private transient Timer player1PoisonTimer;
     private transient Timer player2PoisonTimer;
-
-    private int player1HeldSpell = 0; // 0:ninguno, 1:venom, 2:dazer, etc.
+    private int player1HeldSpell = 0;
     private int player2HeldSpell = 0;
-
     private static final float P1_START_X = 250; 
     private static final float P1_START_Y = 700;
     private static final float P2_START_X = 1670; 
     private static final float P2_START_Y = 700;
-
     private final transient ReentrantLock gameLock = new ReentrantLock();
 
-    public Game() {
-    }
+    public Game() {}
 
     public Game(String usernamePlayer1, String code) {
         this.usernamePlayer1 = usernamePlayer1;
@@ -58,7 +49,7 @@ public class Game {
         this.player1PositionY = P1_START_Y;
         this.player2PositionX = P2_START_X;
         this.player2PositionY = P2_START_Y;
-        resetInGameStats(); // Inicializa vidas y puntuaciones
+        resetInGameStats();
         initializeRound();
     }
 
@@ -101,6 +92,11 @@ public class Game {
         this.player1PositionY = P1_START_Y;
         this.player2PositionX = P2_START_X;
         this.player2PositionY = P2_START_Y;
+        
+        // ▼▼▼ AÑADIMOS EL RESETEO DE VIDAS AQUÍ ▼▼▼
+        this.player1Lives = 5;
+        this.player2Lives = 5;
+
         if (this.player1PoisonTimer != null) {
             this.player1PoisonTimer.cancel();
             this.player1PoisonTimer = null;
@@ -111,6 +107,8 @@ public class Game {
         }
         this.player1Poisoned = false;
         this.player2Poisoned = false;
+        this.player1Frozen = false;
+        this.player2Frozen = false;
     }
 
     public GameLobbyData toLobbyData() {
@@ -213,10 +211,8 @@ public class Game {
     public Timer getPlayer2PoisonTimer() { return player2PoisonTimer; }
     public void setPlayer2PoisonTimer(Timer timer) { this.player2PoisonTimer = timer; }
     public int getPlayer1Lives() { return this.player1Lives; }
-    public int getPlayer2Lives() { return this.player2Lives; }
-
-    // ▼▼▼ MÉTODOS SETTER AÑADIDOS ▼▼▼
     public void setPlayer1Lives(int lives) { this.player1Lives = lives; }
+    public int getPlayer2Lives() { return this.player2Lives; }
     public void setPlayer2Lives(int lives) { this.player2Lives = lives; }
     
     @JsonIgnore
