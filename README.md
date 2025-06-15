@@ -13,11 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777    
-
-Laura Blázquez Pelaz   
-* l.blazquez.2022@alumnos.urjc.es   
-* lalachip7   
+* Github: ratamolinera777     
 
 
 # Índice
@@ -192,7 +188,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-![Diagrama de estados](./Imágenes/diagramaEstados.png)
+![Diagrama de estados](./Imágenes/diagramaEstadosFase3.png)
 
 
 # 4. Música
@@ -235,22 +231,22 @@ El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóx
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-![Sprites de Champichip](./Imágenes/Champichip.png)
+![Sprites de Champichip](./Imágenes/Animación_champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-![Sprites de Mariñón](./Imágenes/Mariñón.png)
+![Sprites de Mariñón](./Imágenes/Animación_mariñon.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-![Sprites de Champistar](./Imágenes/Champistar.png)
+![Sprites de Champistar](./Imágenes/Animación_champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
+![Sprites de Biblioseta](./Imágenes/Animación_biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
