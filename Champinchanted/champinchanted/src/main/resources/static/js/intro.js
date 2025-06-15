@@ -4,7 +4,7 @@ class IntroGame extends Phaser.Scene {
         super({ key: 'IntroGame' });   // Asigna la clave "IntroGame" a esta escena
     }
 
-    preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
+    preload() {     // CARGA DE ARCHIVOS 
         //hola
         this.load.audio("background", 'assets/Sonidos/musica.mp3');
 
@@ -29,8 +29,7 @@ class IntroGame extends Phaser.Scene {
         });
     }
 
-    create() {      // CREACIÓN DE CONTENIDOS ----------------------------------------------------------------------------------------
-        
+    create() {      // CREACIÓN DE CONTENIDOS 
         this.configText = {
             fontFamily: 'FantasyFont, Calibri',
             fontSize: '40px',

@@ -72,10 +72,10 @@ class EndGame extends Phaser.Scene {
         // Determina el ganador.
         if (this.scorePlayer1 > this.scorePlayer2) {
             this.add.image(960, 250, 'victory1');
-            this.add.image(970, 510, personaje1).setScale(2); //Aqui tengo que ver como hacer para que pille el personaje elegido por jugador 1
+            this.add.image(970, 510, personaje1).setScale(2); 
         } else if (this.scorePlayer2 > this.scorePlayer1) {
             this.add.image(960, 250, 'victory2'); 
-            this.add.image(970, 510, personaje2).setScale(2);//Aqui tengo que ver como hacer para que pille el personaje elegido por jugador 2
+            this.add.image(970, 510, personaje2).setScale(2);
         }
 
         // Crear el botón "Volver a jugar".
@@ -97,6 +97,6 @@ class EndGame extends Phaser.Scene {
     }
 
     update() {
-        // Actualizaciones en tiempo real si son necesarias.
+        
     }
 }

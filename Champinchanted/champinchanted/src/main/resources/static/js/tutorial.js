@@ -25,7 +25,7 @@ class TutorialScene extends Phaser.Scene {
             });
         }
         
-        // Por si se quiere volver a abrir en cualquien otro punto deljuego
+        
         openWindow() {
         }
     };

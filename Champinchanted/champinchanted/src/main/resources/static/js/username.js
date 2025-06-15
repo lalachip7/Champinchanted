@@ -31,7 +31,7 @@ class UsernameScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
-        // --- Elementos HTML para Login/Registro ---
+        // Elementos HTML para Login/Registro 
         this.usernameInput = this.createInputElement('text', 'username-input', 'Introduce tu nombre de usuario');
         this.passwordInput = this.createInputElement('password', 'password-input', 'Introduce tu contraseña');
         this.submitHtmlButton = this.createSubmitButton();
@@ -39,7 +39,7 @@ class UsernameScene extends Phaser.Scene {
         document.body.appendChild(this.passwordInput);
         document.body.appendChild(this.submitHtmlButton);
         
-        // --- Botones de Selección Inicial (Login/Register) en Phaser ---
+        // Botones de Selección Inicial (Login/Register)
         const loginButtonBg = this.add.image(centerX, centerY - 50, "login_button").setScale(0.15).setInteractive();
         
         
@@ -48,14 +48,14 @@ class UsernameScene extends Phaser.Scene {
         
         this.selectionGroup = this.add.group([loginButtonBg, registerButtonBg]);
 
-        // --- Botones de Opciones de Juego (Crear y Unirse) ---
+        // Botones de Opciones de Juego (Crear y Unirse)
         const createGameButton = this.add.image(centerX - 200, centerY + 200, "create_game_button").setScale(0.2).setInteractive();
         const joinGameButton = this.add.image(centerX + 200, centerY + 200, "join_game_button").setScale(0.2).setInteractive();
         
         this.gameOptionsGroup = this.add.group([createGameButton, joinGameButton]);
         this.gameOptionsGroup.setVisible(false);
 
-        // --- Lógica de los botones ---
+        // Lógica de los botones
         loginButtonBg.on('pointerdown', () => this.showAuthUI('login'));
         registerButtonBg.on('pointerdown', () => this.showAuthUI('register'));
         this.submitHtmlButton.addEventListener('click', () => this.handleAuthSubmit());

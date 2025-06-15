@@ -78,7 +78,7 @@ class EndGameOnline extends Phaser.Scene {
         }
 
         
-        this.exitButton = this.add.image(325, 650, 'buttonExit').setOrigin(-2.0).setInteractive(); // Crea el botón "Salir"
+        this.exitButton = this.add.image(325, 650, 'buttonExit').setOrigin(-2.0).setInteractive(); 
 
         this.exitButton.on('pointerdown', () => {
             this.scene.stop('EndScene');

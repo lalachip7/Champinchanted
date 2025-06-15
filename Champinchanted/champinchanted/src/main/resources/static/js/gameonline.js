@@ -19,7 +19,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.serverState = {};
         this.keys = null;
         this.isMovementEnabled = true;
-        this.gameOver = false; // Flag para detener la lógica del juego
+        this.gameOver = false; 
         this.flagSprite = null;
         this.house1Sprite = null;
         this.house2Sprite = null;
@@ -186,16 +186,16 @@ class GameSceneOnline extends Phaser.Scene {
             if (this.dazerSpellSprite.visible) this.stompClient.send("/app/game.collectSpell", {}, JSON.stringify({ gameCode: this.gameCode, username: this.username, spellType: "dazer" }));
         }, null, this);
 
-        // Asignamos las teclas de movimiento directamente a WASD para CUALQUIER jugador.
+        // Asignamos las teclas de movimiento directamente a WASD para el jugador.
         const wasd = this.input.keyboard.addKeys('W,A,S,D');
 
-        // Creamos el objeto `this.keys` para almacenar TODAS nuestras teclas de una vez
+        
         this.keys = {
             up: wasd.W,
             left: wasd.A,
             down: wasd.S, // Se añade por si se usa en el futuro
             right: wasd.D,
-            // La tecla de acción AHORA se define DENTRO del mismo objeto, evitando el error
+            
             action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
         };
 
@@ -288,18 +288,18 @@ class GameSceneOnline extends Phaser.Scene {
         const myState = (this.username === player1State.username) ? player1State : player2State;
         const opponentState = (this.username === player1State.username) ? player2State : player1State;
 
-        // --- LÓGICA DE GIRO DEL OPONENTE (LA SOLUCIÓN) ---
+        
         // Comparamos la nueva posición del servidor con la última que guardamos
         if (this.opponentLastX < opponentState.positionX) {
             this.opponent.flipX = true; // Se movió a la derecha
         } else if (this.opponentLastX > opponentState.positionX) {
             this.opponent.flipX = false; // Se movió a la izquierda
         }
-        // Si no se ha movido en el eje X, mantiene la última dirección
+        
 
         // Actualizamos la variable para la próxima comprobación
         this.opponentLastX = opponentState.positionX;
-        // --- FIN DE LA LÓGICA DE GIRO ---
+        
 
         if (this.flagHolderSprite && gameState.flagVisible && !gameState.flagHolderUsername) {
             this.resetPlayerPosition();

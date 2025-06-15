@@ -29,7 +29,7 @@ class MapaGameOnline extends Phaser.Scene {
     create() {
         this.add.image(0, 0, "background2_image").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
 
-        // --- Interfaz de Usuario ---
+        // Interfaz de Usuario 
         this.add.text(this.scale.width / 2, this.scale.height - 40, `Código de la Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont, Calibri', fontSize: '36px', color: '#FEEFD8', backgroundColor: 'rgba(0,0,0,0.7)', padding: { x: 15, y: 8 } }).setOrigin(0.5);
         this.createChatInterface();
         const chatButton = this.add.image(this.scale.width - 100, 100, "chat_button").setScale(0.08).setInteractive().on('pointerdown', () => this.toggleChatWindow());
@@ -55,7 +55,7 @@ class MapaGameOnline extends Phaser.Scene {
             }).setOrigin(0.5);
         }
 
-        // --- Lógica del indicador del servidor Y CONTADOR ---
+        // Lógica del indicador del servidor 
         this.serverStatusIcon = this.add.image(60, 60, 'server_off').setScale(0.1);
 
         // Se crea el texto para el contador de jugadores a la derecha del icono.
@@ -80,12 +80,12 @@ class MapaGameOnline extends Phaser.Scene {
         }, this);
 
 
-        // --- Lógica de Suscripciones ---
+        //  Lógica de Suscripciones 
         this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
             // Cuando el servidor da la orden, ambos jugadores reciben el mensaje completo
             const startGameData = JSON.parse(message.body);
 
-            // Llamamos a la siguiente función pasándole TODOS los datos recibidos
+            
             this.goToNextScene(startGameData);
         });
 
@@ -107,7 +107,7 @@ class MapaGameOnline extends Phaser.Scene {
             }
         });
 
-        // Se envía el mensaje de addUser DESPUÉS de suscribirse a todo.
+        
         if (this.stompClient && this.stompClient.connected) {
             this.stompClient.send(`/app/chat.addUser`, {}, JSON.stringify({ sender: this.username, gameCode: this.gameCode }));
         }
@@ -168,7 +168,7 @@ class MapaGameOnline extends Phaser.Scene {
             gameCode: this.gameCode,
             username: this.username,
             isHost: this.isHost,
-            // ¡Aquí está la clave! Pasamos los nombres de usuario
+            
             player1Username: startGameData.player1Username,
             player2Username: startGameData.player2Username
         });

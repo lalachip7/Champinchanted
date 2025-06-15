@@ -68,14 +68,14 @@ class PersonajesGameOnline extends Phaser.Scene {
         this.add.image(0, 0, "background2").setOrigin(0).setDisplaySize(this.scale.width, this.scale.height);
         this.add.text(this.scale.width / 2, 60, `Sala: ${this.gameCode}`, { fontFamily: 'FantasyFont', fontSize: '52px', color: '#FEEFD8' }).setOrigin(0.5);
 
-        // --- DIBUJAR LA INTERFAZ GRÁFICA ---
+        // DIBUJAR LA INTERFAZ GRÁFICA
         this.createPlayerSlot(this.player1Username, this.scale.width * 0.25, 'P1');
         this.createPlayerSlot(this.player2Username || "Esperando...", this.scale.width * 0.65, 'P2');
          this.add.image(this.scale.width / 2, 800, 'fondoSetas').setOrigin(0.5).setScale(0.5);
 
         this.createCharacterSelectionGrid();
 
-        // --- LÓGICA DE WEBSOCKETS ---
+        // LÓGICA DE WEBSOCKETS 
         this.subscribeToGameUpdates();
     }
 
@@ -143,7 +143,7 @@ class PersonajesGameOnline extends Phaser.Scene {
     }
 
     updateUI(lobbyData) {
-        // --- Actualizar Imagen de Personaje del Jugador 1 ---
+        // Actualizar Imagen de Personaje del Jugador 1 
         if (lobbyData.player1Character && lobbyData.player1Character > 0) {
             const charAssetP1 = this.characters[lobbyData.player1Character];
             if (charAssetP1) {
@@ -151,8 +151,8 @@ class PersonajesGameOnline extends Phaser.Scene {
             }
         }
 
-        // --- Actualizar Imagen de Personaje del Jugador 2 ---
-        // ¡VERSIÓN CORREGIDA! Usando "usernamePlayer2" con "P" mayúscula.
+        // Actualizar Imagen de Personaje del Jugador 2 
+        
         if (lobbyData.usernamePlayer2 && lobbyData.player2Character && lobbyData.player2Character > 0) {
             const charAssetP2 = this.characters[lobbyData.player2Character];
             if (charAssetP2) {
@@ -160,13 +160,13 @@ class PersonajesGameOnline extends Phaser.Scene {
             }
         }
 
-        // --- Actualizar Estado "LISTO" del Jugador 1 ---
+        // Actualizar Estado "LISTO" del Jugador 1 
         if (lobbyData.player1Ready) {
             this.playerSlots.P1.readyButton.setVisible(false);
             this.playerSlots.P1.readyCheck.setVisible(true);
         }
 
-        // --- Actualizar Estado "LISTO" del Jugador 2 ---
+        // Actualizar Estado "LISTO" del Jugador 2 
         if (lobbyData.player2Ready) {
             this.playerSlots.P2.readyButton.setVisible(false);
             this.playerSlots.P2.readyCheck.setVisible(true);

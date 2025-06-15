@@ -4,7 +4,7 @@ class CreditsScene extends Phaser.Scene {
     }
     
     
-        preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------
+        preload() {     // CARGA DE ARCHIVOS 
             this.load.image('windowBackground', 'assets/Fondos/ajustesFondo.png'); 
             this.load.image('closeIcon', 'assets/Interfaz/close.png');        
 
@@ -45,7 +45,7 @@ class CreditsScene extends Phaser.Scene {
         }
         
     
-        // Por si se quiere volver a abrir en cualquien otro punto deljuego
+        
         openWindow() {
         }
     };

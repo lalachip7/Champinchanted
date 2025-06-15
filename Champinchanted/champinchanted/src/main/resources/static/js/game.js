@@ -43,7 +43,7 @@ class GameScene extends Phaser.Scene {
         this.offsetY2 = 39.25;
     }
 
-    preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------------------------------------
+    preload() {     // CARGA DE ARCHIVOS 
         // Musica
         this.load.audio("background2", 'assets/Sonidos/game.mp3');
         this.load.audio("spellPickup", 'assets/Sonidos/hechizo.mp3');
@@ -165,7 +165,7 @@ class GameScene extends Phaser.Scene {
         });
     }
 
-    create(data) {  // AÑADE LOS OBJETOS A LA ESCENA --------------------------------------------------------------------------
+    create(data) {  // AÑADE LOS OBJETOS A LA ESCENA 
 
         // Musica
         GameScene.bgMusic = this.sound.add('background2');    // Añade la música de fondo,
@@ -176,7 +176,7 @@ class GameScene extends Phaser.Scene {
         this.spellPickupSound = this.sound.add('spellPickup');
         this.playerDeathSound = this.sound.add('playerDeath');
 
-        // ELECCIÓN PERSONAJE JUGADOR 1 .......................................................................................
+        // ELECCIÓN PERSONAJE JUGADOR 1 
         
         let personaje1 = 'champichip';          // Champichip por defecto
         let personaje1i = 'champichip_i';       
@@ -221,7 +221,7 @@ class GameScene extends Phaser.Scene {
 
         }
 
-        // ELECCIÓN PERSONAJE JUGADOR 2 .......................................................................................
+        // ELECCIÓN PERSONAJE JUGADOR 2 
        
         let personaje2 = 'champichip';           // Champichip por defecto
         let personaje2i = 'champichip_i';
@@ -263,7 +263,7 @@ class GameScene extends Phaser.Scene {
             this.offsetY2 = 30;
         }
 
-        // ELECCIÓN MUNDO .....................................................................................................
+        // ELECCIÓN MUNDO 
 
         let fondo = 'background_o';             // Otoño por defecto
         let suelo = 'ground_o';
@@ -319,7 +319,7 @@ class GameScene extends Phaser.Scene {
             venenosa = 'poisonous_o';
         }
 
-        // CREACIÓN DEL MUNDO DEL JUEGO .......................................................................................
+        // CREACIÓN DEL MUNDO DEL JUEGO 
 
         this.background = this.add.image(960, 540, fondo);                              // Fondo
         this.background.alpha = 0.5;
@@ -406,7 +406,7 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         })
 
-        // INTERFAZ ..........................................................................................................
+        // INTERFAZ 
                
         this.configText = {
             style: {
@@ -499,7 +499,7 @@ class GameScene extends Phaser.Scene {
 
 
 
-        // HECHIZOS .........................................................................................................
+        // HECHIZOS 
 
         this.spellVenom = this.physics.add.group();                         // grupo para los hechizos
         this.spellDazer = this.physics.add.group(); 
@@ -516,7 +516,7 @@ class GameScene extends Phaser.Scene {
         this.dazerSpell = this.physics.add.image(posx2, posy2, 'dazer').setScale(0.1);
         this.dazerSpell.body.allowGravity = false;
 
-        // MENU DE PAUSA--------------------------------------------------------------------------------------------------------
+        // MENU DE PAUSA
 
         this.pauseMenu = this.add.container(this.scale.width / 2, this.scale.height / 2);
         this.pauseMenu.setVisible(false);
@@ -542,7 +542,7 @@ class GameScene extends Phaser.Scene {
             this.togglePause();
         });
 
-        // COLISIONES .........................................................................................................
+        // COLISIONES 
 
         this.player1.setCollideWorldBounds(true);                       // Con los límites del mundo
         this.player2.setCollideWorldBounds(true);  
@@ -586,7 +586,7 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player1, this.dazerSpell, this.collectDazerPlayer1, null, this);      
         this.physics.add.collider(this.player2, this.dazerSpell, this.collectDazerPlayer2, null, this);
 
-        // RECONOCIMIENTO DE TECLAS ...........................................................................................
+        // RECONOCIMIENTO DE TECLAS 
 
         this.leftKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.rightKeyPlayer1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -612,7 +612,7 @@ class GameScene extends Phaser.Scene {
     
     collectFlagPlayer1() {
 
-        this.player1HasFlag = true;                             // Ej jugador 1 tiene ahora la bandera
+        this.player1HasFlag = true;                             
         this.currentFlagHolder = this.player1;                  
         this.isCaptured = true;
         this.flag.disableBody(true, false);                      // La desactivamos
@@ -724,7 +724,7 @@ class GameScene extends Phaser.Scene {
         if (this.player2HasDazer) {
             if (this.player2Spell2i) this.player2Spell2i.destroy();  // Elimina el icono del otro hechizo
             if (this.dazerText2) this.dazerText2.destroy();          // Elimina el texto del otro hechizo
-            this.player2HasDazer = false;                           // Aquí estaba el typo
+            this.player2HasDazer = false;                           
         }
     
         this.player2HasVenom = true;                                    // El jugador 2 tiene un hechizo
@@ -793,7 +793,7 @@ class GameScene extends Phaser.Scene {
         console.log('El jugador 2 ha recogido el hechizo de veneno');
     }
 
-    throwVenom() {  // LANZAR VENENO ----------------------------------------------------------------------------------------
+    throwVenom() {  // LANZAR VENENO 
         if (this.throwKeyPlayer1.isDown && this.player1HasVenom) {   
             this.createVenom(this.player1);                             // Crea y lanza un hechizo
             this.player1HasVenom = false;                               // El jugador 1 ya no tiene el hechizo
@@ -817,7 +817,7 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    throwDazer() {  // LANZAR VENENO ----------------------------------------------------------------------------------------
+    throwDazer() {  // LANZAR VENENO 
         if (this.throwKeyPlayer1.isDown && this.player1HasDazer) {   
             this.createDazer(this.player1);                             // Crea y lanza un hechizo
             this.player1HasDazer = false;                               // El jugador 1 ya no tiene el hechizo
@@ -841,14 +841,14 @@ class GameScene extends Phaser.Scene {
         }
     }
     
-    createVenom(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
+    createVenom(player) {  // CREAR HECHIZOS 
         let spellVenom = this.spellVenom.create(player.x, player.y, 'venom');    // Crea un hechizo de tipo venom
         spellVenom.setVelocityX(player.flipX ? 600 : -600);                  // Velocidad según la dirección del jugador
         spellVenom.setScale(0.1);                                            // Tamaño del hechizo 
         spellVenom.body.allowGravity = false;                                // El hechizo no se ve afectado por la gravedad
     }
 
-    createDazer(player) {  // CREAR HECHIZOS ------------------------------------------------------------------------------ 
+    createDazer(player) {  // CREAR HECHIZOS  
         let spellDazer = this.spellDazer.create(player.x, player.y, 'dazer');    // Crea un hechizo de tipo venom
         spellDazer.setVelocityX(player.flipX ? 600 : -600);                  // Velocidad según la dirección del jugador
         spellDazer.setScale(0.1);                                            // Tamaño del hechizo 
@@ -915,7 +915,7 @@ class GameScene extends Phaser.Scene {
 
     }
 
-    updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES --------------------------------------------------
+    updatePlayerMovement() {    // ACTUALIZA EL MOVIMIENTO DE LOS PERSONAJES 
         
         // Movimiento del jugador 1
         if (this.leftKeyPlayer1.isDown && this.isMovementEnabled) {                                   
@@ -980,12 +980,12 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    startGame() {   // COMIENZA EL JUEGO --------------------------------------------------------------------------------------
+    startGame() {   // COMIENZA EL JUEGO 
         this.gameStarted = true;   
         this.rounds = 0;
     }
     
-    nextRound() {   // COMIENZA UNA NUEVA RONDA -------------------------------------------------------------------------------
+    nextRound() {   // COMIENZA UNA NUEVA RONDA 
         this.rounds++;                              // Aumenta el contador de rondas
 
         this.player1.setPosition(180, 700);         // Resetea la posición de los jugadores
@@ -1080,7 +1080,7 @@ class GameScene extends Phaser.Scene {
     this.resetPoisonTimers();
     }
 
-    resetPoisonTimers() {   // DETIENE LOS TEMPORIZADORES DE VENENO -----------------------------------------------------------
+    resetPoisonTimers() {   // DETIENE LOS TEMPORIZADORES DE VENENO 
         if (this.player1.venomTimer) {
             this.player1.venomTimer.remove(false);
             this.player1.venomTimer = null;         // Elimina el temporizador del jugador 1
@@ -1096,7 +1096,7 @@ class GameScene extends Phaser.Scene {
         this.player2.setTint(0xFFFFFF);     // Restaurar color original de player 2
     }
 
-    checkWinCondition() {   // COMPRUEBA SI SE CUMPLE LA CONDICIÓN DE FIN DE PARTIDA O NUEVA RONDA ----------------------------
+    checkWinCondition() {   // COMPRUEBA SI SE CUMPLE LA CONDICIÓN DE FIN DE PARTIDA O NUEVA RONDA 
 
         if (this.lifePlayer1 <= 0 && this.dead) {           // Si el jugador 1 se muere
             this.playerDeathSound.play();                   // Reproduce sonido de muerte
@@ -1193,7 +1193,7 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    update(time, delta) {   // ACTUALIZA EL JUEGO -----------------------------------------------------------------------------
+    update(time, delta) {   // ACTUALIZA EL JUEGO 
         this.updatePlayerMovement();
         this.checkWinCondition();
         this.throwVenom();
