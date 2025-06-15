@@ -331,10 +331,10 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
 
-#7. Implementación del Back-end
+# 7. Implementación del Back-end
 En esta fase del desarrollo, se ha implementado un back-end robusto utilizando Spring Boot para potenciar las funcionalidades online del juego y permitir la persistencia de datos.
 
-##7.1. Arquitectura del Back-end
+## 7.1. Arquitectura del Back-end
 El back-end sigue una arquitectura REST (Representational State Transfer), sirviendo como una API para que el cliente del juego (desarrollado en Phaser) pueda comunicarse de forma desacoplada y escalable. Toda la comunicación entre el cliente y el servidor, incluyendo el estado de las salas, notificaciones y chat, se realiza mediante peticiones HTTP.
 
 La API REST gestiona los siguientes recursos:
@@ -342,5 +342,5 @@ La API REST gestiona los siguientes recursos:
 Gestión de Cuentas de Usuario (/api/users): Proporciona endpoints para el registro, inicio de sesión, actualización de contraseña y borrado de usuarios. La seguridad de las contraseñas se garantiza mediante cifrado BCrypt.
 Gestión de Partidas (/api/games): Permite a los usuarios crear y unirse a salas de juego. También ofrece endpoints para consultar el estado de una partida (como el número de jugadores) y para gestionar la "línea de tiempo" de eventos (chat y notificaciones del sistema).
 Estado del Servidor y Actividad (/api/status, /api/ping): Incluye endpoints para verificar que el servidor está en línea y para monitorizar la actividad de los usuarios a través de un sistema de "heartbeats".
-##7.2. Persistencia de Datos
+## 7.2. Persistencia de Datos
 El servidor asegura la persistencia de los datos críticos para que las sesiones de juego puedan sobrevivir a reinicios. La información de cuentas de usuario y el estado de las salas de juego (incluyendo el historial de eventos y chat) se almacena de forma permanente en ficheros .json en el disco duro del servidor. Una tarea programada se encarga de gestionar y limpiar las salas cuyos jugadores se han vuelto inactivos.
