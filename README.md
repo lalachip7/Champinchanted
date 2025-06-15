@@ -13,7 +13,11 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777      
+* Github: ratamolinera777    
+
+Laura Blázquez Pelaz   
+* l.blazquez.2022@alumnos.urjc.es   
+* lalachip7   
 
 
 # Índice
@@ -188,7 +192,7 @@ Y por último puede realizar otras acciones, ajenas al tiempo de partida, como s
 ## 3.4. Diagrama de estados
 El diagrama de estados entre las distintas pantallas del videojuego es el siguiente.
 
-![Diagrama de estados](./Imágenes/diagramaEstadosFase3.png)
+![Diagrama de estados](./Imágenes/diagramaEstados.png)
 
 
 # 4. Música
@@ -231,22 +235,22 @@ El diseño de Perretxiko está basado en la seta Amanita Muscaria. Una seta tóx
 **Champichip**
 Champichip es una combinación del champiñón portobello y la patata, hemos querido representar una personalidad divertida y despreocupada para este personaje.
 
-![Sprites de Champichip](./Imágenes/Animación_champichip.png)
+![Sprites de Champichip](./Imágenes/Champichip.png)
 
 **Mariñón**
 Para este personaje nos hemos inspirado en la Hygrocybe conica, también conocida como Seta sombrero de bruja. Los colores empleados representan la bandera lgbtiq+ como forma de apoyo y solidaridad hacia ese colectivo.
 
-![Sprites de Mariñón](./Imágenes/Animación_mariñon.png)
+![Sprites de Mariñón](./Imágenes/Mariñón.png)
 
 **Champistar**
 El personaje de Champistar está inspirado por la cultura emo y alternativa, le hemos querido representar con la seta Cortinarius violaceus, una seta morada oscura que recuerda mucho a esta estética.
 
-![Sprites de Champistar](./Imágenes/Animación_champistar.png)
+![Sprites de Champistar](./Imágenes/Champistar.png)
 
 **Biblioseta**
 La Biblioseta está basada en el Hygrocybe coccinea, un pequeño y poco común hongo. Este personaje tiene la característica distintiva de ser más pequeño que el resto.
 
-![Sprites de Biblioseta](./Imágenes/Animación_biblioseta.png)
+![Sprites de Biblioseta](./Imágenes/Biblioseta.png)
 
 ## 5.4. Diseño de entornos
 ### 5.4.1. Fondos
@@ -292,17 +296,21 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 
 ## 5.6. Interfaz de usuario
 ### 5.6.1 Pantalla de Inicio
-![Pantalla de Inicio](./Imágenes/inicial.png)
+![Pantalla de Inicio](./Imágenes/pantallaInicioFase3.png)
 ### 5.6.2 Pantalla de Tutorial
 ![Pantalla de Tutorial](./Imágenes/tuto.png)
 ### 5.6.3 Pantalla de Creditos
-![Pantalla de Creditos](./Imágenes/creditos.png)
+![Pantalla de Creditos](./Imágenes/creditos2.png)
 ### 5.6.4 Pantalla de usuario
-![Pantalla de usuario](./Imágenes/pantallaUsuarios.png)
-### 5.6.5 Pantalla de unirse a partida/crear
-![Pantalla de unirse a partida](./Imágenes/unirse.png)
+![Pantalla de usuario](./Imágenes/nombre.png)
+### 5.6.4.1 Pantalla de usuario - Inicio de sesión
+![Pantalla de usuario](./Imágenes/inicioSesionNombre.png)
+### 5.6.4.2 Pantalla de usuario - Registro
+![Pantalla de usuario](./Imágenes/registro.png)
+### 5.6.5 Pantalla de unirse a partida
+![Pantalla de unirse a partida](./Imágenes/unirse2.png)
 ### 5.6.6 Pantalla de mapas
-![Pantalla de mapas](./Imágenes/mapas.png)
+![Pantalla de mapas](./Imágenes/mapas2.png)
 ### 5.6.7 Pantalla de pausa
 ![Pantalla de pausa](./Imágenes/pausa.png)
 ### 5.6.8 Pantallas de seleccion de personajes
@@ -310,7 +318,8 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 ![Pantalla de seleccion de personajes (Local)](./Imágenes/k.png)
 5.6.8.2 Pantalla de seleccion de personajes (En red)
 ![Pantalla de seleccion de personajes (En red)](./Imágenes/seleccionPersonajesOnline.png)
-### 5.6.9 Pantallas de chat
+### 5.6.7 Pantalla de chat
+![Pantalla de pausa](./Imágenes/chat.png)
 
 # 6. Arquitectura y guía de ejecución
 ## 6.1. Diagrama de clases
@@ -344,5 +353,4 @@ Perfiles de Usuario: Creación, actualización y consulta de perfiles de jugador
 Configuración de la Partida: Persistencia y carga de las preferencias de configuración de las partidas.
 En general, todas las funciones relacionadas con la gestión y persistencia de los aspectos esenciales del juego.
 Almacenamiento Persistente de Datos: El servidor garantizará que parte de los datos mencionados, como perfiles de usuario y puntuaciones, se almacenen de manera permanente, permitiendo su disponibilidad y utilización en futuras sesiones de juego.
-
 
