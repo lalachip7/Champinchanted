@@ -66,9 +66,6 @@ public class GameWebSocketController {
     public void selectMap(@Payload SelectMapMessage message) {
         // Guarda el mapa elegido en el servidor
         gameService.setGameMap(message.getGameCode(), message.getMapId()).ifPresent(updatedGame -> {
-
-            // --- ESTA ES LA LÍNEA CLAVE DE LA CORRECCIÓN ---
-            // Creamos el mensaje con TODOS los datos necesarios para la siguiente pantalla
             StartGameMessage proceedMessage = new StartGameMessage(
                     updatedGame.getCode(),
                     updatedGame.getUsernamePlayer1(),
@@ -76,15 +73,9 @@ public class GameWebSocketController {
                     updatedGame.getUsernamePlayer2(),
                     -1, // El personaje P2 aún no se ha elegido
                     updatedGame.getMap());
-
-            // Envía el mensaje completo al topic "start"
             messagingTemplate.convertAndSend("/topic/games/" + updatedGame.getCode() + "/start", proceedMessage);
         });
     }
-
-    /**
-     * Se ejecuta cuando un jugador selecciona un personaje.
-     */
     @MessageMapping("/game.selectCharacter")
     public void selectCharacter(@Payload SelectCharacterMessage message) {
         System.out.println("\n--- [DEBUG] Se recibió un mensaje de selección de personaje ---");
@@ -129,9 +120,6 @@ public class GameWebSocketController {
         System.out.println("--- [DEBUG] Fin del procesamiento del mensaje ---\n");
     }
 
-    /**
-     * Se ejecuta cuando un jugador pulsa el botón "Listo".
-     */
     @MessageMapping("/game.ready")
     public void setPlayerReady(@Payload Map<String, String> payload) {
         String gameCode = payload.get("gameCode");
@@ -148,7 +136,6 @@ public class GameWebSocketController {
             // Notificamos a todos que un jugador está listo
             messagingTemplate.convertAndSend("/topic/games/" + game.getCode(), game.toLobbyData());
 
-            // Si AMBOS están listos, se inicia la partida
             if (game.isPlayer1Ready() && game.isPlayer2Ready()) {
                 StartGameMessage startGameMessage = new StartGameMessage(
                         game.getCode(),
@@ -170,7 +157,6 @@ public class GameWebSocketController {
         gameService.collectFlag(gameCode, username);
     }
 
-    // ▼▼▼ AÑADE ESTE MÉTODO ▼▼▼
     @MessageMapping("/game.collectSpell")
     public void collectSpell(@Payload Map<String, String> payload) {
         String gameCode = payload.get("gameCode");
@@ -183,9 +169,7 @@ public class GameWebSocketController {
     public void updateState(@Payload GameUpdateMessage message) {
         // Usamos el GameService para actualizar el estado del jugador en el servidor
         gameService.updatePlayerState(message.getGameCode(), message.getUsername(), message.toPlayerState());
-
-        // Retransmitimos el estado COMPLETO y actualizado de la partida a ambos
-        // jugadores
+        
         gameService.getGame(message.getGameCode()).ifPresent(game -> {
             messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
         });

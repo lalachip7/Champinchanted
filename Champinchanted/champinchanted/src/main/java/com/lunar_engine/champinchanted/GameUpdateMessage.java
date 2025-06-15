@@ -23,7 +23,7 @@ public class GameUpdateMessage {
         this.flagStatus = flagStatus;
     }
 
-    // --- GETTERS Y SETTERS ---
+    // GETTERS Y SETTERS
     public String getGameCode() { return gameCode; }
     public void setGameCode(String gameCode) { this.gameCode = gameCode; }
     public String getUsername() { return username; }
@@ -44,7 +44,7 @@ public class GameUpdateMessage {
 public PlayerState toPlayerState() {
     return new PlayerState(
         this.username, this.positionX, this.positionY, this.score,
-        this.lives, this.spellUsed, this.flagStatus, 0, false, false, false // <-- MODIFICA ESTA LÍNEA
+        this.lives, this.spellUsed, this.flagStatus, 0, false, false, false 
     );
 }
 }

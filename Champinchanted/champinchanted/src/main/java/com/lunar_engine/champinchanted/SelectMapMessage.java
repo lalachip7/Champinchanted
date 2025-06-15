@@ -2,7 +2,7 @@ package com.lunar_engine.champinchanted;
 
 public class SelectMapMessage {
     private String gameCode;
-    private String username; // Optional: To identify who selected the map, though it's typically the host
+    private String username;
     private int mapId;
 
     public SelectMapMessage() {}

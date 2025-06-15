@@ -5,7 +5,6 @@ public class ChatMessage {
     private String content;
     private String gameCode;
 
-    // Constructores, Getters y Setters
     public ChatMessage() {}
 
     public ChatMessage(String sender, String content, String gameCode) {

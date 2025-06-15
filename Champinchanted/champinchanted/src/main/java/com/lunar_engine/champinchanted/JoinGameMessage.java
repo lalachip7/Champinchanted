@@ -5,7 +5,7 @@ public class JoinGameMessage {
     private String username;
     private String gameCode;
 
-    public JoinGameMessage() {}     // Constructor vacío
+    public JoinGameMessage() {}
 
     // Constructor con todos los parámetros
     public JoinGameMessage(String username, String gameCode) {

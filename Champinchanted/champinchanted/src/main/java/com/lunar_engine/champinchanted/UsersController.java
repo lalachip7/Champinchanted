@@ -26,9 +26,6 @@ public class UsersController {
         this.passwordEncoder = passwordEncoder; // Añadirlo al constructor
     }
 
-    /**
-     * Registra un nuevo usuario con su contraseña.
-     */
     @PostMapping
     public ResponseEntity<Object> registerUser(@RequestBody User user) {
         String username = user.getUsername();
@@ -53,9 +50,6 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Usuario registrado con éxito."));
     }
 
-    /**
-     * NUEVO ENDPOINT: Inicia sesión con un usuario existente.
-     */
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody User loginAttempt) {
         String username = loginAttempt.getUsername();

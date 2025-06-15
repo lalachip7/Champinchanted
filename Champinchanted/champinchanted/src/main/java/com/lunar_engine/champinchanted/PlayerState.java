@@ -17,7 +17,6 @@ public class PlayerState {
     public PlayerState() {
     }
 
-    // Constructor con todos los parámetros
     public PlayerState(String username, float positionX, float positionY, int score, int lives, boolean spellUsed,
             boolean flagStatus, int characterId, boolean isReady, boolean frozen, boolean poisoned) {
         this.username = username;
@@ -100,11 +99,11 @@ public class PlayerState {
 
     public boolean isReady() {
         return isReady;
-    } // Getter para isReady
+    }
 
     public void setReady(boolean ready) {
         isReady = ready;
-    } // Setter para isReady
+    }
 
     public boolean isFrozen() {
         return frozen;

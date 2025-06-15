@@ -13,10 +13,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactiva CSRF, necesario para que las APIs funcionen sin configuración extra
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // Permite el acceso a TODAS las rutas sin necesidad de autenticación.
-                // Esta es la línea clave que elimina el formulario de login por defecto.
                 .anyRequest().permitAll()
             );
         return http.build();

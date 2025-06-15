@@ -3,7 +3,7 @@ import java.util.Timer;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-//esto hay que borrarlo
+
 public class Game {
     // Atributos del lobby y de la partida en tiempo real
     private String usernamePlayer1, usernamePlayer2;
