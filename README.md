@@ -13,11 +13,7 @@ Garazi Blanco Jauregi
 
 Alberto López García de Ceca   
 * a.lopezgar.2022@alumnos.urjc.es   
-* Github: ratamolinera777    
-
-Laura Blázquez Pelaz   
-* l.blazquez.2022@alumnos.urjc.es   
-* lalachip7   
+* Github: ratamolinera777      
 
 
 # Índice
@@ -332,3 +328,21 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
+
+#7. Implementación Back-end
+En esta tercera fase del desarrollo de Champinchanted, nos enfocaremos en la inclusión de un back-end robusto que potencie las funcionalidades del juego y permita la persistencia de datos.
+
+##7.1. Desarrollo del Back-end REST
+El back-end de Champinchanted se construirá siguiendo los principios de la arquitectura REST (Representational State Transfer) para asegurar una comunicación eficiente y escalable entre el cliente (el juego en el navegador) y el servidor. Este componente clave permitirá:
+
+Comunicación Cliente-Servidor: Establecer un canal de comunicación fluido entre la aplicación del juego y el servidor, utilizando un servicio RESTful para el intercambio de información.
+Definición de la API REST: Se diseñará una API REST clara y bien documentada que servirá como la interfaz para todas las interacciones del cliente con el servidor. Esta API definirá los recursos disponibles y las operaciones permitidas sobre ellos (GET, POST, PUT, DELETE, etc.).
+Gestión de Datos y Funciones del Juego: El back-end se encargará de la gestión de diversos datos cruciales para la experiencia de juego, incluyendo:
+Puntuaciones: Almacenamiento y recuperación de las puntuaciones de los jugadores.
+Usuario/Contraseña: Gestión de la autenticación y autorización de usuarios.
+Perfiles de Usuario: Creación, actualización y consulta de perfiles de jugador.
+Configuración de la Partida: Persistencia y carga de las preferencias de configuración de las partidas.
+En general, todas las funciones relacionadas con la gestión y persistencia de los aspectos esenciales del juego.
+Almacenamiento Persistente de Datos: El servidor garantizará que parte de los datos mencionados, como perfiles de usuario y puntuaciones, se almacenen de manera permanente, permitiendo su disponibilidad y utilización en futuras sesiones de juego.
+
+
