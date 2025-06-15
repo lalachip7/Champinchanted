@@ -320,7 +320,7 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 # 6. Arquitectura y guía de ejecución
 ## 6.1. Diagrama de clases
 A continuación adjuntamos la explicación general de la estructura del proyecto y las relaciones entre las clases implemnentadas:
-![Diagrama de clases](./Imágenes/Diagrama_de_clases.png)
+![Diagrama de clases](./Imágenes/diagramaClases.png)
 
 Además, hemos utilizado la plantilla UsernameUpdateRequest de tipo DTO (DataTransferObject), que se usa en el controlador para actualizar el nombre de usuario. 
 
@@ -334,10 +334,10 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
 
-#7. Implementación Back-end
+# 7. Implementación Back-end
 En esta tercera fase del desarrollo de Champinchanted, nos enfocaremos en la inclusión de un back-end robusto que potencie las funcionalidades del juego y permita la persistencia de datos.
 
-##7.1. Desarrollo del Back-end REST
+## 7.1. Desarrollo del Back-end REST
 El back-end de Champinchanted se construirá siguiendo los principios de la arquitectura REST (Representational State Transfer) para asegurar una comunicación eficiente y escalable entre el cliente (el juego en el navegador) y el servidor. Este componente clave permitirá:
 
 Comunicación Cliente-Servidor: Establecer un canal de comunicación fluido entre la aplicación del juego y el servidor, utilizando un servicio RESTful para el intercambio de información.
