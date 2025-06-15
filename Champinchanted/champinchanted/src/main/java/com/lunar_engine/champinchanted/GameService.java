@@ -175,12 +175,12 @@ public class GameService {
     }
 
     private void checkPlayerCollisionAndSteal(Game game) {
-        if (game.getFlagHolderUsername() == null) {
-            return;
-        }
+        if (game.getFlagHolderUsername() == null) return;
+        
         double dx = game.getPlayer1PositionX() - game.getPlayer2PositionX();
         double dy = game.getPlayer1PositionY() - game.getPlayer2PositionY();
         double distance = Math.sqrt(dx * dx + dy * dy);
+
         if (distance < PLAYER_COLLISION_DISTANCE) {
             String holder = game.getFlagHolderUsername();
             String p1 = game.getUsernamePlayer1();
@@ -199,15 +199,7 @@ public class GameService {
         getGame(gameCode).ifPresent(game -> {
             if (username.equals(game.getFlagHolderUsername())) {
                 game.setFlagHolderUsername(null);
-                if (username.equals(game.getUsernamePlayer1())) {
-                    game.setPlayer1Score(game.getPlayer1Score() + 1);
-                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
-                } else {
-                    game.setPlayer2Score(game.getPlayer2Score() + 1);
-                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
-                }
-                game.resetForNewRound();
-                broadcastGameState(gameCode);
+                processScoreAndEndCondition(game, username);
             }
         });
     }
@@ -237,9 +229,8 @@ public class GameService {
                 }, 3000);
             } else if (spellId == 1) { // Venom
                 final boolean targetIsP1 = !isPlayer1;
-                if ((targetIsP1 && game.getPlayer1PoisonTimer() != null) || (!targetIsP1 && game.getPlayer2PoisonTimer() != null)) {
-                    return;
-                }
+                if ((targetIsP1 && game.getPlayer1PoisonTimer() != null) || (!targetIsP1 && game.getPlayer2PoisonTimer() != null)) return;
+                
                 if (isPlayer1) {
                     game.setPlayer2Poisoned(true);
                     game.setPlayer1HeldSpell(0);
@@ -257,7 +248,6 @@ public class GameService {
                 TimerTask poisonTask = new TimerTask() {
                     @Override
                     public void run() {
-                        // El efecto dura ahora 5 ticks (daño) en lugar de 3
                         if (ticks.incrementAndGet() > 5) {
                             if (targetIsP1) {
                                 game.setPlayer1Poisoned(false);
@@ -274,13 +264,10 @@ public class GameService {
                             return;
                         }
                         
-                        if (targetIsP1) {
-                            game.setPlayer1Lives(game.getPlayer1Lives() - 1);
-                        } else {
-                            game.setPlayer2Lives(game.getPlayer2Lives() - 1);
-                        }
-                        System.out.println("Daño de veneno aplicado.");
+                        if (targetIsP1) game.setPlayer1Lives(game.getPlayer1Lives() - 1);
+                        else game.setPlayer2Lives(game.getPlayer2Lives() - 1);
                         
+                        System.out.println("Daño de veneno aplicado.");
                         checkAndHandleDeath(game);
                     }
                 };
@@ -290,22 +277,39 @@ public class GameService {
     }
 
     private void checkAndHandleDeath(Game game) {
-        boolean roundShouldReset = false;
-        
+        String scoringPlayer = null;
         if (game.getPlayer1Lives() <= 0) {
-            game.setPlayer2Score(game.getPlayer2Score() + 1);
-            System.out.println(game.getUsernamePlayer1() + " ha muerto. Punto para " + game.getUsernamePlayer2());
-            roundShouldReset = true;
+            scoringPlayer = game.getUsernamePlayer2();
         } else if (game.getPlayer2Lives() <= 0) {
-            game.setPlayer1Score(game.getPlayer1Score() + 1);
-            System.out.println(game.getUsernamePlayer2() + " ha muerto. Punto para " + game.getUsernamePlayer1());
-            roundShouldReset = true;
+            scoringPlayer = game.getUsernamePlayer1();
         }
 
-        if (roundShouldReset) {
-            game.resetForNewRound();
-            broadcastGameState(game.getCode());
+        if (scoringPlayer != null) {
+            processScoreAndEndCondition(game, scoringPlayer);
         } else {
+            broadcastGameState(game.getCode());
+        }
+    }
+
+    private void processScoreAndEndCondition(Game game, String scoringPlayer) {
+        if (scoringPlayer.equals(game.getUsernamePlayer1())) {
+            game.setPlayer1Score(game.getPlayer1Score() + 1);
+        } else {
+            game.setPlayer2Score(game.getPlayer2Score() + 1);
+        }
+        System.out.println("Punto para " + scoringPlayer + ". P1: " + game.getPlayer1Score() + ", P2: " + game.getPlayer2Score());
+
+        if (game.getPlayer1Score() >= 3 || game.getPlayer2Score() >= 3) {
+            String winner = game.getPlayer1Score() >= 3 ? game.getUsernamePlayer1() : game.getUsernamePlayer2();
+            System.out.println("Partida " + game.getCode() + " terminada. Ganador: " + winner);
+
+            GameOverMessage gameOverMessage = new GameOverMessage(winner, game.getPlayer1Score(), game.getPlayer2Score());
+            messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode() + "/gameover", gameOverMessage);
+
+            activeGames.remove(game.getCode());
+            gameRepository.deleteGame(game.getCode());
+        } else {
+            game.resetForNewRound();
             broadcastGameState(game.getCode());
         }
     }

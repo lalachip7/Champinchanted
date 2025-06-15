@@ -19,6 +19,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.serverState = {};
         this.keys = null;
         this.isMovementEnabled = true;
+        this.gameOver = false; // Flag para detener la lógica del juego
         this.flagSprite = null;
         this.house1Sprite = null;
         this.house2Sprite = null;
@@ -31,7 +32,6 @@ class GameSceneOnline extends Phaser.Scene {
     }
 
     preload() {
-        // --- PRELOAD COMPLETO ---
         this.load.audio("background2", 'assets/Sonidos/game.mp3');
         this.load.audio("spellPickup", 'assets/Sonidos/hechizo.mp3');
         this.load.audio("playerDeath", 'assets/Sonidos/cogerBandera.mp3');
@@ -199,8 +199,12 @@ class GameSceneOnline extends Phaser.Scene {
     }
 
     update() {
-        if (!this.player) return;
-        if (!this.isMovementEnabled) { this.player.setVelocity(0); return; }
+        if (!this.player || this.gameOver) return;
+
+        if (!this.isMovementEnabled) {
+            this.player.setVelocity(0);
+            return;
+        }
 
         if (this.keys.left.isDown) {
             this.player.setVelocityX(-600);
@@ -230,17 +234,36 @@ class GameSceneOnline extends Phaser.Scene {
 
     subscribeToGameUpdates() {
         this.stompClient.subscribe(`/topic/gameplay/${this.gameCode}`, (message) => {
+            if (this.gameOver) return;
             this.serverState = JSON.parse(message.body);
             this.updateVisuals();
+        });
+
+        this.stompClient.subscribe(`/topic/gameplay/${this.gameCode}/gameover`, (message) => {
+            if (this.gameOver) return; // Evitar procesar múltiples veces
+            this.gameOver = true;
+            const gameOverData = JSON.parse(message.body);
+            
+            console.log("¡La partida ha terminado! Ganador: " + gameOverData.winnerUsername);
+
+            this.registry.set('player1Score', gameOverData.finalScoreP1);
+            this.registry.set('player2Score', gameOverData.finalScoreP2);
+
+            this.time.delayedCall(1000, () => {
+                if(this.stompClient.connected) {
+                    this.stompClient.disconnect();
+                }
+                this.scene.start('EndScene');
+            }, [], this);
         });
     }
 
     sendPlayerState() {
-        if (this.stompClient?.connected && this.player) {
-            this.stompClient.send(`/app/game.updateState`, {}, JSON.stringify({
-                gameCode: this.gameCode, username: this.username, positionX: this.player.x, positionY: this.player.y,
-            }));
-        }
+        if (this.gameOver || !this.stompClient?.connected || !this.player) return;
+
+        this.stompClient.send(`/app/game.updateState`, {}, JSON.stringify({
+            gameCode: this.gameCode, username: this.username, positionX: this.player.x, positionY: this.player.y,
+        }));
     }
 
     resetPlayerPosition() {
@@ -252,44 +275,24 @@ class GameSceneOnline extends Phaser.Scene {
 
     updateVisuals() {
         const gameState = this.serverState;
-        if (!gameState?.player1State || !gameState?.player2State || !this.opponent || !this.player) return;
+        if (this.gameOver || !gameState?.player1State || !gameState?.player2State || !this.opponent) return;
 
         const { player1State, player2State } = gameState;
         const myState = (this.username === player1State.username) ? player1State : player2State;
         const opponentState = (this.username === player1State.username) ? player2State : player1State;
 
         if (this.flagHolderSprite && gameState.flagVisible && !gameState.flagHolderUsername) {
-            this.player.setPosition(myState.positionX, myState.positionY);
-            this.opponent.setPosition(opponentState.positionX, opponentState.positionY);
+            this.resetPlayerPosition();
             this.isScoring = false;
-        } else {
-            // --- ESTA ES UNA ACTUALIZACIÓN NORMAL DURANTE LA PARTIDA ---
-            // El control local es fluido. Solo actualizamos suavemente al oponente.
-            this.tweens.add({
-                targets: this.opponent,
-                x: opponentState.positionX,
-                y: opponentState.positionY,
-                duration: 60,
-                ease: 'Linear'
-            });
         }
 
-        if (this.opponent.x < opponentState.positionX) {
-            this.opponent.flipX = true;
-        } else if (this.opponent.x > opponentState.positionX) {
-            this.opponent.flipX = false;
-        }
+        this.tweens.add({ targets: this.opponent, x: opponentState.positionX, y: opponentState.positionY, duration: 60, ease: 'Linear' });
+        if (this.opponent.x < opponentState.positionX) this.opponent.flipX = true;
+        else if (this.opponent.x > opponentState.positionX) this.opponent.flipX = false;
 
-
-        if (this.scoreText) {
-            this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
-        }
-        if (this.player1LifeImages) {
-            this.updatePlayerLives(this.player1LifeImages, player1State.lives);
-        }
-        if (this.player2LifeImages) {
-            this.updatePlayerLives(this.player2LifeImages, player2State.lives);
-        }
+        if (this.scoreText) this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
+        if (this.player1LifeImages) this.updatePlayerLives(this.player1LifeImages, player1State.lives);
+        if (this.player2LifeImages) this.updatePlayerLives(this.player2LifeImages, player2State.lives);
 
         this.isMovementEnabled = !myState.frozen;
         this.player.setTint(myState.frozen ? 0x67a3f1 : (myState.poisoned ? 0x00ff00 : 0xffffff));
@@ -308,7 +311,7 @@ class GameSceneOnline extends Phaser.Scene {
                 this.flagSprite.setVisible(false);
             }
         }
-
+        
         if (this.venomSpellSprite) {
             this.venomSpellSprite.setVisible(gameState.venomSpellVisible);
             if (gameState.venomSpellVisible) this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
@@ -321,7 +324,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
         this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
     }
-
+    
     getAssetKey(baseName) {
         const mundo = this.registry.get('mapa');
         const suffixMap = { 1: '_o', 2: '_i', 3: '_p', 4: '_v' };
