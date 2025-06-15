@@ -185,12 +185,18 @@ class GameSceneOnline extends Phaser.Scene {
             if (this.dazerSpellSprite.visible) this.stompClient.send("/app/game.collectSpell", {}, JSON.stringify({ gameCode: this.gameCode, username: this.username, spellType: "dazer" }));
         }, null, this);
 
-        this.keys = this.input.keyboard.createCursorKeys();
-        this.keys.action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        const wasd = this.input.keyboard.addKeys('W,A,D');
-        if (this.username === this.player1Username) {
-            this.keys.up = wasd.W; this.keys.left = wasd.A; this.keys.right = wasd.D;
-        }
+        // Asignamos las teclas de movimiento directamente a WASD para CUALQUIER jugador.
+        const wasd = this.input.keyboard.addKeys('W,A,S,D');
+
+        // Creamos el objeto `this.keys` para almacenar TODAS nuestras teclas de una vez
+        this.keys = {
+            up: wasd.W,
+            left: wasd.A,
+            down: wasd.S, // Se añade por si se usa en el futuro
+            right: wasd.D,
+            // La tecla de acción AHORA se define DENTRO del mismo objeto, evitando el error
+            action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
+        };
 
         this.createSpellUI();
         this.createMainUI();
@@ -243,17 +249,17 @@ class GameSceneOnline extends Phaser.Scene {
             if (this.gameOver) return; // Evitar procesar múltiples veces
             this.gameOver = true;
             const gameOverData = JSON.parse(message.body);
-            
+
             console.log("¡La partida ha terminado! Ganador: " + gameOverData.winnerUsername);
 
             this.registry.set('player1Score', gameOverData.finalScoreP1);
             this.registry.set('player2Score', gameOverData.finalScoreP2);
 
             this.time.delayedCall(1000, () => {
-                if(this.stompClient.connected) {
+                if (this.stompClient.connected) {
                     this.stompClient.disconnect();
                 }
-                this.scene.start('EndScene');
+                this.scene.start('EndSceneOnline');
             }, [], this);
         });
     }
@@ -311,7 +317,7 @@ class GameSceneOnline extends Phaser.Scene {
                 this.flagSprite.setVisible(false);
             }
         }
-        
+
         if (this.venomSpellSprite) {
             this.venomSpellSprite.setVisible(gameState.venomSpellVisible);
             if (gameState.venomSpellVisible) this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
@@ -324,7 +330,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
         this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
     }
-    
+
     getAssetKey(baseName) {
         const mundo = this.registry.get('mapa');
         const suffixMap = { 1: '_o', 2: '_i', 3: '_p', 4: '_v' };

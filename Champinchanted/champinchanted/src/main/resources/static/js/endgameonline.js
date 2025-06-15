@@ -1,6 +1,6 @@
-class EndGame extends Phaser.Scene {
+class EndGameOnline extends Phaser.Scene {
     constructor() {
-        super({ key: 'EndScene' });
+        super({ key: 'EndSceneOnline' });
     }
 
     init() {
