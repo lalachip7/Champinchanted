@@ -32,9 +32,9 @@ public class Game {
     private int player1HeldSpell = 0; // 0:ninguno, 1:venom, 2:dazer, etc.
     private int player2HeldSpell = 0;
 
-    private static final float P1_START_X = 180;
+    private static final float P1_START_X = 250;  // Antes era 180
     private static final float P1_START_Y = 700;
-    private static final float P2_START_X = 1750;
+    private static final float P2_START_X = 1670; // Antes era 1750
     private static final float P2_START_Y = 700;
 
     private final transient ReentrantLock gameLock = new ReentrantLock();

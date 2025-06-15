@@ -140,13 +140,13 @@ class GameSceneOnline extends Phaser.Scene {
 
         // --- CORRECCIÓN: Crear casas como sprites no sólidos ---
         let casaKey = this.getAssetKey('house');
-        this.house1Sprite = this.physics.add.sprite(175, 875, casaKey).setScale(0.4);
-        this.house1Sprite.body.setAllowGravity(false);
-        this.house1Sprite.body.setImmovable(true);
+        this.house1Sprite = this.physics.add.sprite(100, 875, casaKey).setScale(0.4); // X antes era 175
+        this.house1Sprite.body.setAllowGravity(false).setImmovable(true);
+        this.house1Sprite.body.setSize(this.house1Sprite.width * 0.5, this.house1Sprite.height * 0.5, true); // Ajuste de collider
 
-        this.house2Sprite = this.physics.add.sprite(1750, 875, casaKey).setScale(0.4);
-        this.house2Sprite.body.setAllowGravity(false);
-        this.house2Sprite.body.setImmovable(true);
+        this.house2Sprite = this.physics.add.sprite(1820, 875, casaKey).setScale(0.4); // X antes era 1750
+        this.house2Sprite.body.setAllowGravity(false).setImmovable(true);
+        this.house2Sprite.body.setSize(this.house2Sprite.width * 0.5, this.house2Sprite.height * 0.5, true); // Ajuste de collider
 
         // --- Crear bandera y hechizos con físicas ---
         let flagKey = this.getAssetKey('flag');
@@ -165,14 +165,46 @@ class GameSceneOnline extends Phaser.Scene {
         const personajeKey2 = this.getCharacterKey(j2_id);
 
         if (this.username === this.player1Username) {
-            this.player = this.physics.add.sprite(180, 700, personajeKey1);
-            this.opponent = this.add.sprite(1750, 700, personajeKey2);
+            this.player = this.physics.add.sprite(250, 700, personajeKey1);   // X antes era 180
+            this.opponent = this.add.sprite(1670, 700, personajeKey2);        // X antes era 1750
             this.playerState.username = this.player1Username;
         } else {
-            this.player = this.physics.add.sprite(1750, 700, personajeKey2);
-            this.opponent = this.add.sprite(180, 700, personajeKey1);
+            this.player = this.physics.add.sprite(1670, 700, personajeKey2);  // X antes era 1750
+            this.opponent = this.add.sprite(250, 700, personajeKey1);         // X antes era 180
             this.playerState.username = this.player2Username;
         }
+
+        const myCharacterId = (this.username === this.player1Username) ? j1_id : j2_id;
+
+        //////////////////////////////////////////////////
+
+        let sizeX, sizeY, offsetXR, offsetXL, offsetY;
+
+        switch (myCharacterId) {
+            case 2: // Champistar
+                sizeX = 85; sizeY = 120; offsetXR = 48; offsetXL = 50; offsetY = 25;
+                break;
+            case 3: // Perretxiko
+                sizeX = 70; sizeY = 125; offsetXR = 55; offsetXL = 55; offsetY = 28;
+                break;
+            case 4: // Mariñon
+                sizeX = 80; sizeY = 145; offsetXR = 50; offsetXL = 55; offsetY = 35;
+                break;
+            case 5: // Biblioseta
+                sizeX = 75; sizeY = 125; offsetXR = 48; offsetXL = 55; offsetY = 30;
+                break;
+            case 1: // Champichip (y por defecto)
+            default:
+                sizeX = 80; sizeY = 120; offsetXR = 50; offsetXL = 55; offsetY = 30;
+                break;
+        }
+
+        this.player.body.setSize(sizeX, sizeY);
+        // Guardamos los offsets para usarlos en update()
+        this.player.offsets = { xl: offsetXL, xr: offsetXR, y: offsetY };
+        this.player.body.setOffset(this.player.offsets.xl, this.player.offsets.y);
+
+        /////////////////////////////////////////
 
         // --- CONFIGURACIÓN DE FÍSICAS Y COLISIONES (AHORA EN EL ORDEN CORRECTO) ---
         this.player.setBounce(0.1).setCollideWorldBounds(true);
