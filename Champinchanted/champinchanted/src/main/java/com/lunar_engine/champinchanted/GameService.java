@@ -228,7 +228,14 @@ public class GameService {
     }
 
     public void scorePointAndResetRound(String gameCode, String username) {
-        getGame(gameCode).ifPresent(game -> {
+    getGame(gameCode).ifPresent(game -> {
+        
+        // Adquirimos el bloqueo explícito para esta partida
+        game.getLock().lock();
+        try {
+            // -- INICIO DE LA SECCIÓN CRÍTICA --
+            // Todo lo que está aquí dentro está 100% protegido contra condiciones de carrera.
+            
             // Validación: ¿El jugador que intenta marcar es quien tiene la bandera?
             if (username.equals(game.getFlagHolderUsername())) {
                 // Sumar punto
@@ -243,10 +250,15 @@ public class GameService {
                 // Reiniciar la ronda
                 game.resetForNewRound();
 
-                // Notificar a todos del nuevo estado (puntuación actualizada y objetos
-                // reseteados)
+                // Notificar a todos del nuevo estado
                 broadcastGameState(gameCode);
             }
-        });
-    }
+            // -- FIN DE LA SECCIÓN CRÍTICA --
+        } finally {
+            // Liberamos el bloqueo, permitiendo que otra petición (si la hubiera) entre.
+            // El bloque 'finally' asegura que esto se ejecute SIEMPRE.
+            game.getLock().unlock();
+        }
+    });
+}
 }

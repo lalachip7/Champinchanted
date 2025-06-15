@@ -30,6 +30,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.house2Sprite = null;
         this.venomSpellSprite = null;
         this.flagHolderSprite = null;
+        this.isScoring = false;
 
         this.player1SpellUI = {};
         this.player2SpellUI = {};
@@ -184,7 +185,13 @@ class GameSceneOnline extends Phaser.Scene {
         }
 
         this.physics.add.overlap(this.player, myHouse, () => {
-            if (this.serverState && this.serverState.flagHolderUsername === this.username) {
+            // CONDICIÓN: ¿Tengo la bandera Y NO estoy ya en proceso de puntuar?
+            if (!this.isScoring && this.serverState && this.serverState.flagHolderUsername === this.username) {
+
+                // ¡CERROJO ACTIVADO!
+                this.isScoring = true;
+
+                // Envía el mensaje al servidor SOLO UNA VEZ
                 this.stompClient.send("/app/game.scorePoint", {}, JSON.stringify({
                     gameCode: this.gameCode,
                     username: this.username
@@ -298,6 +305,7 @@ class GameSceneOnline extends Phaser.Scene {
         const isFlagNowOnMap = gameState.flagVisible && gameState.flagHolderUsername === null;
         if (wasFlagHeld && isFlagNowOnMap) {
             this.resetPlayerPosition();
+            this.isScoring = false;
         }
 
         // --- Actualizar Oponente y UI (vidas, puntuación) ---

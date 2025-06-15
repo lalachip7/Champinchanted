@@ -1,5 +1,7 @@
 package com.lunar_engine.champinchanted;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Game {
@@ -31,6 +33,8 @@ public class Game {
     private static final float P1_START_Y = 700;
     private static final float P2_START_X = 1750;
     private static final float P2_START_Y = 700;
+
+    private final transient ReentrantLock gameLock = new ReentrantLock();
 
     public Game() {
     }
@@ -322,6 +326,11 @@ public class Game {
 
     public float getPlayer2PositionY() {
         return player2PositionY;
+    }
+
+    @JsonIgnore // Ignoramos este método para que no aparezca en el JSON de respuesta
+    public ReentrantLock getLock() {
+        return this.gameLock;
     }
 
     @JsonIgnore
