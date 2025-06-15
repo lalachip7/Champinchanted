@@ -321,7 +321,7 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 # 6. Arquitectura y guía de ejecución
 ## 6.1. Diagrama de clases
 A continuación adjuntamos la explicación general de la estructura del proyecto y las relaciones entre las clases implemnentadas:
-![Diagrama de clases](./Imágenes/diagramaClases.png)
+![Diagrama de clases](./Imágenes/diagramaClases2.png)
 
 Además, hemos utilizado la plantilla UsernameUpdateRequest de tipo DTO (DataTransferObject), que se usa en el controlador para actualizar el nombre de usuario. 
 
