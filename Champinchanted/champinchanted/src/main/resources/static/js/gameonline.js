@@ -29,6 +29,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.house1Sprite = null;
         this.house2Sprite = null;
         this.venomSpellSprite = null;
+        this.flagHolderSprite = null;
 
         this.player1SpellUI = {};
         this.player2SpellUI = {};
@@ -248,18 +249,12 @@ class GameSceneOnline extends Phaser.Scene {
         } else {
             this.player.setVelocityX(0);
         }
-        // ▼▼▼ LÓGICA DE LA BANDERA PEGADA AL JUGADOR ▼▼▼
-        if (this.serverState && this.serverState.flagHolderUsername) {
-            let holder = null;
-            if (this.serverState.flagHolderUsername === this.username) {
-                holder = this.player;
-            } else {
-                holder = this.opponent;
-            }
-            if (holder) {
-                // Hacemos que la bandera siga al jugador que la tiene
-                this.flagSprite.setPosition(holder.x + (holder.flipX ? -25 : 25), holder.y - 40);
-            }
+        if (this.flagHolderSprite && this.flagSprite) {
+            // Hacemos que la bandera siga al sprite que la tiene
+            this.flagSprite.setPosition(
+                this.flagHolderSprite.x + (this.flagHolderSprite.flipX ? -25 : 25),
+                this.flagHolderSprite.y - 40
+            );
         }
     }
 
@@ -293,59 +288,69 @@ class GameSceneOnline extends Phaser.Scene {
     }
 
     updateVisuals() {
-    // Guardamos el estado anterior de la bandera ANTES de actualizar this.serverState
-    const wasFlagHeld = this.serverState ? (this.serverState.flagHolderUsername !== null) : false;
-
-    // Recibimos y guardamos el nuevo estado del servidor
-    const gameState = this.serverState;
-    if (!gameState || !gameState.player1State || !gameState.player2State || !this.opponent) {
-        return;
-    }
-    
-    // Actualizar oponente y UI (vidas, puntuación)
-    const { player1State, player2State } = gameState;
-    const opponentState = (this.username === player1State.username) ? player2State : player1State;
-
-    this.tweens.add({
-        targets: this.opponent,
-        x: opponentState.positionX,
-        y: opponentState.positionY,
-        duration: 60,
-        ease: 'Linear'
-    });
-    
-    if (this.opponent.x > opponentState.x) { this.opponent.flipX = false; }
-    else if (this.opponent.x < opponentState.x) { this.opponent.flipX = true; }
-    
-    if (this.scoreText) { this.scoreText.setText(`${player1State.score} / ${player2State.score}`); }
-    if (this.player1LifeImages) { this.updatePlayerLives(this.player1LifeImages, player1State.lives); }
-    if (this.player2LifeImages) { this.updatePlayerLives(this.player2LifeImages, player2State.lives); }
-
-    // --- CORRECCIÓN: Lógica de reseteo de ronda ---
-    const isFlagNowOnMap = gameState.flagVisible && gameState.flagHolderUsername === null;
-    // Si antes la bandera estaba cogida y ahora no, significa que se ha marcado un punto y la ronda se ha reiniciado.
-    if (wasFlagHeld && isFlagNowOnMap) {
-        this.resetPlayerPosition();
-    }
-
-    // --- Actualizar bandera ---
-    if (this.flagSprite) {
-        this.flagSprite.setVisible(isFlagNowOnMap);
-        if (isFlagNowOnMap) {
-            this.flagSprite.setPosition(gameState.flagPositionX, gameState.flagPositionY);
+        const gameState = this.serverState;
+        if (!gameState || !gameState.player1State || !gameState.player2State || !this.opponent) {
+            return;
         }
-    }
 
-    // --- Actualizar hechizos y su UI ---
-    if (this.venomSpellSprite) {
-        this.venomSpellSprite.setVisible(gameState.venomSpellVisible);
-        if (gameState.venomSpellVisible) {
-            this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
+        // --- Comprobar si se ha reiniciado la ronda ---
+        const wasFlagHeld = this.flagHolderSprite !== null;
+        const isFlagNowOnMap = gameState.flagVisible && gameState.flagHolderUsername === null;
+        if (wasFlagHeld && isFlagNowOnMap) {
+            this.resetPlayerPosition();
         }
+
+        // --- Actualizar Oponente y UI (vidas, puntuación) ---
+        const { player1State, player2State } = gameState;
+        const opponentState = (this.username === player1State.username) ? player2State : player1State;
+
+        this.tweens.add({
+            targets: this.opponent,
+            x: opponentState.positionX,
+            y: opponentState.positionY,
+            duration: 60,
+            ease: 'Linear'
+        });
+
+        if (this.opponent.x < opponentState.positionX) { this.opponent.flipX = true; }
+        else if (this.opponent.x > opponentState.positionX) { this.opponent.flipX = false; }
+
+        if (this.scoreText) { this.scoreText.setText(`${player1State.score} / ${player2State.score}`); }
+        if (this.player1LifeImages) { this.updatePlayerLives(this.player1LifeImages, player1State.lives); }
+        if (this.player2LifeImages) { this.updatePlayerLives(this.player2LifeImages, player2State.lives); }
+
+        // --- LÓGICA DE VISIBILIDAD DE LA BANDERA (LA CORRECCIÓN) ---
+        if (this.flagSprite) {
+            if (gameState.flagHolderUsername) {
+                // Alguien tiene la bandera
+                this.flagSprite.setVisible(true); // ¡Nos aseguramos de que sea visible!
+                if (gameState.flagHolderUsername === this.username) {
+                    this.flagHolderSprite = this.player; // La tenemos nosotros
+                } else {
+                    this.flagHolderSprite = this.opponent; // La tiene el oponente
+                }
+            } else if (gameState.flagVisible) {
+                // La bandera está en el mapa
+                this.flagHolderSprite = null;
+                this.flagSprite.setVisible(true);
+                this.flagSprite.setPosition(gameState.flagPositionX, gameState.flagPositionY);
+            } else {
+                // La bandera no está en juego (ronda terminada, etc.)
+                this.flagHolderSprite = null;
+                this.flagSprite.setVisible(false);
+            }
+        }
+
+        // --- Actualizar hechizos y su UI ---
+        if (this.venomSpellSprite) {
+            this.venomSpellSprite.setVisible(gameState.venomSpellVisible);
+            if (gameState.venomSpellVisible) {
+                this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
+            }
+        }
+        this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
+        this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
     }
-    this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
-    this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
-}
     getAssetKey(baseName) {
         const mundo = this.registry.get('mapa');
         const suffixMap = { 1: '_o', 2: '_i', 3: '_p', 4: '_v' };
