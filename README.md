@@ -96,36 +96,33 @@ Si bien es este el alcance inicial, el juego tiene potencial para expandirse con
 
 También en el futuro, se podrá cambiar el modelo de negocio del videojuego para poder obtener rentabilidad, por ejemplo mediante compras dentro del juego o venta de expansiones.
 
-## 1.8. Motor de juego
-El videojuego usará el motor Unity, una plataforma comúnmente utilizada para videojuegos 2D y 3D. La elección del motor del juego se ha basado en las herramientas que proporciona para la creación de juegos 2D como Champinchanted, su sistema de físicas, la facilidad para crear animaciones y la gestión de multijugador, necesaria para este videojuego.
-
-## 1.9. Plataforma
+## 1.8. Plataforma
 El videojuego está diseñado para ser jugado en navegadores web de ordenadores, utilizando el framework Phaser, un potente motor de desarrollo de videojuegos 2D basado en JavaScript y HTML5. 
 
-## 1.10. Categoría
-### 1.10.1. Debilidades
+## 1.9. Categoría
+### 1.9.1. Debilidades
 Aunque el juego está orientado a la competición 1 contra 1, la falta de modos de juego alternativos o para más jugadores, puede limitar el atractivo para aquellos usuarios que busquen un rango de jugabilidad mayor. 
 
 Además, el videojuego puede resultar algo repetitivo, a pesar de contar con varios mapas y personajes. La falta de diferenciación de estos en cuanto a habilidades, puede resultar menos interesante y contar con únicamente 4 mapas, en vez de tener varios niveles, puede también reducir el interés del jugador. 
 
 Y por último, la limitación del videojuego a ordenadores con acceso a un navegador, puede ser una gran debilidad para jugadores que prefieran usar otras plataformas como consolas. 
 
-### 1.10.2. Amenazas
+### 1.9.2. Amenazas
 Existen muchos juegos de plataformas multijugador competitivos, como Brawlhalla o Smash Bros. Esto puede hacer que nuestro videojuego no destaque, ante la existencia de otros con un éxito ya consolidado. Además, si el juego no se actualiza con frecuencia, los jugadores pueden cansarse y pasarse a juegos más novedosos y actualizados.
 
-### 1.10.3. Fortalezas
+### 1.9.3. Fortalezas
 La jugabilidad rápida y dinámica atrae a jugadores que buscan una experiencia de juego corta y divertida, sin compromiso de tiempo. 
 
 El diseño y la estética del videojuego también es una gran fortaleza, ya que está muy cuidado y puede atraer a jugadores que valoren estos aspectos, o que se guíen por lo que ven a primera vista para elegir entre un videojuego u otro. 
 
 Además, la rejugabilidad que genera la aleatoriedad de elementos como las banderas o los hechizos, provoca que cada partida sea diferente y fresca. 
 
-### 1.10.4. Oportunidades
+### 1.9.4. Oportunidades
 El juego tiene un gran potencial para expandirse en un futuro, con todos los aspectos ya mencionados en el apartado de alcance, que pueden atraer a nuevos jugadores, eliminando o cambiando aquellos aspectos que actualmente hacen que el videojuego sea un poco repetitivo. 
 
 Y otros aspectos como un buen marketing o la integración en torneos online pueden hacer que despegue entre los amantes de los videojuegos indie.
 
-## 1.11. Licencia
+## 1.10. Licencia
 La licencia del videojuego es Apache 2.0, una licencia de código abierto que implica que los usuarios tienen libertad de usar, copiar y modificar el código del videojuego; redistribuir el software y su uso con fines comerciales, siempre y cuando den crédito a los autores. 
 
 # 2. Historia y narrativa
@@ -334,19 +331,16 @@ Para poder ejecutar el videojuego y su backend, se debe tener instalado la versi
 Una vez que el servidor esté corriendo, se debe abrir el navegador web y cargar la url: http://{IP_del_servidor}:{Puerto}.
 Esta URL abrirá la página principal del juegom donde se podrá interactuar con la aplicación. 
 
-# 7. Implementación Back-end
-En esta tercera fase del desarrollo de Champinchanted, nos enfocaremos en la inclusión de un back-end robusto que potencie las funcionalidades del juego y permita la persistencia de datos.
+#7. Implementación del Back-end
+En esta fase del desarrollo, se ha implementado un back-end robusto utilizando Spring Boot para potenciar las funcionalidades online del juego y permitir la persistencia de datos.
 
-## 7.1. Desarrollo del Back-end REST
-El back-end de Champinchanted se construirá siguiendo los principios de la arquitectura REST (Representational State Transfer) para asegurar una comunicación eficiente y escalable entre el cliente (el juego en el navegador) y el servidor. Este componente clave permitirá:
+##7.1. Arquitectura del Back-end
+El back-end sigue una arquitectura REST (Representational State Transfer), sirviendo como una API para que el cliente del juego (desarrollado en Phaser) pueda comunicarse de forma desacoplada y escalable. Toda la comunicación entre el cliente y el servidor, incluyendo el estado de las salas, notificaciones y chat, se realiza mediante peticiones HTTP.
 
-Comunicación Cliente-Servidor: Establecer un canal de comunicación fluido entre la aplicación del juego y el servidor, utilizando un servicio RESTful para el intercambio de información.
-Definición de la API REST: Se diseñará una API REST clara y bien documentada que servirá como la interfaz para todas las interacciones del cliente con el servidor. Esta API definirá los recursos disponibles y las operaciones permitidas sobre ellos (GET, POST, PUT, DELETE, etc.).
-Gestión de Datos y Funciones del Juego: El back-end se encargará de la gestión de diversos datos cruciales para la experiencia de juego, incluyendo:
-Puntuaciones: Almacenamiento y recuperación de las puntuaciones de los jugadores.
-Usuario/Contraseña: Gestión de la autenticación y autorización de usuarios.
-Perfiles de Usuario: Creación, actualización y consulta de perfiles de jugador.
-Configuración de la Partida: Persistencia y carga de las preferencias de configuración de las partidas.
-En general, todas las funciones relacionadas con la gestión y persistencia de los aspectos esenciales del juego.
-Almacenamiento Persistente de Datos: El servidor garantizará que parte de los datos mencionados, como perfiles de usuario y puntuaciones, se almacenen de manera permanente, permitiendo su disponibilidad y utilización en futuras sesiones de juego.
+La API REST gestiona los siguientes recursos:
 
+Gestión de Cuentas de Usuario (/api/users): Proporciona endpoints para el registro, inicio de sesión, actualización de contraseña y borrado de usuarios. La seguridad de las contraseñas se garantiza mediante cifrado BCrypt.
+Gestión de Partidas (/api/games): Permite a los usuarios crear y unirse a salas de juego. También ofrece endpoints para consultar el estado de una partida (como el número de jugadores) y para gestionar la "línea de tiempo" de eventos (chat y notificaciones del sistema).
+Estado del Servidor y Actividad (/api/status, /api/ping): Incluye endpoints para verificar que el servidor está en línea y para monitorizar la actividad de los usuarios a través de un sistema de "heartbeats".
+##7.2. Persistencia de Datos
+El servidor asegura la persistencia de los datos críticos para que las sesiones de juego puedan sobrevivir a reinicios. La información de cuentas de usuario y el estado de las salas de juego (incluyendo el historial de eventos y chat) se almacena de forma permanente en ficheros .json en el disco duro del servidor. Una tarea programada se encarga de gestionar y limpiar las salas cuyos jugadores se han vuelto inactivos.
