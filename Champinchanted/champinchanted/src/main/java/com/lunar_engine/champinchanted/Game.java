@@ -26,6 +26,9 @@ public class Game {
     private float venomSpellX, venomSpellY;
     private boolean venomSpellVisible = true;
 
+    private float dazerSpellX, dazerSpellY;
+    private boolean dazerSpellVisible = true;
+
     private int player1HeldSpell = 0; // 0:ninguno, 1:venom, 2:dazer, etc.
     private int player2HeldSpell = 0;
 
@@ -80,6 +83,10 @@ public class Game {
 
         this.venomSpellX = 400; // Posición inicial del hechizo
         this.venomSpellY = 500;
+        this.dazerSpellX = 1500; // Posición inicial del nuevo hechizo
+        this.dazerSpellY = 500;
+        this.dazerSpellVisible = true;
+
         this.venomSpellVisible = true;
         this.player1HeldSpell = 0;
         this.player2HeldSpell = 0;
@@ -328,6 +335,30 @@ public class Game {
         return player2PositionY;
     }
 
+    public float getDazerSpellX() {
+        return dazerSpellX;
+    }
+
+    public void setDazerSpellX(float dazerSpellX) {
+        this.dazerSpellX = dazerSpellX;
+    }
+
+    public float getDazerSpellY() {
+        return dazerSpellY;
+    }
+
+    public void setDazerSpellY(float dazerSpellY) {
+        this.dazerSpellY = dazerSpellY;
+    }
+
+    public boolean isDazerSpellVisible() {
+        return dazerSpellVisible;
+    }
+
+    public void setDazerSpellVisible(boolean dazerSpellVisible) {
+        this.dazerSpellVisible = dazerSpellVisible;
+    }
+
     @JsonIgnore // Ignoramos este método para que no aparezca en el JSON de respuesta
     public ReentrantLock getLock() {
         return this.gameLock;
@@ -358,6 +389,10 @@ public class Game {
         message.setVenomSpellX(this.venomSpellX);
         message.setVenomSpellY(this.venomSpellY);
         message.setVenomSpellVisible(this.venomSpellVisible);
+
+        message.setDazerSpellX(this.dazerSpellX);
+        message.setDazerSpellY(this.dazerSpellY);
+        message.setDazerSpellVisible(this.dazerSpellVisible);
 
         return message;
     }

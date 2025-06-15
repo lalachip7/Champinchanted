@@ -29,6 +29,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.house1Sprite = null;
         this.house2Sprite = null;
         this.venomSpellSprite = null;
+        this.dazerSpellSprite = null;
         this.flagHolderSprite = null;
         this.isScoring = false;
 
@@ -154,6 +155,8 @@ class GameSceneOnline extends Phaser.Scene {
 
         this.venomSpellSprite = this.physics.add.sprite(0, 0, 'venom').setScale(0.1).setVisible(false);
         this.venomSpellSprite.body.setAllowGravity(false);
+        this.dazerSpellSprite = this.physics.add.sprite(0, 0, 'dazer').setScale(0.1).setVisible(false);
+        this.dazerSpellSprite.body.setAllowGravity(false);
 
         // --- CREACIÓN DE LOS JUGADORES ---
         const j1_id = this.registry.get('personajeJ1');
@@ -215,6 +218,16 @@ class GameSceneOnline extends Phaser.Scene {
                     gameCode: this.gameCode,
                     username: this.username,
                     spellType: "venom"
+                }));
+            }
+        }, null, this);
+
+        this.physics.add.overlap(this.player, this.dazerSpellSprite, () => {
+            if (this.dazerSpellSprite.visible) {
+                this.stompClient.send("/app/game.collectSpell", {}, JSON.stringify({
+                    gameCode: this.gameCode,
+                    username: this.username,
+                    spellType: "dazer" // El tipo ahora es "dazer"
                 }));
             }
         }, null, this);
@@ -356,6 +369,12 @@ class GameSceneOnline extends Phaser.Scene {
                 this.venomSpellSprite.setPosition(gameState.venomSpellX, gameState.venomSpellY);
             }
         }
+        if (this.dazerSpellSprite) {
+            this.dazerSpellSprite.setVisible(gameState.dazerSpellVisible);
+            if (gameState.dazerSpellVisible) {
+                this.dazerSpellSprite.setPosition(gameState.dazerSpellX, gameState.dazerSpellY);
+            }
+        }
         this.updatePlayerSpellUI(this.player1SpellUI, gameState.player1HeldSpell);
         this.updatePlayerSpellUI(this.player2SpellUI, gameState.player2HeldSpell);
     }
@@ -385,7 +404,7 @@ class GameSceneOnline extends Phaser.Scene {
     updatePlayerSpellUI(spellUI, spellId) {
         const spellData = {
             1: { key: 'venom_i', text: 'Poción veneno:\nquita 1 vida\ncada 5 seg.' },
-            // 2: { key: 'dazer_i', text: 'Dazer:\ncongela 3 seg.' }
+            2: { key: 'dazer_i', text: 'Dazer: congela\nal enemigo por\n3 segundos' }
         };
 
         if (spellId > 0 && spellData[spellId]) {

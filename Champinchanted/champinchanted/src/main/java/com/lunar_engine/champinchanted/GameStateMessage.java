@@ -13,6 +13,9 @@ public class GameStateMessage {
     private float venomSpellX, venomSpellY;
     private boolean venomSpellVisible;
 
+    private float dazerSpellX, dazerSpellY;
+    private boolean dazerSpellVisible;
+
     private int player1HeldSpell;
     private int player2HeldSpell;
 
@@ -131,4 +134,29 @@ public class GameStateMessage {
     public void setPlayer2HeldSpell(int spellId) {
         this.player2HeldSpell = spellId;
     }
+
+    public float getDazerSpellX() {
+        return dazerSpellX;
+    }
+
+    public void setDazerSpellX(float dazerSpellX) {
+        this.dazerSpellX = dazerSpellX;
+    }
+
+    public float getDazerSpellY() {
+        return dazerSpellY;
+    }
+
+    public void setDazerSpellY(float dazerSpellY) {
+        this.dazerSpellY = dazerSpellY;
+    }
+
+    public boolean isDazerSpellVisible() {
+        return dazerSpellVisible;
+    }
+
+    public void setDazerSpellVisible(boolean dazerSpellVisible) {
+        this.dazerSpellVisible = dazerSpellVisible;
+    }
+
 }

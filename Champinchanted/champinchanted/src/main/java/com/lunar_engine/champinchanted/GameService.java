@@ -195,8 +195,17 @@ public class GameService {
                     game.setPlayer2HeldSpell(1);
                 }
                 System.out.println("Jugador " + username + " ha cogido VENOM.");
+
+                // ▼▼▼ AÑADE ESTE BLOQUE "ELSE IF" PARA EL DAZER ▼▼▼
+            } else if (spellType.equals("dazer") && game.isDazerSpellVisible()) {
+                game.setDazerSpellVisible(false); // El hechizo Dazer desaparece del mapa
+                if (isPlayer1) {
+                    game.setPlayer1HeldSpell(2); // 2 = Dazer
+                } else {
+                    game.setPlayer2HeldSpell(2);
+                }
+                System.out.println("Jugador " + username + " ha cogido DAZER.");
             }
-            // Aquí podrías añadir la lógica para otros hechizos con "else if"
 
             broadcastGameState(gameCode); // Notifica a todos los clientes del cambio
         });
@@ -228,37 +237,38 @@ public class GameService {
     }
 
     public void scorePointAndResetRound(String gameCode, String username) {
-    getGame(gameCode).ifPresent(game -> {
-        
-        // Adquirimos el bloqueo explícito para esta partida
-        game.getLock().lock();
-        try {
-            // -- INICIO DE LA SECCIÓN CRÍTICA --
-            // Todo lo que está aquí dentro está 100% protegido contra condiciones de carrera.
-            
-            // Validación: ¿El jugador que intenta marcar es quien tiene la bandera?
-            if (username.equals(game.getFlagHolderUsername())) {
-                // Sumar punto
-                if (username.equals(game.getUsernamePlayer1())) {
-                    game.setPlayer1Score(game.getPlayer1Score() + 1);
-                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
-                } else {
-                    game.setPlayer2Score(game.getPlayer2Score() + 1);
-                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
+        getGame(gameCode).ifPresent(game -> {
+
+            // Adquirimos el bloqueo explícito para esta partida
+            game.getLock().lock();
+            try {
+                // -- INICIO DE LA SECCIÓN CRÍTICA --
+                // Todo lo que está aquí dentro está 100% protegido contra condiciones de
+                // carrera.
+
+                // Validación: ¿El jugador que intenta marcar es quien tiene la bandera?
+                if (username.equals(game.getFlagHolderUsername())) {
+                    // Sumar punto
+                    if (username.equals(game.getUsernamePlayer1())) {
+                        game.setPlayer1Score(game.getPlayer1Score() + 1);
+                        System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
+                    } else {
+                        game.setPlayer2Score(game.getPlayer2Score() + 1);
+                        System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
+                    }
+
+                    // Reiniciar la ronda
+                    game.resetForNewRound();
+
+                    // Notificar a todos del nuevo estado
+                    broadcastGameState(gameCode);
                 }
-
-                // Reiniciar la ronda
-                game.resetForNewRound();
-
-                // Notificar a todos del nuevo estado
-                broadcastGameState(gameCode);
+                // -- FIN DE LA SECCIÓN CRÍTICA --
+            } finally {
+                // Liberamos el bloqueo, permitiendo que otra petición (si la hubiera) entre.
+                // El bloque 'finally' asegura que esto se ejecute SIEMPRE.
+                game.getLock().unlock();
             }
-            // -- FIN DE LA SECCIÓN CRÍTICA --
-        } finally {
-            // Liberamos el bloqueo, permitiendo que otra petición (si la hubiera) entre.
-            // El bloque 'finally' asegura que esto se ejecute SIEMPRE.
-            game.getLock().unlock();
-        }
-    });
-}
+        });
+    }
 }
