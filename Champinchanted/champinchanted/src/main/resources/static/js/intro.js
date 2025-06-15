@@ -122,15 +122,8 @@ class IntroGame extends Phaser.Scene {
                 this.scene.launch("TutorialScene");                      // Cambia a la escena de créditos
         });
 
-        // Botón de salir
-        const exit_button = this.add.image(centerX, 900, "exit_button") // Añade el botón de comenzar partida
-            .setScale(0.2)                                              // Reducir tamaño a la mitad  
-            .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
-            .on('pointerdown', () => {                                  // Al hacer click 
-                window.close();                                         // Cierra la ventana si es posible             
-        });
 
-        this.buttons = [start_button_red, start_button_local, credits_button, tutorial_button, exit_button];
+        this.buttons = [start_button_red, start_button_local, credits_button, tutorial_button];
 
     }
 

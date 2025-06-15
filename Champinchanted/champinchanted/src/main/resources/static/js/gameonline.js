@@ -29,6 +29,7 @@ class GameSceneOnline extends Phaser.Scene {
         this.isScoring = false;
         this.player1SpellUI = {};
         this.player2SpellUI = {};
+        this.opponentLastX = 0;
     }
 
     preload() {
@@ -286,6 +287,19 @@ class GameSceneOnline extends Phaser.Scene {
         const { player1State, player2State } = gameState;
         const myState = (this.username === player1State.username) ? player1State : player2State;
         const opponentState = (this.username === player1State.username) ? player2State : player1State;
+
+        // --- LÓGICA DE GIRO DEL OPONENTE (LA SOLUCIÓN) ---
+        // Comparamos la nueva posición del servidor con la última que guardamos
+        if (this.opponentLastX < opponentState.positionX) {
+            this.opponent.flipX = true; // Se movió a la derecha
+        } else if (this.opponentLastX > opponentState.positionX) {
+            this.opponent.flipX = false; // Se movió a la izquierda
+        }
+        // Si no se ha movido en el eje X, mantiene la última dirección
+
+        // Actualizamos la variable para la próxima comprobación
+        this.opponentLastX = opponentState.positionX;
+        // --- FIN DE LA LÓGICA DE GIRO ---
 
         if (this.flagHolderSprite && gameState.flagVisible && !gameState.flagHolderUsername) {
             this.resetPlayerPosition();
