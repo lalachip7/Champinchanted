@@ -363,41 +363,69 @@ Los clientes se suscriben a "topics" para recibir información del servidor. Tod
 
 /topic/notifications/{gameCode}: Notifica sobre eventos en la sala, como la conexión o desconexión de un jugador.
 Mensaje: NotificationMessage.
+
 Contenido: content (String con el mensaje, p.ej., "JugadorX se ha unido") y playerCount (número actualizado de jugadores en la sala).
 /topic/chat/{gameCode}: Retransmite los mensajes del chat a todos los jugadores en la sala.
 Mensaje: ChatMessage.
 Contenido: sender (remitente), content (mensaje) y gameCode.
+
+
 /topic/games/{gameCode}: Envía el estado actualizado de la sala de espera (lobby) cuando un jugador elige personaje o marca su estado como "listo".
+
 Mensaje: GameLobbyData.
 Contenido: Datos completos de la sala (nombres de los jugadores, personajes seleccionados, estado de "listo" de cada uno, etc.).
+
+
 /topic/games/{gameCode}/start: Indica al cliente que debe pasar de la pantalla de selección de mapa a la de selección de personaje. Se envía cuando el anfitrión selecciona un mapa.
 Mensaje: StartGameMessage.
+
+
 /topic/games/{gameCode}/gameplay_start: Inicia la partida. Se envía cuando ambos jugadores han marcado "listo" en la sala de espera.
 Mensaje: StartGameMessage.
 Contenido: Toda la información necesaria para inicializar el nivel: nombres de los jugadores, personajes elegidos y el mapa seleccionado.
+
+
 /topic/gameplay/{gameCode}: Es el topic principal durante la partida. El servidor retransmite el estado completo y actualizado del juego a todos los clientes para mantenerlos sincronizados.
 Mensaje: GameStateMessage.
 Contenido: Incluye dos objetos PlayerState (uno por jugador), la posición y estado de la bandera, la visibilidad y posición de los hechizos, y el hechizo que posee cada jugador.
+
+
 /topic/gameplay/{gameCode}/gameover: Anuncia el final de la partida cuando un jugador alcanza la puntuación para ganar.
 Mensaje: GameOverMessage.
 Contenido: winnerUsername (nombre del ganador) y las puntuaciones finales de ambos jugadores.
+
+
 8.1.3. Mensajes del Cliente al Servidor (Destinos de Aplicación)
 El cliente envía mensajes a destinos que comienzan con el prefijo /app. El servidor los procesa a través de los métodos del GameWebSocketController.
 
 /app/chat.addUser: Un jugador notifica al servidor que se ha unido al chat de la sala.
 Payload: ChatMessage.
+
+
 /app/chat.sendMessage: Un jugador envía un mensaje de chat para ser retransmitido.
 Payload: ChatMessage.
+
+
 /app/game.selectMap: El anfitrión (primer jugador) notifica la selección del mapa de juego.
 Payload: SelectMapMessage.
+
+
 /app/game.selectCharacter: Un jugador notifica su selección de personaje.
 Payload: SelectCharacterMessage.
+
+
 /app/game.ready: Un jugador indica que está listo para empezar la partida.
 Payload: Un Map<String, String> que contiene gameCode y username.
+
+
 /app/game.updateState: Se envía de forma continua durante la partida para actualizar el estado de un jugador (principalmente su posición).
 Payload: GameUpdateMessage.
+
+
 /app/game.collectFlag, /app/game.collectSpell, /app/game.useSpell, /app/game.scorePoint: Mensajes para notificar al servidor sobre eventos de juego discretos e importantes.
 Payload: Un Map<String, String> con los datos necesarios (gameCode, username, y spellType si aplica).
+
+
 8.1.4. Manejo de Desconexiones
 El servidor escucha el evento SessionDisconnectEvent para detectar cuando un cliente se desconecta. Al ocurrir, se actualiza el estado de la partida, se elimina al jugador y se notifica al participante restante a través del topic /topic/notifications/{gameCode}.
 
@@ -406,13 +434,18 @@ Debido a limitaciones de la herramienta, no es posible generar una imagen actual
 
 Configuración:
 WebSocketConfig: Clase de configuración de Spring que habilita el message broker y registra el endpoint STOMP /ws para las conexiones WebSocket.
+
 Controlador WebSocket:
 GameWebSocketController: Es el centro neurálgico de la comunicación en tiempo real. Gestiona todos los mensajes WebSocket entrantes desde los clientes con métodos anotados con @MessageMapping. Utiliza SimpMessageSendingOperations para enviar mensajes a los topics y se apoya en GameService para ejecutar la lógica del juego.
+
 Lógica de Negocio (Servicios):
 GameService: Ha sido extendido significativamente para manejar toda la lógica del juego en tiempo real (movimiento, colisiones, uso de hechizos, control de vidas y puntuación). Se encarga de actualizar el estado de la partida y retransmitirlo a los clientes.
+
 Objetos de Transferencia de Datos (DTOs): Son las clases que definen la estructura de los mensajes del protocolo.
 GameStateMessage: Contiene el estado completo de la partida en un instante. Es el mensaje clave para la sincronización. Contiene dos objetos PlayerState.
 PlayerState: Define todos los atributos de un jugador en un momento dado: posición (positionX, positionY), score, lives, y estados alterados como frozen o poisoned.
 GameUpdateMessage: Mensaje más ligero enviado por el cliente para notificar su propio cambio de estado, principalmente su posición.
 SelectCharacterMessage, SelectMapMessage, StartGameMessage, GameOverMessage, ChatMessage, NotificationMessage, ReadyStatusMessage: Son DTOs específicos para cada tipo de evento o notificación en el lobby y en el juego.
-La relación principal en el flujo de juego es la siguiente: un Cliente envía un DTO (ej. GameUpdateMessage con su nueva posición) al GameWebSocketController. Este invoca un método en GameService para procesar el cambio y actualizar el estado del objeto Game principal en memoria. Finalmente, el GameService construye un GameStateMessage completo y lo retransmite a todos los clientes suscritos al topic de la partida, asegurando la sincronización.
+
+
+La relación principal en el flujo de juego es la siguiente: un Cliente envía un DTO al GameWebSocketController. Este invoca un método en GameService para procesar el cambio y actualizar el estado del objeto Game principal en memoria. Finalmente, el GameService construye un GameStateMessage completo y lo retransmite a todos los clientes suscritos al topic de la partida, asegurando la sincronización.
