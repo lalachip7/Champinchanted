@@ -3,7 +3,7 @@ export default class TutorialScene extends Phaser.Scene {
         super({ key: 'TutorialScene' });
     }
     
-        preload() {     // CARGA DE ARCHIVOS --------------------------------------------------------
+        preload() {     
             
             this.load.image('closeIcon', 'assets/Interfaz/close.PNG');   
             this.load.image('windowTuto', 'assets/Interfaz/Tutorial.png'); 
@@ -16,8 +16,8 @@ export default class TutorialScene extends Phaser.Scene {
             .setOrigin(0)                                                                                  
             background.setScale(this.scale.width / background.width, this.scale.height / background.height);
             
-            const button = this.add.image(1820, 90, 'closeIcon')   // Añade el botón de configuración
-            .setScale(0.04) // Reducir tamaño a la mitad    
+            const button = this.add.image(1820, 90, 'closeIcon')   
+            .setScale(0.04)    
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.stop("TutorialScene");
@@ -25,7 +25,7 @@ export default class TutorialScene extends Phaser.Scene {
             });
         }
         
-        // Por si se quiere volver a abrir en cualquien otro punto deljuego
+        
         openWindow() {
         }
     };

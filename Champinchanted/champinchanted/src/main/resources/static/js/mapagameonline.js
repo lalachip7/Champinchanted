@@ -9,7 +9,7 @@ export default class MapaGameOnline extends Phaser.Scene {
         this.isHost = data.isHost;
         this.lastTimelineEventCount = 0;
         
-        // NUEVO: Bandera para saber si estamos conectados al servidor. Empezamos asumiendo que sí.
+        
         this.isServerConnected = true;
     }
 
@@ -55,15 +55,14 @@ export default class MapaGameOnline extends Phaser.Scene {
         this.events.on('shutdown', () => this.cleanup());
     }
     
-    // --- LÓGICA DE SONDEO Y RECONEXIÓN MEJORADA ---
+    
 
     async updateServerStatusViaAPI() {
         try {
             const response = await fetch('/api/ping');
             if (response.ok) {
                 if (!this.isServerConnected) {
-                    // Si antes estábamos desconectados y ahora la conexión es exitosa,
-                    // es un evento de RECONEXIÓN.
+                    // Si antes estábamos desconectados y ahora la conexión es exitosa,es un evento de RECONEXIÓN.
                     console.log("Reconexión con el servidor detectada. Forzando actualización completa.");
                     this.isServerConnected = true;
                     // Forzamos una actualización completa e inmediata de toda la información.
@@ -80,7 +79,7 @@ export default class MapaGameOnline extends Phaser.Scene {
         }
     }
     
-    // NUEVO: Esta función fuerza la recarga de toda la información de la sala.
+    // Esta función fuerza la recarga de toda la información de la sala.
     forceFullUpdate() {
         // Resetea el contador de eventos para forzar que la timeline se redibuje por completo.
         this.lastTimelineEventCount = 0; 
@@ -121,9 +120,7 @@ export default class MapaGameOnline extends Phaser.Scene {
                     
                     newEvents.forEach(event => {
                         if (event.type === 'CHAT_MESSAGE') {
-                            // --- ESTA ES LA CORRECCIÓN ---
-                            // Solo dibujamos el mensaje si el que lo envía NO somos nosotros,
-                            // porque nuestros propios mensajes ya los mostramos al instante.
+                            
                             if (event.sender !== this.username) {
                                 this.addChatMessage(event.sender, event.content);
                             }
@@ -152,7 +149,7 @@ export default class MapaGameOnline extends Phaser.Scene {
         }
     }
     
-    // El resto de funciones no necesitan cambios
+    
     createChatInterface() {
         this.chatContainer = document.createElement('div');
         this.chatContainer.id = 'chat-container';

@@ -1,18 +1,17 @@
 export default class IntroGame extends Phaser.Scene {
     static bgMusic
     constructor() {
-        super({ key: 'IntroGame' });   // Asigna la clave "IntroGame" a esta escena
+        super({ key: 'IntroGame' });   
     }
 
-    preload() {     // CARGA DE ARCHIVOS ---------------------------------------------------------------------------------------------
-        //hola
+    preload() {     
+        
         this.load.audio("background", 'assets/Sonidos/musica.mp3');
 
         this.load.image("background_image", "assets/Fondos/fondo.png");                         // Imagen de fondo
 
         this.load.image("start_button_local", "assets/Interfaz/botonJugarLocal.png");           // Botón de comenzar partida en local
         this.load.image("start_button_online", "assets/Interfaz/botonJugarOnline.png");         // Botón de comenzar partida en red
-        this.load.image("exit_button", "assets/Interfaz/botonSalir.png");                       // Botón de ajustes
         this.load.image("credits_button", "assets/Interfaz/botonCreditos.png");                 // Botón de créditos
         this.load.image("tutorial_button", "assets/Interfaz/botonTutorial.png");                // Botón de tutorial
 
@@ -29,7 +28,7 @@ export default class IntroGame extends Phaser.Scene {
         });
     }
 
-    create() {      // CREACIÓN DE CONTENIDOS ----------------------------------------------------------------------------------------
+    create() {      
         
         this.configText = {
             fontFamily: 'FantasyFont, Calibri',
@@ -50,8 +49,8 @@ export default class IntroGame extends Phaser.Scene {
 
         const sliderWidth = 300;                            // Ancho del deslizador
         const sliderHeight = 15;                            // Altura del deslizador
-        const sliderX = 960;                                // Posición X
-        const sliderY = 550;                                // Posición Y
+        const sliderX = 1700;                                // Posición X
+        const sliderY = 120;                                // Posición Y
         const handleSize = 20;                              // Tamaño del "controlador"
 
         const bar = this.add.graphics();                    // Barra del deslizador
@@ -122,15 +121,9 @@ export default class IntroGame extends Phaser.Scene {
                 this.scene.launch("TutorialScene");                      // Cambia a la escena de créditos
         });
 
-        // Botón de salir
-        const exit_button = this.add.image(centerX, 900, "exit_button") // Añade el botón de comenzar partida
-            .setScale(0.2)                                              // Reducir tamaño a la mitad  
-            .setInteractive()                                           // Hace que seea interactivo y que pueda responder a eventos
-            .on('pointerdown', () => {                                  // Al hacer click 
-                window.close();                                         // Cierra la ventana si es posible             
-        });
+        
 
-        this.buttons = [start_button_red, start_button_local, credits_button, tutorial_button, exit_button];
+        this.buttons = [start_button_red, start_button_local, credits_button, tutorial_button];
 
     }
 

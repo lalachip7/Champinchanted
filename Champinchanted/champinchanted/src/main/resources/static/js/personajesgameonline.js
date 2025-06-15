@@ -49,7 +49,7 @@ export default class PersonajesGameOnline extends Phaser.Scene {
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
 
-        font.load().then((loadedFont) => {                      // Carga la fuente y la añade al documento
+        font.load().then((loadedFont) => {                      
             document.fonts.add(loadedFont);
             console.log('Fuente FantasyFont cargada');
         }).catch((err) => {
@@ -138,7 +138,7 @@ export default class PersonajesGameOnline extends Phaser.Scene {
                     username: this.username,
                     player1Character: this.player1Character,
                     player2Character: this.player2Character,
-                    mapId: this.registry.get('mapa') // Asegúrate de que el mapa ya se haya establecido
+                    mapId: this.registry.get('mapa') 
                 });
             }
         });
@@ -147,7 +147,7 @@ export default class PersonajesGameOnline extends Phaser.Scene {
         this.stompClient.subscribe(`/topic/games/${this.gameCode}/start`, (message) => {
             const startGameMessage = JSON.parse(message.body);
             console.log("Mensaje de inicio de partida recibido:", startGameMessage);
-            // Esto es redundante con el chequeo de isPlayer1Ready && isPlayer2Ready, pero asegura el inicio
+            
             this.registry.set('personajeJ1', startGameMessage.player1Character);
             this.registry.set('personajeJ2', startGameMessage.player2Character);
             this.registry.set('mapa', startGameMessage.mapId);
@@ -249,9 +249,9 @@ export default class PersonajesGameOnline extends Phaser.Scene {
     // Actualiza la visualización del botón de listo
     updateReadyButtonDisplay(button, readyStatus) {
         if (readyStatus) {
-            button.setAlpha(1); // Opaco si está listo
+            button.setAlpha(1); 
         } else {
-            button.setAlpha(0.5); // Semitransparente si no está listo
+            button.setAlpha(0.5); 
         }
     }
 }

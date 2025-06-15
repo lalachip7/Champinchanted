@@ -49,6 +49,6 @@ class SessionManager {
     }
 }
 
-// NUEVO: Creamos y exportamos una única instancia del gestor de sesión
+
 const sessionManager = new SessionManager();
 export default sessionManager;

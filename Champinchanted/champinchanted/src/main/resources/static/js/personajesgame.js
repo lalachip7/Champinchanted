@@ -21,7 +21,7 @@ export default class PersonajesGame extends Phaser.Scene {
         // Fuentes
         const font = new FontFace('FantasyFont', 'url(assets/Fuentes/CATChilds.ttf)');
 
-        font.load().then((loadedFont) => {                      // Carga la fuente y la añade al documento
+        font.load().then((loadedFont) => {                      
             document.fonts.add(loadedFont);
             console.log('Fuente FantasyFont cargada');
         }).catch((err) => {

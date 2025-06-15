@@ -16,7 +16,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Desactiva CSRF, necesario para que las APIs funcionen sin configuración extra
             .authorizeHttpRequests(auth -> auth
                 // Permite el acceso a TODAS las rutas sin necesidad de autenticación.
-                // Esta es la línea clave que elimina el formulario de login por defecto.
+                // Elimina el formulario de login por defecto.
                 .anyRequest().permitAll()
             );
         return http.build();

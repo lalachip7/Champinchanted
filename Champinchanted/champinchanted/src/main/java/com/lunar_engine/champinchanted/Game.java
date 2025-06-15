@@ -17,7 +17,7 @@ public class Game {
     private int player2Score, player2Lives;
     private boolean player2SpellUsed, player2FlagStatus;
 
-    // Esta es la única lista que necesitamos. No tiene @JsonIgnore para que se guarde.
+    
     private List<DisplayableEventDTO> timeline = new ArrayList<>();
 
     public Game() {
@@ -33,7 +33,7 @@ public class Game {
         resetInGameStats();
     }
 
-    // CORREGIDO: El constructor ahora carga la timeline desde el fichero guardado.
+    // El constructor ahora carga la timeline desde el fichero guardado.
     public Game(GameLobbyData lobbyData) {
         this.code = lobbyData.getCode();
         this.usernamePlayer1 = lobbyData.getUsernamePlayer1();
@@ -49,7 +49,7 @@ public class Game {
         resetInGameStats();
     }
 
-    // CORREGIDO: El método para guardar ahora incluye la timeline.
+    // El método para guardar ahora incluye la timeline.
     public GameLobbyData toLobbyData() {
         GameLobbyData lobbyData = new GameLobbyData();
         lobbyData.setCode(this.code);
@@ -61,16 +61,16 @@ public class Game {
         lobbyData.setPlayer1Ready(this.player1Ready);
         lobbyData.setPlayer2Ready(this.player2Ready);
         lobbyData.setUsersConnected(this.usersConnected);
-        lobbyData.setTimeline(this.timeline); // <-- Se guarda la timeline
+        lobbyData.setTimeline(this.timeline); 
         return lobbyData;
     }
     
-    // --- Métodos para la Línea de Tiempo Unificada ---
+    // Métodos para la Línea de Tiempo Unificada 
     public List<DisplayableEventDTO> getTimeline() { return timeline; }
     public void addSystemEvent(String content) { this.timeline.add(new DisplayableEventDTO(content)); }
     public void addChatMessage(ChatMessageDTO message) { this.timeline.add(new DisplayableEventDTO(message.getSender(), message.getContent())); }
     
-    // El resto del fichero (resetInGameStats, getPlayerCount, getters/setters) no cambia.
+    
     public void resetInGameStats() { this.player1PositionX = 0.0f; this.player1PositionY = 0.0f; this.player1Score = 0; this.player1Lives = 5; this.player1SpellUsed = false; this.player1FlagStatus = false; this.player2PositionX = 0.0f; this.player2PositionY = 0.0f; this.player2Score = 0; this.player2Lives = 5; this.player2SpellUsed = false; this.player2FlagStatus = false; }
     public int getPlayerCount() { int count = 0; if (this.usernamePlayer1 != null && !this.usernamePlayer1.isEmpty()) count++; if (this.usernamePlayer2 != null && !this.usernamePlayer2.isEmpty()) count++; return count; }
     public String getUsernamePlayer1() { return usernamePlayer1; }

@@ -11,7 +11,7 @@ import MapaGameOnline from './mapagameonline.js';
 import MapaGame from './mapagame.js';
 import sessionManager from './sessionManager.js';
 
-// --- Configuración Principal de Phaser ---
+
 
 const config = {
     type: Phaser.AUTO,
@@ -26,7 +26,7 @@ const config = {
             gravity: { y: 1900 }
         }
     },
-    scene: [ // Lista de todas las escenas importadas. Phaser iniciará la primera (IntroGame).
+    scene: [ // Lista de todas las escenas importadas.
         IntroGame,
         GameScene,
         UsernameScene,
@@ -44,12 +44,12 @@ const config = {
     }
 };
 
-// --- Arranque del Juego ---
+// Arranque del Juego 
 
 // Crea una nueva instancia del juego con la configuración definida
 const game = new Phaser.Game(config);
 
-// --- Eventos Globales ---
+// Eventos Globales 
 
 // El evento para detener el heartbeat al cerrar la pestaña
 window.addEventListener("beforeunload", function(event) {
@@ -57,5 +57,4 @@ window.addEventListener("beforeunload", function(event) {
     if (sessionManager && sessionManager.stopHeartbeat) {
         sessionManager.stopHeartbeat();
     }
-    // La lógica de eliminar usuario al cerrar ya no es necesaria con el sistema de timeout del servidor.
 });

@@ -35,7 +35,7 @@ export default class UsernameScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
-        // --- Elementos HTML para Login/Registro ---
+        // Elementos HTML para Login/Registro 
         this.usernameInput = this.createInputElement('text', 'username-input', 'Introduce tu nombre de usuario');
         this.passwordInput = this.createInputElement('password', 'password-input', 'Introduce tu contraseña');
         this.oldPasswordInput = this.createInputElement('password', 'old-password-input', 'Contraseña Antigua');
@@ -47,7 +47,7 @@ export default class UsernameScene extends Phaser.Scene {
         document.body.appendChild(this.oldPasswordInput);
         document.body.appendChild(this.newPasswordInput);
 
-        // --- Botones de Selección Inicial (Login/Register) en Phaser ---
+        // Botones de Selección Inicial (Login/Register)
         const loginButtonBg = this.add.image(centerX, centerY - 50, "login_button").setScale(0.15).setInteractive();
 
 
@@ -55,7 +55,7 @@ export default class UsernameScene extends Phaser.Scene {
 
         this.selectionGroup = this.add.group([loginButtonBg, registerButtonBg]);
 
-        // --- Botones de Opciones de Juego (Crear y Unirse) ---
+        // Botones de Opciones de Juego (Crear y Unirse)
         const createGameButton = this.add.image(centerX - 200, centerY + 200, "create_game_button").setScale(0.2).setInteractive();
         const joinGameButton = this.add.image(centerX + 200, centerY + 200, "join_game_button").setScale(0.2).setInteractive();
 
@@ -70,7 +70,7 @@ export default class UsernameScene extends Phaser.Scene {
         this.gameOptionsGroup = this.add.group([createGameButton, joinGameButton, changePasswordButton, deleteAccountButton]);
         this.gameOptionsGroup.setVisible(false);
 
-        // --- Lógica de los botones ---
+        // Lógica de los botones
         loginButtonBg.on('pointerdown', () => this.showAuthUI('login'));
         registerButtonBg.on('pointerdown', () => this.showAuthUI('register'));
         this.submitHtmlButton.addEventListener('click', () => this.handleAuthSubmit());
@@ -187,7 +187,7 @@ export default class UsernameScene extends Phaser.Scene {
                 throw new Error(result.message);
             }
 
-            alert(result.message); // "Usuario eliminado correctamente."
+            alert(result.message); 
 
             // Limpiamos todo y volvemos a la pantalla de inicio
             this.cleanup();
@@ -218,7 +218,7 @@ export default class UsernameScene extends Phaser.Scene {
             const url = `/api/users/${this.username}`;
 
             const response = await fetch(url, {
-                method: 'PUT', // ¡Importante! Usar el método PUT
+                method: 'PUT', 
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     // Usamos el modelo seguro con contraseña antigua y nueva

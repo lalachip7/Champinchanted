@@ -72,7 +72,7 @@ public class GameController {
             Game game = gameOpt.get();
             game.addChatMessage(message);
             
-            // CORRECCIÓN: Forzamos el guardado de la partida en el fichero.
+            // Forzamos el guardado de la partida en el fichero.
             gameService.updateGame(game);
             
             return ResponseEntity.ok().build();

@@ -57,16 +57,16 @@ public class UsersController {
     }
 
     /**
-     * NUEVO ENDPOINT: Inicia sesión con un usuario existente.
+     *  Inicia sesión con un usuario existente.
      */
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody User loginAttempt) {
         String username = loginAttempt.getUsername();
-        String password = loginAttempt.getPassword(); // La variable se llama "password"
+        String password = loginAttempt.getPassword(); 
 
         Optional<User> userOpt = this.userRep.getUser(username);
 
-        // Usa "password" aquí, no "rawPassword"
+        
         if (userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
             this.apiStatusService.setActive(username);
             return ResponseEntity.ok(Map.of("message", "Inicio de sesión exitoso."));
@@ -81,17 +81,14 @@ public class UsersController {
         String username = payload.get("username");
 
         if (username == null || username.trim().isEmpty()) {
-            // Si no se proporciona un nombre de usuario, es una mala petición.
+            
             return ResponseEntity.badRequest().build();
         }
 
-        // Se utiliza el servicio ApiStatusService, que ya está inyectado en el
-        // controlador,
-        // para registrar la actividad del usuario.
+        // Se utiliza el servicio ApiStatusService, que ya está inyectado en el controlador, para registrar la actividad del usuario.
         this.apiStatusService.hasSeen(username);
 
-        // Se devuelve una respuesta HTTP 200 OK sin contenido para indicar que todo ha
-        // ido bien.
+        
         return ResponseEntity.ok().build();
     }
 
@@ -100,25 +97,25 @@ public class UsersController {
             @PathVariable String username,
             @RequestBody Map<String, String> payload) {
 
-        // 1. Buscamos si el usuario existe en el repositorio.
-        Optional<User> userOpt = this.userRep.getUser(username); //
+        // Buscamos si el usuario existe en el repositorio.
+        Optional<User> userOpt = this.userRep.getUser(username); 
 
         if (userOpt.isEmpty()) {
-            // Si el usuario no existe, devolvemos un error 404 (Not Found).
+            // Si el usuario no existe, devolvemos un error.
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "El usuario no fue encontrado."));
         }
 
-        // 2. Extraemos la nueva contraseña del cuerpo de la petición.
+        // Extraemos la nueva contraseña del cuerpo de la petición.
         String oldPassword = payload.get("oldPassword");
         String newPassword = payload.get("newPassword");
         if (newPassword == null || newPassword.trim().isEmpty()) {
-            // Si no se envía una contraseña, devolvemos un error 400 (Bad Request).
+            // Si no se envía una contraseña, devolvemos un error 400.
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "La nueva contraseña no puede estar vacía."));
         }
 
-        // 3. Obtenemos el usuario y actualizamos su contraseña.
+        // Obtenemos el usuario y actualizamos su contraseña.
         User userToUpdate = userOpt.get();
 
         if (!passwordEncoder.matches(oldPassword, userToUpdate.getPassword())) {
@@ -126,15 +123,15 @@ public class UsersController {
                     .body(Map.of("message", "La contraseña antigua es incorrecta."));
         }
 
-        // Es MUY IMPORTANTE codificar la nueva contraseña antes de guardarla.
+        // Codificar la nueva contraseña antes de guardarla.
         String encodedPassword = this.passwordEncoder.encode(newPassword);
         userToUpdate.setPassword(encodedPassword);
         this.userRep.updateUser(userToUpdate);
 
-        // 4. Guardamos los cambios en el repositorio.
-        this.userRep.updateUser(userToUpdate); //
+        // Guardamos los cambios en el repositorio.
+        this.userRep.updateUser(userToUpdate); 
 
-        // 5. Devolvemos una respuesta de éxito.
+        // Devolvemos una respuesta de éxito.
         return ResponseEntity.ok(Map.of("message", "Contraseña actualizada con éxito."));
     }
 
