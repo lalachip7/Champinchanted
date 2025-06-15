@@ -1,4 +1,6 @@
-class UsernameScene extends Phaser.Scene {
+import sessionManager from './sessionManager.js';
+
+export default class UsernameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'UsernameScene' });
     }
@@ -263,6 +265,9 @@ class UsernameScene extends Phaser.Scene {
                 throw new Error(errorData.message || `Error: ${response.status}`);
             }
             this.username = username;
+
+            sessionManager.startHeartbeat(this.username);
+
             const successMessage = (this.authMode === 'login') ? 'Inicio de sesión exitoso.' : 'Usuario registrado con éxito.';
             alert(successMessage + '\nAhora puedes crear o unirte a una partida.');
 
@@ -285,7 +290,7 @@ class UsernameScene extends Phaser.Scene {
             });
             if (!response.ok) { throw new Error(`Error: ${response.status}`); }
             const game = await response.json();
-            this.connectToWebSocketAndStart(game.code, true);
+            this.startGameLobby(game.code, true);
         } catch (error) {
             console.error('Error al crear la partida:', error);
             alert('No se pudo crear la partida.');
@@ -299,30 +304,19 @@ class UsernameScene extends Phaser.Scene {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: this.username, gameCode: gameCode })
             });
             if (!response.ok) { throw new Error(`Error: ${response.status}`); }
-            this.connectToWebSocketAndStart(gameCode, false);
+            this.startGameLobby(gameCode, false);
         } catch (error) {
             console.error('Error al unirse:', error);
             alert("No se pudo unir. Verifica el código.");
         }
     }
 
-    connectToWebSocketAndStart(gameCode, isHost) {
-        this.gameCode = gameCode;
-        const socket = new SockJS('/ws');
-        this.stompClient = Stomp.over(socket);
-
-        this.stompClient.connect({}, (frame) => {
-            console.log('Conectado al WebSocket: ' + frame);
-            this.cleanup();
-            this.scene.start('MapaGameOnline', {
-                stompClient: this.stompClient,
-                gameCode: this.gameCode,
-                username: this.username,
-                isHost: isHost
-            });
-        }, (error) => {
-            console.error('Error de conexión WebSocket:', error);
-            alert('No se pudo conectar al servidor.');
+    startGameLobby(gameCode, isHost) {
+        this.cleanup();
+        this.scene.start('MapaGameOnline', {
+            gameCode: gameCode,
+            username: this.username,
+            isHost: isHost
         });
     }
 

@@ -1,6 +1,8 @@
 package com.lunar_engine.champinchanted;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,18 +25,16 @@ public class GameService {
 
     @PostConstruct
     public void loadGamesOnStartup() {
-        System.err.println("Cargando lobbies existentes desde el repositorio...");
+        System.out.println("[DEBUG] GameService: Iniciando carga de partidas guardadas...");
         try {
-            gameRepository.getGames().forEach(lobbyData -> {
-                if (lobbyData.getUsersConnected() > 0) {
-                    activeGames.put(lobbyData.getCode(), new Game(lobbyData));
-                    System.out.println("Lobby '" + lobbyData.getCode() + "' cargado en memoria.");
-                } else {
-                    gameRepository.deleteGame(lobbyData.getCode());
-                }
+            List<GameLobbyData> games = gameRepository.getGames();
+            System.out.println("[DEBUG] GameService: Se encontraron " + games.size() + " ficheros de partidas.");
+            games.forEach(lobbyData -> {
+                System.out.println("[DEBUG] GameService: Cargando partida con código '" + lobbyData.getCode() + "' y " + lobbyData.getUsersConnected() + " usuarios.");
+                activeGames.put(lobbyData.getCode(), new Game(lobbyData));
             });
         } catch (IOException e) {
-            System.err.println("Error al cargar partidas en el inicio: " + e.getMessage());
+            System.err.println("[ERROR] GameService: Error de IO al cargar partidas en el inicio: " + e.getMessage());
         }
     }
 
@@ -52,6 +52,7 @@ public class GameService {
         if (game != null && game.getUsernamePlayer2() == null) {
             game.setUsernamePlayer2(usernamePlayer2);
             game.setUsersConnected(2);
+            game.addSystemEvent("El usuario " + usernamePlayer2 + " se ha unido.");
             updateGame(game);
             return Optional.of(game);
         }
@@ -69,6 +70,8 @@ public class GameService {
         Game game = activeGames.get(gameCode);
         if (game != null) {
             boolean playerLeft = false;
+            String eventMessage = "El usuario " + username + " se ha desconectado.";
+            
             // Si se va el jugador 1
             if (username.equals(game.getUsernamePlayer1())) {
                 game.setUsernamePlayer1(null);
@@ -83,14 +86,13 @@ public class GameService {
             }
 
             if (playerLeft) {
-                // Si no quedan jugadores, se borra la partida de la memoria y del disco.
+                game.addSystemEvent(eventMessage);
                 if (game.getUsersConnected() <= 0) {
+                    System.out.println("[DEBUG] GameService: La partida '" + gameCode + "' se quedó vacía. Eliminando...");
                     activeGames.remove(gameCode);
                     gameRepository.deleteGame(gameCode);
-                    System.out.println("Partida " + gameCode + " eliminada por estar vacía.");
-                    return null; // Devuelve null para indicar que la partida ya no existe.
+                    return null;
                 } 
-                // Si queda al menos un jugador, se actualiza el estado en memoria y en disco.
                 else {
                     updateGame(game);
                     System.out.println("Jugador " + username + " desconectado de " + gameCode + ". Jugadores restantes: " + game.getUsersConnected());
@@ -98,7 +100,7 @@ public class GameService {
                 }
             }
         }
-        return null; // Devuelve null si la partida no se encontró o el jugador no estaba en ella.
+        return null;
     }
 
     private String generateUniqueGameCode() {
@@ -113,26 +115,7 @@ public class GameService {
         return Optional.ofNullable(activeGames.get(gameCode));
     }
 
-    public Optional<Game> setPlayerCharacter(String gameCode, int playerNumber, int characterId) {
-        return getGame(gameCode).map(game -> {
-            if (playerNumber == 1) game.setPlayer1Character(characterId);
-            else if (playerNumber == 2) game.setPlayer2Character(characterId);
-            updateGame(game);
-            return game;
-        });
-    }
-
-    public Optional<Game> setGameMap(String gameCode, int mapId) {
-        return getGame(gameCode).map(game -> {
-            game.setMap(mapId);
-            updateGame(game);
-            return game;
-        });
-    }
-
-    public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
-        getGame(gameCode).ifPresent(game -> {
-            // Lógica futura para actualizar estado en tiempo real
-        });
+    public Collection<Game> getActiveGames() {
+        return activeGames.values();
     }
 }

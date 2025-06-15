@@ -1,4 +1,4 @@
-class MapaGame extends Phaser.Scene {
+export default class MapaGame extends Phaser.Scene {
     constructor() {
         super({ key: 'MapaGame' });
     }

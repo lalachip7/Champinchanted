@@ -1,5 +1,7 @@
 package com.lunar_engine.champinchanted;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,16 +54,38 @@ public class GameController {
 
         if (gameOpt.isPresent()) {
             Game game = gameOpt.get();
-            // Creamos un mapa simple para devolver solo la información que necesitamos
             Map<String, Object> gameStatus = Map.of(
                 "gameCode", game.getCode(),
                 "playerCount", game.getUsersConnected()
-                // podrías añadir más datos aquí si los necesitaras en el futuro
             );
             return ResponseEntity.ok(gameStatus);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "La partida no fue encontrada."));
         }
+    }
+
+    @PostMapping("/{gameCode}/chat")
+    public ResponseEntity<Void> postChatMessage(@PathVariable String gameCode, @RequestBody ChatMessageDTO message) {
+        Optional<Game> gameOpt = gameService.getGame(gameCode);
+        if (gameOpt.isPresent()) {
+            Game game = gameOpt.get();
+            game.addChatMessage(message);
+            
+            // CORRECCIÓN: Forzamos el guardado de la partida en el fichero.
+            gameService.updateGame(game);
+            
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{gameCode}/timeline")
+    public ResponseEntity<List<DisplayableEventDTO>> getGameTimeline(@PathVariable String gameCode) {
+        Optional<Game> gameOpt = gameService.getGame(gameCode);
+        if (gameOpt.isPresent()) {
+            return ResponseEntity.ok(gameOpt.get().getTimeline());
+        }
+        return ResponseEntity.ok(Collections.emptyList());
     }
 }

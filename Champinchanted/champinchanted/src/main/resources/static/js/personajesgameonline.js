@@ -1,4 +1,4 @@
-class PersonajesGameOnline extends Phaser.Scene {
+export default class PersonajesGameOnline extends Phaser.Scene {
     constructor() {
         super({ key: 'PersonajesGameOnline' });
         this.stompClient = null;

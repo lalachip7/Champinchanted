@@ -1,4 +1,4 @@
-class IntroGame extends Phaser.Scene {
+export default class IntroGame extends Phaser.Scene {
     static bgMusic
     constructor() {
         super({ key: 'IntroGame' });   // Asigna la clave "IntroGame" a esta escena

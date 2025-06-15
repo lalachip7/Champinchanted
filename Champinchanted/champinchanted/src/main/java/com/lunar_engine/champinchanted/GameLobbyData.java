@@ -1,5 +1,8 @@
 package com.lunar_engine.champinchanted;
 
+import java.util.List;
+
+// Este fichero ahora solo necesita la timeline unificada.
 public class GameLobbyData {
     private String code;
     private String usernamePlayer1;
@@ -10,6 +13,7 @@ public class GameLobbyData {
     private boolean player1Ready;
     private boolean player2Ready;
     private int usersConnected;
+    private List<DisplayableEventDTO> timeline; // La única lista que necesitamos
 
     // Getters y Setters
     public String getCode() { return code; }
@@ -30,4 +34,6 @@ public class GameLobbyData {
     public void setPlayer2Ready(boolean player2Ready) { this.player2Ready = player2Ready; }
     public int getUsersConnected() { return usersConnected; }
     public void setUsersConnected(int usersConnected) { this.usersConnected = usersConnected; }
+    public List<DisplayableEventDTO> getTimeline() { return timeline; }
+    public void setTimeline(List<DisplayableEventDTO> timeline) { this.timeline = timeline; }
 }

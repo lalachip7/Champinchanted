@@ -1,4 +1,4 @@
-class EndGame extends Phaser.Scene {
+export default class EndGame extends Phaser.Scene {
     constructor() {
         super({ key: 'EndScene' });
     }

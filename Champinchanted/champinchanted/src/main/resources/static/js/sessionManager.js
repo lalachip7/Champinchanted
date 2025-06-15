@@ -10,30 +10,45 @@ class SessionManager {
         }
 
         this.username = username;
+        console.log(`Iniciando heartbeat para el usuario: ${username}`); // Mensaje para depuración
+
+        // Enviar un heartbeat inmediatamente al iniciar
+        this.sendHeartbeat();
 
         this.heartbeatInterval = setInterval(() => {
-            fetch("/api/users/heartbeat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username: username })
-            })
-            .then(response => {
-                if(!response.ok) {
-                    console.error("Error al enviar el heartbeat");
-                }
-            })
-            .catch(error => {
-                console.error("Error al enviar el heartbeat: ", error);
-            });
-        }, 30000);
-    }   
+            this.sendHeartbeat();
+        }, 8000); // Reducimos el intervalo a 8 segundos para que sea menor que el umbral de 10
+    }
+
+    sendHeartbeat() {
+        if (!this.username) return;
+
+        fetch("/api/users/heartbeat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: this.username })
+        })
+        .then(response => {
+            if(!response.ok) {
+                console.error("Error al enviar el heartbeat");
+            }
+        })
+        .catch(error => {
+            console.error("Error de red al enviar el heartbeat: ", error);
+        });
+    }
 
     stopHeartbeat() {
         if (this.heartbeatInterval) {
             clearInterval(this.heartbeatInterval);
             this.heartbeatInterval = null;
+            console.log(`Heartbeat detenido para el usuario: ${this.username}`);
         }
     }
 }
+
+// NUEVO: Creamos y exportamos una única instancia del gestor de sesión
+const sessionManager = new SessionManager();
+export default sessionManager;

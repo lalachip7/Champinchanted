@@ -1,4 +1,4 @@
-class GameScene extends Phaser.Scene {
+export default class GameScene extends Phaser.Scene {
     static bgMusic
     constructor() {
         super({ key: 'GameScene' });
