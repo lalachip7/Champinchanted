@@ -257,8 +257,8 @@ public class GameService {
                 TimerTask poisonTask = new TimerTask() {
                     @Override
                     public void run() {
-                        // La condición de parada ahora solo depende de los ticks
-                        if (ticks.incrementAndGet() > 3) {
+                        // El efecto dura ahora 5 ticks (daño) en lugar de 3
+                        if (ticks.incrementAndGet() > 5) {
                             if (targetIsP1) {
                                 game.setPlayer1Poisoned(false);
                                 if(game.getPlayer1PoisonTimer() != null) game.getPlayer1PoisonTimer().cancel();
@@ -274,7 +274,6 @@ public class GameService {
                             return;
                         }
                         
-                        // Aplicar daño
                         if (targetIsP1) {
                             game.setPlayer1Lives(game.getPlayer1Lives() - 1);
                         } else {
@@ -282,7 +281,6 @@ public class GameService {
                         }
                         System.out.println("Daño de veneno aplicado.");
                         
-                        // Después de aplicar el daño, comprobamos si alguien ha muerto
                         checkAndHandleDeath(game);
                     }
                 };
@@ -291,11 +289,6 @@ public class GameService {
         });
     }
 
-    /**
-     * Nuevo método para centralizar la lógica de muerte.
-     * Comprueba si algún jugador tiene 0 o menos vidas y, si es así,
-     * otorga un punto al oponente y reinicia la ronda.
-     */
     private void checkAndHandleDeath(Game game) {
         boolean roundShouldReset = false;
         
@@ -313,7 +306,6 @@ public class GameService {
             game.resetForNewRound();
             broadcastGameState(game.getCode());
         } else {
-            // Si nadie murió, simplemente enviamos la actualización de las vidas.
             broadcastGameState(game.getCode());
         }
     }
