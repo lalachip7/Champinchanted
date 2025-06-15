@@ -41,10 +41,10 @@ public class GameUpdateMessage {
     public boolean getFlagStatus() { return flagStatus; }
     public void setFlagStatus( boolean flagStatus ) { this.flagStatus = flagStatus; }
 
-    public PlayerState toPlayerState() {
-        return new PlayerState(
-            this.username, this.positionX, this.positionY, this.score,
-            this.lives, this.spellUsed, this.flagStatus, 0, false
-        );
-    }
+public PlayerState toPlayerState() {
+    return new PlayerState(
+        this.username, this.positionX, this.positionY, this.score,
+        this.lives, this.spellUsed, this.flagStatus, 0, false, false, false // <-- MODIFICA ESTA LÍNEA
+    );
+}
 }

@@ -197,4 +197,11 @@ public class GameWebSocketController {
         String username = payload.get("username");
         gameService.scorePointAndResetRound(gameCode, username);
     }
+
+    @MessageMapping("/game.useSpell")
+    public void useSpell(@Payload Map<String, String> payload) {
+        String gameCode = payload.get("gameCode");
+        String username = payload.get("username");
+        gameService.useSpell(gameCode, username);
+    }
 }

@@ -3,8 +3,11 @@ package com.lunar_engine.champinchanted;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ public class GameService {
     public GameService(GameRepository gameRepository, SimpMessageSendingOperations messagingTemplate) {
         this.activeGames = new ConcurrentHashMap<>();
         this.gameRepository = gameRepository;
-        this.messagingTemplate = messagingTemplate; // Asignarlo aquí
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostConstruct
@@ -73,29 +76,23 @@ public class GameService {
         Game game = activeGames.get(gameCode);
         if (game != null) {
             boolean playerLeft = false;
-            // Si se va el jugador 1
             if (username.equals(game.getUsernamePlayer1())) {
                 game.setUsernamePlayer1(null);
                 game.setUsersConnected(game.getUsersConnected() - 1);
                 playerLeft = true;
-            }
-            // Si se va el jugador 2
-            else if (username.equals(game.getUsernamePlayer2())) {
+            } else if (username.equals(game.getUsernamePlayer2())) {
                 game.setUsernamePlayer2(null);
                 game.setUsersConnected(game.getUsersConnected() - 1);
                 playerLeft = true;
             }
 
             if (playerLeft) {
-                // Si no quedan jugadores, se borra la partida de la memoria y del disco.
                 if (game.getUsersConnected() <= 0) {
                     activeGames.remove(gameCode);
                     gameRepository.deleteGame(gameCode);
                     System.out.println("Partida " + gameCode + " eliminada por estar vacía.");
-                    return null; // Devuelve null para indicar que la partida ya no existe.
-                }
-                // Si queda al menos un jugador, se actualiza el estado en memoria y en disco.
-                else {
+                    return null;
+                } else {
                     updateGame(game);
                     System.out.println("Jugador " + username + " desconectado de " + gameCode
                             + ". Jugadores restantes: " + game.getUsersConnected());
@@ -103,7 +100,7 @@ public class GameService {
                 }
             }
         }
-        return null; // Devuelve null si la partida no se encontró o el jugador no estaba en ella.
+        return null;
     }
 
     private String generateUniqueGameCode() {
@@ -128,55 +125,33 @@ public class GameService {
 
     public void updatePlayerState(String gameCode, String username, PlayerState playerState) {
         getGame(gameCode).ifPresent(game -> {
-
-            System.out.println("--- Recibida actualización de estado ---");
-            System.out.println("Partida: " + gameCode);
-            System.out.println("Usuario que envía: '" + username + "'");
-            System.out
-                    .println("Posición enviada: X=" + playerState.getPositionX() + ", Y=" + playerState.getPositionY());
-            System.out.println("Servidor tiene a P1 como: '" + game.getUsernamePlayer1() + "'");
-            System.out.println("Servidor tiene a P2 como: '" + game.getUsernamePlayer2() + "'");
-
             boolean playerRecognized = false;
-
-            // Comprueba si el update es del Jugador 1
             if (username.equals(game.getUsernamePlayer1())) {
                 game.setPlayer1PositionX(playerState.getPositionX());
                 game.setPlayer1PositionY(playerState.getPositionY());
-                System.out.println(">> Jugador 1 reconocido y actualizado.");
                 playerRecognized = true;
-
-                // Comprueba si el update es del Jugador 2
             } else if (username.equals(game.getUsernamePlayer2())) {
                 game.setPlayer2PositionX(playerState.getPositionX());
                 game.setPlayer2PositionY(playerState.getPositionY());
-                System.out.println(">> Jugador 2 reconocido y actualizado.");
                 playerRecognized = true;
             }
-
-            if (!playerRecognized) {
-                System.err.println(
-                        "!! ADVERTENCIA: El usuario '" + username + "' no coincide con ningún jugador de la partida.");
+            if (playerRecognized) {
+                checkPlayerCollisionAndSteal(game);
             }
-            checkPlayerCollisionAndSteal(game);
         });
     }
 
     public void collectFlag(String gameCode, String username) {
         getGame(gameCode).ifPresent(game -> {
-            // Solo se puede coger si está visible y nadie la tiene
             if (game.isFlagVisible() && game.getFlagHolderUsername() == null) {
                 game.setFlagHolderUsername(username);
-                game.setFlagVisible(false); // La bandera ya no está en el mapa, la tiene el jugador
-
-                // Retransmitimos el nuevo estado a todos
+                game.setFlagVisible(false);
                 broadcastGameState(gameCode);
                 System.out.println("Jugador " + username + " ha cogido la bandera en la partida " + gameCode);
             }
         });
     }
 
-    // Helper para no repetir código
     public void broadcastGameState(String gameCode) {
         getGame(gameCode).ifPresent(game -> {
             messagingTemplate.convertAndSend("/topic/gameplay/" + game.getCode(), game.toGameStateMessage());
@@ -186,50 +161,34 @@ public class GameService {
     public void collectSpell(String gameCode, String username, String spellType) {
         getGame(gameCode).ifPresent(game -> {
             boolean isPlayer1 = username.equals(game.getUsernamePlayer1());
-
             if (spellType.equals("venom") && game.isVenomSpellVisible()) {
-                game.setVenomSpellVisible(false); // El hechizo desaparece del mapa
-                if (isPlayer1) {
-                    game.setPlayer1HeldSpell(1); // 1 = Venom
-                } else {
-                    game.setPlayer2HeldSpell(1);
-                }
+                game.setVenomSpellVisible(false);
+                if (isPlayer1) game.setPlayer1HeldSpell(1); else game.setPlayer2HeldSpell(1);
                 System.out.println("Jugador " + username + " ha cogido VENOM.");
-
-                // ▼▼▼ AÑADE ESTE BLOQUE "ELSE IF" PARA EL DAZER ▼▼▼
             } else if (spellType.equals("dazer") && game.isDazerSpellVisible()) {
-                game.setDazerSpellVisible(false); // El hechizo Dazer desaparece del mapa
-                if (isPlayer1) {
-                    game.setPlayer1HeldSpell(2); // 2 = Dazer
-                } else {
-                    game.setPlayer2HeldSpell(2);
-                }
+                game.setDazerSpellVisible(false);
+                if (isPlayer1) game.setPlayer1HeldSpell(2); else game.setPlayer2HeldSpell(2);
                 System.out.println("Jugador " + username + " ha cogido DAZER.");
             }
-
-            broadcastGameState(gameCode); // Notifica a todos los clientes del cambio
+            broadcastGameState(gameCode);
         });
     }
 
     private void checkPlayerCollisionAndSteal(Game game) {
         if (game.getFlagHolderUsername() == null) {
-            return; // Nadie tiene la bandera, no se puede robar
+            return;
         }
-
         double dx = game.getPlayer1PositionX() - game.getPlayer2PositionX();
         double dy = game.getPlayer1PositionY() - game.getPlayer2PositionY();
         double distance = Math.sqrt(dx * dx + dy * dy);
-
         if (distance < PLAYER_COLLISION_DISTANCE) {
             String holder = game.getFlagHolderUsername();
             String p1 = game.getUsernamePlayer1();
-            String p2 = game.getUsernamePlayer2();
-
             if (holder.equals(p1)) {
-                game.setFlagHolderUsername(p2); // P2 roba la bandera
+                game.setFlagHolderUsername(game.getUsernamePlayer2());
                 System.out.println("Partida " + game.getCode() + ": Jugador 2 ha robado la bandera.");
-            } else if (holder.equals(p2)) {
-                game.setFlagHolderUsername(p1); // P1 roba la bandera
+            } else {
+                game.setFlagHolderUsername(p1);
                 System.out.println("Partida " + game.getCode() + ": Jugador 1 ha robado la bandera.");
             }
             broadcastGameState(game.getCode());
@@ -238,36 +197,91 @@ public class GameService {
 
     public void scorePointAndResetRound(String gameCode, String username) {
         getGame(gameCode).ifPresent(game -> {
-
-            // Adquirimos el bloqueo explícito para esta partida
-            game.getLock().lock();
-            try {
-                // -- INICIO DE LA SECCIÓN CRÍTICA --
-                // Todo lo que está aquí dentro está 100% protegido contra condiciones de
-                // carrera.
-
-                // Validación: ¿El jugador que intenta marcar es quien tiene la bandera?
-                if (username.equals(game.getFlagHolderUsername())) {
-                    // Sumar punto
-                    if (username.equals(game.getUsernamePlayer1())) {
-                        game.setPlayer1Score(game.getPlayer1Score() + 1);
-                        System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
-                    } else {
-                        game.setPlayer2Score(game.getPlayer2Score() + 1);
-                        System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
-                    }
-
-                    // Reiniciar la ronda
-                    game.resetForNewRound();
-
-                    // Notificar a todos del nuevo estado
-                    broadcastGameState(gameCode);
+            if (username.equals(game.getFlagHolderUsername())) {
+                game.setFlagHolderUsername(null);
+                if (username.equals(game.getUsernamePlayer1())) {
+                    game.setPlayer1Score(game.getPlayer1Score() + 1);
+                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 1.");
+                } else {
+                    game.setPlayer2Score(game.getPlayer2Score() + 1);
+                    System.out.println("Partida " + game.getCode() + ": Punto para el Jugador 2.");
                 }
-                // -- FIN DE LA SECCIÓN CRÍTICA --
-            } finally {
-                // Liberamos el bloqueo, permitiendo que otra petición (si la hubiera) entre.
-                // El bloque 'finally' asegura que esto se ejecute SIEMPRE.
-                game.getLock().unlock();
+                game.resetForNewRound();
+                broadcastGameState(gameCode);
+            }
+        });
+    }
+
+    public void useSpell(String gameCode, String username) {
+        getGame(gameCode).ifPresent(game -> {
+            boolean isPlayer1 = username.equals(game.getUsernamePlayer1());
+            int spellId = isPlayer1 ? game.getPlayer1HeldSpell() : game.getPlayer2HeldSpell();
+
+            if (spellId == 2) { // Dazer
+                if (isPlayer1) {
+                    game.setPlayer2Frozen(true);
+                    game.setPlayer1HeldSpell(0);
+                } else {
+                    game.setPlayer1Frozen(true);
+                    game.setPlayer2HeldSpell(0);
+                }
+                System.out.println(username + " ha congelado a su oponente.");
+                broadcastGameState(gameCode);
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (isPlayer1) game.setPlayer2Frozen(false); else game.setPlayer1Frozen(false);
+                        System.out.println("Efecto de congelación terminado para la partida " + gameCode);
+                        broadcastGameState(gameCode);
+                    }
+                }, 3000);
+            } else if (spellId == 1) { // Venom
+                final boolean targetIsP1 = !isPlayer1;
+                if ((targetIsP1 && game.getPlayer1PoisonTimer() != null) || (!targetIsP1 && game.getPlayer2PoisonTimer() != null)) {
+                    return;
+                }
+                if (isPlayer1) {
+                    game.setPlayer2Poisoned(true);
+                    game.setPlayer1HeldSpell(0);
+                } else {
+                    game.setPlayer1Poisoned(true);
+                    game.setPlayer2HeldSpell(0);
+                }
+                System.out.println(username + " ha envenenado a su oponente.");
+                broadcastGameState(gameCode);
+
+                Timer poisonTimer = new Timer();
+                if (targetIsP1) game.setPlayer1PoisonTimer(poisonTimer); else game.setPlayer2PoisonTimer(poisonTimer);
+
+                AtomicInteger ticks = new AtomicInteger(0);
+                TimerTask poisonTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (ticks.incrementAndGet() > 3 || (targetIsP1 && game.getPlayer1Lives() <= 1) || (!targetIsP1 && game.getPlayer2Lives() <= 1)) {
+                            if (targetIsP1) {
+                                game.setPlayer1Poisoned(false);
+                                if(game.getPlayer1PoisonTimer() != null) game.getPlayer1PoisonTimer().cancel();
+                                game.setPlayer1PoisonTimer(null);
+                            } else {
+                                game.setPlayer2Poisoned(false);
+                                if(game.getPlayer2PoisonTimer() != null) game.getPlayer2PoisonTimer().cancel();
+                                game.setPlayer2PoisonTimer(null);
+                            }
+                            System.out.println("Efecto de veneno terminado.");
+                            broadcastGameState(gameCode);
+                            this.cancel(); // Detiene esta tarea
+                            return;
+                        }
+                        if (targetIsP1) {
+                            game.setPlayer1Lives(game.getPlayer1Lives() - 1);
+                        } else {
+                            game.setPlayer2Lives(game.getPlayer2Lives() - 1);
+                        }
+                        System.out.println("Daño de veneno aplicado.");
+                        broadcastGameState(gameCode);
+                    }
+                };
+                poisonTimer.schedule(poisonTask, 5000, 5000);
             }
         });
     }
