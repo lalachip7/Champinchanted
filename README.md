@@ -302,7 +302,7 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 ### 5.6.3 Pantalla de Creditos
 ![Pantalla de Creditos](./Imágenes/creditos2.png)
 ### 5.6.4 Pantalla de usuario
-![Pantalla de usuario](./Imágenes/nombre.png)
+![Pantalla de usuario](./Imágenes/pantallaUsuarios.png)
 ### 5.6.4.1 Pantalla de usuario - Inicio de sesión
 ![Pantalla de usuario](./Imágenes/inicioSesionNombre.png)
 ### 5.6.4.2 Pantalla de usuario - Registro
@@ -310,7 +310,7 @@ Las casas son las bases de las que parten los jugadores y a las que deben regres
 ### 5.6.5 Pantalla de unirse a partida
 ![Pantalla de unirse a partida](./Imágenes/unirse2.png)
 ### 5.6.6 Pantalla de mapas
-![Pantalla de mapas](./Imágenes/mapas2.png)
+![Pantalla de mapas](./Imágenes/mapa2.png)
 ### 5.6.7 Pantalla de pausa
 ![Pantalla de pausa](./Imágenes/pausa.png)
 ### 5.6.8 Pantallas de seleccion de personajes
