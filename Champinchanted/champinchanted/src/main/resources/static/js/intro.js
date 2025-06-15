@@ -50,8 +50,8 @@ class IntroGame extends Phaser.Scene {
 
         const sliderWidth = 300;                            // Ancho del deslizador
         const sliderHeight = 15;                            // Altura del deslizador
-        const sliderX = 960;                                // Posición X
-        const sliderY = 550;                                // Posición Y
+        const sliderX = 1700;                                // Posición X
+        const sliderY = 120;                                // Posición Y
         const handleSize = 20;                              // Tamaño del "controlador"
 
         const bar = this.add.graphics();                    // Barra del deslizador

@@ -42,7 +42,6 @@ class CreditsScene extends Phaser.Scene {
             this.member1 = this.add.text(1000, 300, 'Ángela Sánchez Díaz', this.configText).setOrigin(0.5);
             this.member2 = this.add.text(1000, 450, 'Garazi Blanco Jauregi', this.configText).setOrigin(0.5);
             this.member3 = this.add.text(1000, 600, 'Alberto López García de Ceca', this.configText).setOrigin(0.5);
-            this.member4 = this.add.text(1000, 750, 'Laura Blázquez Pelaz', this.configText).setOrigin(0.5);
         }
         
     

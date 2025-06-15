@@ -72,4 +72,14 @@ public class UsersController {
                     .body(Map.of("message", "Usuario o contraseña incorrectos."));
         }
     }
+    @PostMapping("/heartbeat")
+    public ResponseEntity<Void> heartbeat(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        if (username != null && !username.trim().isEmpty()) {
+            // Usas un método que ya existe en tu ApiStatusService
+            apiStatusService.hasSeen(username);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

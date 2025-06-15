@@ -252,24 +252,44 @@ class GameSceneOnline extends Phaser.Scene {
 
     updateVisuals() {
         const gameState = this.serverState;
-        if (!gameState?.player1State || !gameState?.player2State || !this.opponent) return;
+        if (!gameState?.player1State || !gameState?.player2State || !this.opponent || !this.player) return;
 
         const { player1State, player2State } = gameState;
         const myState = (this.username === player1State.username) ? player1State : player2State;
         const opponentState = (this.username === player1State.username) ? player2State : player1State;
 
         if (this.flagHolderSprite && gameState.flagVisible && !gameState.flagHolderUsername) {
-            this.resetPlayerPosition();
+            this.player.setPosition(myState.positionX, myState.positionY);
+            this.opponent.setPosition(opponentState.positionX, opponentState.positionY);
             this.isScoring = false;
+        } else {
+            // --- ESTA ES UNA ACTUALIZACIÓN NORMAL DURANTE LA PARTIDA ---
+            // El control local es fluido. Solo actualizamos suavemente al oponente.
+            this.tweens.add({
+                targets: this.opponent,
+                x: opponentState.positionX,
+                y: opponentState.positionY,
+                duration: 60,
+                ease: 'Linear'
+            });
         }
 
-        this.tweens.add({ targets: this.opponent, x: opponentState.positionX, y: opponentState.positionY, duration: 60, ease: 'Linear' });
-        if (this.opponent.x < opponentState.positionX) this.opponent.flipX = true;
-        else if (this.opponent.x > opponentState.positionX) this.opponent.flipX = false;
+        if (this.opponent.x < opponentState.positionX) {
+            this.opponent.flipX = true;
+        } else if (this.opponent.x > opponentState.positionX) {
+            this.opponent.flipX = false;
+        }
 
-        if (this.scoreText) this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
-        if (this.player1LifeImages) this.updatePlayerLives(this.player1LifeImages, player1State.lives);
-        if (this.player2LifeImages) this.updatePlayerLives(this.player2LifeImages, player2State.lives);
+
+        if (this.scoreText) {
+            this.scoreText.setText(`${player1State.score} / ${player2State.score}`);
+        }
+        if (this.player1LifeImages) {
+            this.updatePlayerLives(this.player1LifeImages, player1State.lives);
+        }
+        if (this.player2LifeImages) {
+            this.updatePlayerLives(this.player2LifeImages, player2State.lives);
+        }
 
         this.isMovementEnabled = !myState.frozen;
         this.player.setTint(myState.frozen ? 0x67a3f1 : (myState.poisoned ? 0x00ff00 : 0xffffff));
