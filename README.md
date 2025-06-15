@@ -349,16 +349,16 @@ Estado del Servidor y Actividad (/api/status, /api/ping): Incluye endpoints para
 ##7.2. Persistencia de Datos
 El servidor asegura la persistencia de los datos críticos para que las sesiones de juego puedan sobrevivir a reinicios. La información de cuentas de usuario y el estado de las salas de juego (incluyendo el historial de eventos y chat) se almacena de forma permanente en ficheros .json en el disco duro del servidor. Una tarea programada se encarga de gestionar y limpiar las salas cuyos jugadores se han vuelto inactivos.
 
-# 8. Fase 4: Inclusión de WebSockets
+# 8. Inclusión de WebSockets
 Esta sección detalla la arquitectura de red implementada para el modo de juego online, que actualiza la descrita en la sección anterior. La comunicación se basa en un modelo híbrido que utiliza una API REST para la gestión de usuarios y partidas (creación y unión), y WebSockets para toda la comunicación en tiempo real una vez dentro de una sala de juego.
 
 ## 8.1. Documentación del protocolo WebSocket
 El protocolo de comunicación en tiempo real se implementa sobre STOMP (Simple Text Oriented Messaging Protocol) a través de WebSockets, lo que permite una comunicación estructurada basada en mensajes y "topics".
 
-8.1.1. Conexión
+### 8.1.1. Conexión
 El cliente establece una conexión WebSocket con el servidor en el endpoint /ws. Se utiliza SockJS como opción de fallback para garantizar una amplia compatibilidad con navegadores que no soporten WebSockets de forma nativa.
 
-8.1.2. Mensajes del Servidor al Cliente (Topics)
+### 8.1.2. Mensajes del Servidor al Cliente (Topics)
 Los clientes se suscriben a "topics" para recibir información del servidor. Todos los topics son específicos para cada partida, utilizando el {gameCode} en la ruta para asegurar que los mensajes lleguen solo a los jugadores de la sala correcta.
 
 /topic/notifications/{gameCode}: Notifica sobre eventos en la sala, como la conexión o desconexión de un jugador.
@@ -395,7 +395,7 @@ Mensaje: GameOverMessage.
 Contenido: winnerUsername (nombre del ganador) y las puntuaciones finales de ambos jugadores.
 
 
-8.1.3. Mensajes del Cliente al Servidor (Destinos de Aplicación)
+### 8.1.3. Mensajes del Cliente al Servidor (Destinos de Aplicación)
 El cliente envía mensajes a destinos que comienzan con el prefijo /app. El servidor los procesa a través de los métodos del GameWebSocketController.
 
 /app/chat.addUser: Un jugador notifica al servidor que se ha unido al chat de la sala.
@@ -426,7 +426,7 @@ Payload: GameUpdateMessage.
 Payload: Un Map<String, String> con los datos necesarios (gameCode, username, y spellType si aplica).
 
 
-8.1.4. Manejo de Desconexiones
+### 8.1.4. Manejo de Desconexiones
 El servidor escucha el evento SessionDisconnectEvent para detectar cuando un cliente se desconecta. Al ocurrir, se actualiza el estado de la partida, se elimina al jugador y se notifica al participante restante a través del topic /topic/notifications/{gameCode}.
 
 ## 8.2. Actualización del Diagrama de Clases
