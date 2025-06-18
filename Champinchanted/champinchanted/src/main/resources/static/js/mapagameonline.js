@@ -1,6 +1,8 @@
 class MapaGameOnline extends Phaser.Scene {
     constructor() {
         super({ key: 'MapaGameOnline' });
+        this.mapButtonsEnabled = false;
+        this.mapaButtons = [];
     }
 
     init(data) {
@@ -38,12 +40,25 @@ class MapaGameOnline extends Phaser.Scene {
         this.add.image(1350, 305, 'invierno').setScale(0.4).setDepth(1);
         this.add.image(1350, 785, 'primavera').setScale(0.4).setDepth(1);
         this.add.image(550, 785, 'verano').setScale(0.4).setDepth(1);
-        const mapaButtons = [{ key: "readyMapa2_button", x: 350, y: 120, mapId: 1 }, { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 }, { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 }, { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }];
-        mapaButtons.forEach(buttonInfo => {
+        const mapaButtonsInfo = [
+            { key: "readyMapa2_button", x: 350, y: 120, mapId: 1 },
+            { key: "readyMapa3_button", x: 1150, y: 120, mapId: 2 },
+            { key: "readyMapa4_button", x: 1150, y: 600, mapId: 3 },
+            { key: "readyMapa1_button", x: 350, y: 600, mapId: 4 }
+        ];
+        this.mapaButtons = [];
+        mapaButtonsInfo.forEach(buttonInfo => {
             const buttonImage = this.add.image(buttonInfo.x, buttonInfo.y, buttonInfo.key)
                 .setScale(0.20).setDepth(2);
+            this.mapaButtons.push({ image: buttonImage, mapId: buttonInfo.mapId });
             if (this.isHost) {
-                buttonImage.setInteractive().on('pointerdown', () => this.selectMap(buttonInfo.mapId));
+                buttonImage.setInteractive({ useHandCursor: true })
+                    .on('pointerdown', () => {
+                        if (this.mapButtonsEnabled) {
+                            this.selectMap(buttonInfo.mapId);
+                        }
+                    });
+                buttonImage.setAlpha(0.6); // Inicialmente deshabilitado
             } else {
                 buttonImage.setAlpha(0.6);
             }
@@ -85,7 +100,7 @@ class MapaGameOnline extends Phaser.Scene {
             // Cuando el servidor da la orden, ambos jugadores reciben el mensaje completo
             const startGameData = JSON.parse(message.body);
 
-            
+
             this.goToNextScene(startGameData);
         });
 
@@ -97,22 +112,29 @@ class MapaGameOnline extends Phaser.Scene {
         // La suscripción a notificaciones ahora también actualiza el contador.
         this.stompClient.subscribe(`/topic/notifications/${this.gameCode}`, (message) => {
             const notification = JSON.parse(message.body);
-
-            // Muestra el mensaje de sistema (unión/desconexión).
             this.displaySystemMessage(notification.content);
-
-            // Actualiza el contador de jugadores si la información viene en el mensaje.
             if (notification.playerCount !== undefined) {
                 this.playerCountText.setText(`${notification.playerCount}/2`);
+                this.updateMapButtons(notification.playerCount === 2);
             }
         });
 
-        
+
         if (this.stompClient && this.stompClient.connected) {
             this.stompClient.send(`/app/chat.addUser`, {}, JSON.stringify({ sender: this.username, gameCode: this.gameCode }));
         }
 
         this.events.on('shutdown', () => this.cleanup());
+    }
+
+    updateMapButtons(enabled) {
+        this.mapButtonsEnabled = enabled;
+        this.mapaButtons.forEach(btn => {
+            if (this.isHost) {
+                btn.image.setAlpha(enabled ? 1 : 0.6);
+                btn.image.setInteractive(enabled);
+            }
+        });
     }
 
     displaySystemMessage(content) {
@@ -168,7 +190,7 @@ class MapaGameOnline extends Phaser.Scene {
             gameCode: this.gameCode,
             username: this.username,
             isHost: this.isHost,
-            
+
             player1Username: startGameData.player1Username,
             player2Username: startGameData.player2Username
         });
