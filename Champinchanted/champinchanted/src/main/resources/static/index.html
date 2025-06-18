@@ -72,49 +72,6 @@
         // Creación del juego ----------------------------------------------------------------------------------------------
         const game = new Phaser.Game(config);   // Crea una nueva intancia del juego con la configuración definida
 
-        async function startGame() {
-            //const random = Math.floor(Math.random() * 1000) + 1;
-            //gameCode = "partida" + random;
-            gameCode = "partida";
-            window.gameCode = gameCode; // Asignar globalmente
-
-            try {
-                const response = await fetch("/api/games", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ code: gameCode })
-                });
-
-                if (response.ok) {
-                    console.log('Juego iniciado correctamente');
-                    return true;
-                } else if (response.status === 409) {
-                    console.log('El código de partida ya existe, creando uno nuevo');
-                    return startGame();
-                } else {
-                    const errorText = await response.text();
-                    console.error('Hubo un problema al iniciar el juego:', response.status, errorText);
-                    return false;
-                }
-            } catch (error) {
-                console.error("Error al inicial el juego: ", error)
-                return false;
-            }
-        }
-
-        async function initializeGame() {
-            const gameStarted = await startGame();
-            if (gameStarted) {
-                game.scene.start('IntroScene'); // Solo iniciar la escena cuando el juego esté correctamente inicializado
-            } else {
-                alert("Hubo un problema al iniciar el juego. Intenta nuevamente.");
-            }
-        }
-
-        initializeGame();
-
         function eliminarUsuario() {
             const username = sessionManager.getUsername();
 
